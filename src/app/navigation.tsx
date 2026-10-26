@@ -30,6 +30,8 @@ export type ScreenProps<T extends keyof RootStackParamList> = NativeStackScreenP
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+// mohit
+
 const theme = {
   ...DefaultTheme,
   colors: { ...DefaultTheme.colors, background: colors.bgCream },
