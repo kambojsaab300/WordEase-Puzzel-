@@ -41,10 +41,17 @@ import { PlaneIcon } from './PaperPlane';
 import type { WorldStatus } from './worldProgress';
 import { useT, worldKey } from '../i18n';
 
-const RINGS = prepareRings(require('./land110.json') as number[][]);
+const COAST = prepareRings(require('./land110.json') as number[][]);
+// Land cut into climate bands (tools/build-land.ts): ice, boreal, temperate, dry, tropics.
+// Colour by climate, not by country, so the globe shows no political borders.
+const CLIMATE = (require('./climate110.json') as number[][][]).map(prepareRings);
+const CLIMATE_COLORS = ['#F2F6F8', '#A9CFA0', '#C6E19B', '#EFD79B', '#8FD18A'];
 const WORLD_GEO = WORLDS.map(w => [w.geo.lon, w.geo.lat] as [number, number]);
 
 const PIN = 30;
+const TAIL = 12;
+const MARKER_H = PIN + TAIL;
+const HEAD_ABOVE_TIP = MARKER_H - PIN / 2; // tap target is the head, the tip marks the place
 const TAP_RADIUS = 34;
 const MIN_ZOOM = 0.85;
 const MAX_ZOOM = 2.4;
@@ -109,7 +116,7 @@ function GlobePin({
       opacity: fade,
       transform: [
         { translateX: p.x - PIN / 2 },
-        { translateY: p.y - PIN / 2 },
+        { translateY: p.y - MARKER_H },
         { scale: grow * (0.7 + 0.3 * fade) },
       ],
     };
@@ -128,6 +135,9 @@ function GlobePin({
           </Text>
         </View>
       )}
+      {/* 3D map marker: shadow on the ground, a pointed tail, and a round head */}
+      <View style={styles.groundShadow} />
+      <View style={[styles.tail, { backgroundColor: PIN_FILL[status] }]} />
       <View
         style={[
           styles.pinDot,
@@ -135,6 +145,7 @@ function GlobePin({
           selected && styles.pinSelected,
         ]}
       >
+        <View style={styles.shine} />
         <Text style={[styles.pinText, status === 'locked' && styles.pinTextLocked]}>{world.id}</Text>
       </View>
       {status === 'current' && (
@@ -193,11 +204,23 @@ export function Globe3D({
     'worklet';
     return { yaw: yaw.value, pitch: pitch.value, r: baseR * zoom.value, cx, cy };
   };
-  const landPath = useDerivedValue(() => {
+  const coastPath = useDerivedValue(() => {
     const p = Skia.PathBuilder.Make();
-    appendLand(p, RINGS, view());
+    appendLand(p, COAST, view());
     return p.build();
   });
+  const climatePaths = useDerivedValue(() =>
+    CLIMATE.map(band => {
+      const p = Skia.PathBuilder.Make();
+      appendLand(p, band, view());
+      return p.build();
+    }),
+  );
+  const ice = useDerivedValue(() => climatePaths.value[0]);
+  const boreal = useDerivedValue(() => climatePaths.value[1]);
+  const temperate = useDerivedValue(() => climatePaths.value[2]);
+  const dry = useDerivedValue(() => climatePaths.value[3]);
+  const tropics = useDerivedValue(() => climatePaths.value[4]);
   const gridPath = useDerivedValue(() => {
     const p = Skia.PathBuilder.Make();
     appendGraticule(p, view());
@@ -262,7 +285,7 @@ export function Globe3D({
         let bestDist = TAP_RADIUS;
         for (let i = 0; i < WORLD_GEO.length; i++) {
           const p = project(WORLD_GEO[i][0], WORLD_GEO[i][1], view());
-          const d = Math.hypot(p.x - e.x, p.y - e.y);
+          const d = Math.hypot(p.x - e.x, p.y - HEAD_ABOVE_TIP - e.y);
           if (p.visible && d < bestDist) {
             best = i;
             bestDist = d;
@@ -303,12 +326,20 @@ export function Globe3D({
           </Circle>
           {/* ocean, lit from the top left */}
           <Circle cx={cx} cy={cy} r={r}>
-            <RadialGradient c={oceanLight} r={oceanSpread} colors={['#B5E2F2', '#5FA9CF', '#2A6A90']} />
+            <RadialGradient c={oceanLight} r={oceanSpread} colors={['#A6E1F2', '#3F9CC8', '#1B5C86']} />
           </Circle>
           <Path path={gridPath} style="stroke" strokeWidth={1} color="rgba(255,255,255,0.22)" />
           <Group>
-            <Path path={landPath} color="#F4E4BF" />
-            <Path path={landPath} style="stroke" strokeWidth={1} color="#B99B66" strokeJoin="round" />
+            {/* paper-cut land: a soft drop shadow, then the climate colours, then the coast line */}
+            <Group transform={[{ translateX: 1.5 }, { translateY: 2.5 }]}>
+              <Path path={coastPath} color="rgba(10,40,60,0.28)" />
+            </Group>
+            <Path path={ice} color={CLIMATE_COLORS[0]} />
+            <Path path={boreal} color={CLIMATE_COLORS[1]} />
+            <Path path={temperate} color={CLIMATE_COLORS[2]} />
+            <Path path={dry} color={CLIMATE_COLORS[3]} />
+            <Path path={tropics} color={CLIMATE_COLORS[4]} />
+            <Path path={coastPath} style="stroke" strokeWidth={1.2} color="rgba(70,60,40,0.55)" strokeJoin="round" />
           </Group>
           <Path path={routePath} style="stroke" strokeWidth={3} color={colors.accentCoral} strokeCap="round">
             <DashPathEffect intervals={[2, 8]} />
@@ -350,9 +381,36 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     width: PIN,
-    height: PIN,
+    height: MARKER_H,
     alignItems: 'center',
-    justifyContent: 'center',
+    transformOrigin: 'center bottom',
+  },
+  groundShadow: {
+    position: 'absolute',
+    bottom: -3,
+    width: 18,
+    height: 6,
+    borderRadius: 9,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+  },
+  tail: {
+    position: 'absolute',
+    bottom: 3,
+    width: 14,
+    height: 14,
+    transform: [{ rotate: '45deg' }],
+    borderRightWidth: 2,
+    borderBottomWidth: 2,
+    borderColor: colors.white,
+  },
+  shine: {
+    position: 'absolute',
+    top: 4,
+    left: 6,
+    width: 9,
+    height: 6,
+    borderRadius: 4,
+    backgroundColor: 'rgba(255,255,255,0.45)',
   },
   pinDot: {
     width: PIN,
@@ -384,7 +442,7 @@ const styles = StyleSheet.create({
   cloud: {
     position: 'absolute',
     fontSize: 26,
-    top: -8,
+    top: -6,
   },
   labelWrap: {
     position: 'absolute',

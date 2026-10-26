@@ -105,6 +105,7 @@ DerivedData
 .env.test.local
 .env.production.local
 *.env
+!ios/.xcode.env
 
 # Testing & Coverage
 # ------------------
