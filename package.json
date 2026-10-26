@@ -19,6 +19,7 @@
     "@shopify/react-native-skia": "^2.14.0",
     "react": "19.3.0",
     "react-native": "0.88.0",
+    "react-native-device-info": "^15.0.2",
     "react-native-gesture-handler": "^2.33.1",
     "react-native-mmkv": "^4.3.2",
     "react-native-nitro-modules": "^0.37.1",
@@ -56,5 +57,10 @@
   },
   "engines": {
     "node": ">= 22.11.0"
+  },
+  "overrides": {
+    "sp-react-native-in-app-updates": {
+      "react-native-device-info": "$react-native-device-info"
+    }
   }
 }

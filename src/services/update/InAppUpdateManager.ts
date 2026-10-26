@@ -1,8 +1,18 @@
 import { Platform } from 'react-native';
-import SpInAppUpdates, {
-  IAUUpdateKind,
-  StartUpdateOptions,
-} from 'sp-react-native-in-app-updates';
+import type SpInAppUpdatesType from 'sp-react-native-in-app-updates';
+import type { StartUpdateOptions } from 'sp-react-native-in-app-updates';
+
+type UpdatesLib = typeof import('sp-react-native-in-app-updates');
+
+// Loaded lazily: the library reads native modules as soon as it is imported, and a missing
+// or broken native module must never stop the app from opening (an update check is optional)
+function loadUpdatesLib(): UpdatesLib | null {
+  try {
+    return require('sp-react-native-in-app-updates') as UpdatesLib;
+  } catch {
+    return null;
+  }
+}
 
 export interface UpdateCheckResult {
   shouldUpdate: boolean;
@@ -11,21 +21,28 @@ export interface UpdateCheckResult {
 }
 
 export class InAppUpdateManagerService {
-  private inAppUpdates: SpInAppUpdates | null = null;
+  private inAppUpdates: SpInAppUpdatesType | null = null;
+  private lib: UpdatesLib | null = null;
+  private initialized = false;
 
-  constructor() {
+  // Created on first use (not at import time), so a native failure only disables updates
+  private ensureInit(): SpInAppUpdatesType | null {
+    if (this.initialized) return this.inAppUpdates;
+    this.initialized = true;
+    this.lib = loadUpdatesLib();
     try {
-      this.inAppUpdates = new SpInAppUpdates(false);
+      this.inAppUpdates = this.lib ? new this.lib.default(false) : null;
     } catch {
       this.inAppUpdates = null;
     }
+    return this.inAppUpdates;
   }
 
   /**
    * Checks Google Play / App Store for an available update.
    */
   async checkForUpdate(): Promise<UpdateCheckResult> {
-    if (!this.inAppUpdates) {
+    if (!this.ensureInit() || !this.inAppUpdates) {
       return { shouldUpdate: false, error: 'InAppUpdates not initialized' };
     }
     try {
@@ -48,7 +65,8 @@ export class InAppUpdateManagerService {
    * On iOS: opens the App Store page.
    */
   async startUpdate(forceUpdate = false): Promise<boolean> {
-    if (!this.inAppUpdates) return false;
+    if (!this.ensureInit() || !this.inAppUpdates || !this.lib) return false;
+    const { IAUUpdateKind } = this.lib;
 
     try {
       const updateOptions: StartUpdateOptions = Platform.select({

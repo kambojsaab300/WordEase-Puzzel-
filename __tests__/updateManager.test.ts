@@ -166,3 +166,45 @@ describe('InAppUpdateManager - Deep Test Suite', () => {
     expect(startResult).toBe(false);
   });
 });
+
+describe('InAppUpdateManager - launch safety (regression: crash on app open)', () => {
+  test('importing the manager does not load the native update library', () => {
+    jest.isolateModules(() => {
+      let loaded = false;
+      jest.doMock('sp-react-native-in-app-updates', () => {
+        loaded = true;
+        return {};
+      });
+      require('../src/services/update/InAppUpdateManager');
+      expect(loaded).toBe(false);
+    });
+  });
+
+  test('a native module that throws on load only disables updates, never crashes (negative)', async () => {
+    jest.resetModules();
+    jest.doMock('sp-react-native-in-app-updates', () => {
+      throw new Error('react-native-device-info: NativeModule.RNDeviceInfo is null');
+    });
+    const { InAppUpdateManagerService: Fresh } = require('../src/services/update/InAppUpdateManager');
+    const manager: InAppUpdateManagerService = new Fresh();
+    try {
+      await expect(manager.checkForUpdate()).resolves.toEqual({
+        shouldUpdate: false,
+        error: 'InAppUpdates not initialized',
+      });
+      await expect(manager.startUpdate(true)).resolves.toBe(false);
+      await expect(manager.checkAndPrompt()).resolves.toBe(false);
+    } finally {
+      jest.dontMock('sp-react-native-in-app-updates');
+      jest.resetModules();
+    }
+  });
+
+  test('device-info (used by the update library) is a direct dependency, so Android links its native module', () => {
+    const pkg = require('../package.json');
+    expect(pkg.dependencies['react-native-device-info']).toBeDefined();
+    const fs = require('node:fs');
+    // a nested copy would be bundled instead of the linked one
+    expect(fs.existsSync('node_modules/sp-react-native-in-app-updates/node_modules/react-native-device-info')).toBe(false);
+  });
+});
