@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, Text } from 'react-native';
 import type { ScreenProps } from '../app/navigation';
+import { InAppUpdateManager } from '../services/update/InAppUpdateManager';
 import { useSettings } from '../store/settings';
 import { Screen } from '../ui/Screen';
 import { colors, fonts } from '../ui/theme';
@@ -9,6 +10,9 @@ const SPLASH_MS = 1200;
 
 export function SplashScreen({ navigation }: ScreenProps<'Splash'>) {
   useEffect(() => {
+    // Check Google Play Store for in-app updates on startup
+    InAppUpdateManager.checkAndPrompt(false).catch(() => {});
+
     const timer = setTimeout(() => {
       const onboarded = useSettings.getState().onboarded;
       if (!onboarded) {
