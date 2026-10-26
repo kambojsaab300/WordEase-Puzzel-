@@ -1,4 +1,4 @@
-import { LEVELS_PER_WORLD } from '../levels/levelSpec';
+import { isLandmark, LEVELS_PER_WORLD } from '../levels/levelSpec';
 import { coinsFor, Stars } from './scoring';
 
 export const STARTING_COINS = 200;
@@ -9,6 +9,8 @@ export type LevelReward = {
   coins: number;
   newBest: Stars;
   worldCompleted: number | null;
+  /** First win of a landmark level (15, 30, 45, 60 in each world): a new sight for the passport */
+  landmarkVisited: boolean;
 };
 
 /**
@@ -25,5 +27,6 @@ export function levelReward(levelId: number, stars: Stars, previous?: Stars): Le
     coins: Math.max(0, starCoins) + (worldCompleted ? WORLD_COMPLETE_COINS : 0),
     newBest: best,
     worldCompleted,
+    landmarkVisited: isLandmark(levelId) && !previous,
   };
 }

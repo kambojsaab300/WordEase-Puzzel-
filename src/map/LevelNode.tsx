@@ -17,6 +17,8 @@ type Props = {
   state: NodeState;
   stars: number;
   landmark: boolean;
+  /** Name of the sight at a landmark level, read out with the node */
+  landmarkName?: string;
   x: number;
   y: number;
   reduceMotion: boolean;
@@ -44,6 +46,7 @@ export const LevelNode = memo(function LevelNodeView({
   state,
   stars,
   landmark,
+  landmarkName,
   x,
   y,
   reduceMotion,
@@ -64,12 +67,13 @@ export const LevelNode = memo(function LevelNodeView({
   }, [state, reduceMotion, scale]);
   const pulseStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
-  const label =
+  const stateLabel =
     state === 'locked'
       ? t('map.node.locked', { n: levelId })
       : state === 'current'
         ? t('map.node.current', { n: levelId })
         : t('map.node.done', { n: levelId, stars });
+  const label = landmarkName ? t('map.node.landmark', { label: stateLabel, name: landmarkName }) : stateLabel;
 
   return (
     <View style={[styles.wrap, { left: x - size / 2, top: y - size / 2, width: size }]}>

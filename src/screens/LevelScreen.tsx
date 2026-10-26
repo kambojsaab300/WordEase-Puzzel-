@@ -149,6 +149,7 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
         stars,
         coins: reward.coins,
         worldCompleted: reward.worldCompleted,
+        newLandmark: reward.landmarkVisited,
       });
     }, FINISH_DELAY_MS);
     return () => clearTimeout(timer);

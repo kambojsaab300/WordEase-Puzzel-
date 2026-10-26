@@ -2,13 +2,14 @@ import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-n
 import type { ScreenProps } from '../app/navigation';
 import { LEVELS_PER_WORLD } from '../game/levels/levelSpec';
 import { WORLDS } from '../game/levels/worlds';
+import { LANDMARKS_PER_WORLD, visitedCount, worldLandmarks } from '../map/landmarkPlan';
 import { useProgress } from '../store/progress';
 import { PassportStamp } from '../ui/PassportStamp';
 import { Screen } from '../ui/Screen';
 import { colors, fonts, sizes } from '../ui/theme';
 import { useT } from '../i18n';
 
-// One stamp per finished world: the long-term goal of the World Trip
+// One stamp per finished world, plus the 4 landmarks reached on its route: the long-term goal of the World Trip
 export function AlbumScreen({ navigation }: ScreenProps<'Album'>) {
   const t = useT();
   const { width } = useWindowDimensions();
@@ -22,6 +23,9 @@ export function AlbumScreen({ navigation }: ScreenProps<'Album'>) {
         <Text style={styles.count}>
           {t('album.count', { n: collected, total: WORLDS.length })}
         </Text>
+        <Text style={styles.landmarkCount}>
+          {t('album.landmarks', { n: visitedCount(stars), total: WORLDS.length * LANDMARKS_PER_WORLD })}
+        </Text>
         <View style={styles.row}>
           {WORLDS.map(w => (
             <PassportStamp
@@ -29,6 +33,7 @@ export function AlbumScreen({ navigation }: ScreenProps<'Album'>) {
               world={w}
               collected={Boolean(stars[w.id * LEVELS_PER_WORLD])}
               size={stampSize}
+              visited={worldLandmarks(w.id).map(l => Boolean(stars[l.levelId]))}
             />
           ))}
         </View>
@@ -45,10 +50,16 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   count: {
-    marginBottom: 8,
     fontSize: 19,
     fontFamily: fonts.uiBold,
     color: colors.primaryOcean,
+    textAlign: 'center',
+  },
+  landmarkCount: {
+    marginBottom: 8,
+    fontSize: 17,
+    fontFamily: fonts.ui,
+    color: colors.ink,
     textAlign: 'center',
   },
   row: {

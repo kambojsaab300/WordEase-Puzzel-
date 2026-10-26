@@ -64,6 +64,7 @@ APK: `android/app/build/outputs/apk/release/app-release.apk`
 - [x] **T17. Map art + paper plane + parallax** (Reduce Motion par band).
 - [x] **T18. Globe view + 20 worlds + baadal unlock animation.**
 - [x] **T19. Passport album** — har world par stamp.
+- [x] **T19b. Landmarks visual plan** (upgrade PDF) — har world ke 4 famous landmarks (level 15/30/45/60), 80 apne paper-cutout silhouettes; route par har landmark level ka apna sight + naam plaque, TalkBack label mein naam; Result par "You reached …" postcard (pehli jeet par); album mein har stamp ke neeche 4 landmarks + total ginti; 6 bhashaon mein naam.
 
 ## Phase 6 — Economy, hints, daily
 - [x] **T20. Coins + Hints** — Spotlight 25 / Compass 40 / Reveal 60; stars hint ke hisaab se.
@@ -112,3 +113,4 @@ APK: `android/app/build/outputs/apk/release/app-release.apk`
 | Polish 1 | 2026-10-26 | WordEase-polish1.apk | Pause menu (resume/restart/settings/map, auto-pause, Back), pinch-zoom + zoom buttons for big grids, 80 themes (4 per world, 699 words); 247 Jest tests; phone test baaki |
 | Globe fix | 2026-10-26 | WordEase-globefix.apk | Horizon clipping with rim arcs (no slivers/lines on the globe edge), date-line seam not drawn, borders/coast as visible-only outlines; preview tool tools/render-globe.*; 253 Jest tests; phone test baaki |
 | Flat map | 2026-10-26 | WordEase-flatmap.apk | 3D globe removed; flat Equal Earth world map (countries, India view, pins, route, zoom/pan, fly-to on card); preview tools/render-map.*; 238 Jest tests; phone test baaki |
+| Landmarks | 2026-10-26 | Jest | Upgrade PDF ka naya hissa: 80 landmarks (4 per world), route/result/album wired, 6-language names; 347 Jest tests, TS + lint clean; APK + phone test baaki |

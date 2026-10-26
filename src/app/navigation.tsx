@@ -18,7 +18,13 @@ export type RootStackParamList = {
   Globe: undefined;
   Album: undefined;
   Level: { levelId: number };
-  Result: { levelId: number; stars: 1 | 2 | 3; coins: number; worldCompleted: number | null };
+  Result: {
+    levelId: number;
+    stars: 1 | 2 | 3;
+    coins: number;
+    worldCompleted: number | null;
+    newLandmark?: boolean;
+  };
   Settings: undefined;
   About: undefined;
 };

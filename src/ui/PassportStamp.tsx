@@ -2,6 +2,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Canvas, Group, Path } from '@shopify/react-native-skia';
 import type { WorldDef } from '../game/levels/worlds';
 import { LANDMARK_PATHS } from '../map/landmarks';
+import { landmarkKey, worldLandmarks } from '../map/landmarkPlan';
+import { LandmarkArt } from './LandmarkArt';
 import { colors, fonts } from './theme';
 import { useT, worldKey } from '../i18n';
 
@@ -9,12 +11,18 @@ type Props = {
   world: WorldDef;
   collected: boolean;
   size?: number;
+  /** Which of the world's 4 landmarks the player has reached; shows a row of small sights when given */
+  visited?: boolean[];
 };
 
-export function PassportStamp({ world, collected, size = 150 }: Props) {
+const UNVISITED = '#CFC8BA';
+
+export function PassportStamp({ world, collected, size = 150, visited }: Props) {
   const t = useT();
   const name = t(worldKey(world.id));
   const art = size * 0.48;
+  const landmarks = visited ? worldLandmarks(world.id) : [];
+  const mini = Math.min(34, Math.floor((size - 28) / Math.max(1, landmarks.length)));
   return (
     <View
       style={[
@@ -39,6 +47,24 @@ export function PassportStamp({ world, collected, size = 150 }: Props) {
       <Text style={[styles.name, !collected && styles.muted]} numberOfLines={2}>
         {name}
       </Text>
+      {landmarks.length > 0 && (
+        <View
+          style={styles.landmarks}
+          accessible
+          accessibilityLabel={landmarks
+            .map((l, i) => t(visited?.[i] ? 'landmark.visited' : 'landmark.missing', { name: t(landmarkKey(l.key)) }))
+            .join(', ')}
+        >
+          {landmarks.map((l, i) => (
+            <LandmarkArt
+              key={l.key}
+              path={l.path}
+              color={visited?.[i] ? world.palette.accent : UNVISITED}
+              size={mini}
+            />
+          ))}
+        </View>
+      )}
     </View>
   );
 }
@@ -73,6 +99,10 @@ const styles = StyleSheet.create({
     fontFamily: fonts.uiBold,
     color: colors.ink,
     textAlign: 'center',
+  },
+  landmarks: {
+    flexDirection: 'row',
+    marginTop: 6,
   },
   muted: {
     color: '#7A7365',

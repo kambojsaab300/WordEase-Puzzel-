@@ -16,7 +16,7 @@ import { mulberry32 } from '../game/generator/prng';
 import { isLandmark } from '../game/levels/levelSpec';
 import { WORLDS } from '../game/levels/worlds';
 import { colors, fonts } from '../ui/theme';
-import { LANDMARK_PATHS } from './landmarks';
+import { landmarkAt, landmarkKey } from './landmarkPlan';
 import { levelX, levelYInSegment, Segment, SEGMENT_GAP, SEGMENT_HEIGHT } from './layout';
 import { LevelNode, NodeState } from './LevelNode';
 import { PaperPlane } from './PaperPlane';
@@ -107,8 +107,22 @@ export const WorldChunk = memo(function WorldChunkView({
     return out;
   }, [segment, width]);
 
-  const landmarks = levels.filter(l => isLandmark(l.id));
+  const landmarks = useMemo(
+    () =>
+      levels.flatMap(l => {
+        const info = landmarkAt(l.id);
+        if (!info) return [];
+        // The sight stands on the far side of the road from its node
+        const onLeft = l.x > width / 2;
+        return [{ ...l, info, artX: onLeft ? 6 : width - LANDMARK_SIZE - 6, artY: l.y - LANDMARK_SIZE + 40 }];
+      }),
+    [levels, width],
+  );
   const current = levels.find(l => l.id === currentLevel);
+  const landmarkName = (id: number) => {
+    const info = landmarks.find(l => l.id === id)?.info;
+    return info ? t(landmarkKey(info.key)) : undefined;
+  };
 
   return (
     <View style={{ width, height: SEGMENT_HEIGHT }}>
@@ -141,24 +155,21 @@ export const WorldChunk = memo(function WorldChunkView({
           </Group>
         ))}
 
-        {landmarks.map(l => {
-          const onLeft = l.x > width / 2;
-          const x = onLeft ? 6 : width - LANDMARK_SIZE - 6;
-          const y = l.y - LANDMARK_SIZE + 40;
+        {landmarks.map(({ id, info, artX: x, artY: y }) => {
           const scale = LANDMARK_SIZE / 100;
           return (
-            <Group key={`l${l.id}`}>
+            <Group key={`l${id}`}>
               <Group transform={[{ translateX: x + 7 }, { translateY: y + 9 }, { scale }]}>
-                <Path path={LANDMARK_PATHS[world.landmark]} color={SHADOW} />
+                <Path path={info.path} color={SHADOW} />
               </Group>
               {/* stacked layers give the silhouette a solid, extruded depth */}
               {EXTRUDE_STEPS.map(step => (
                 <Group key={step} transform={[{ translateX: x + step }, { translateY: y + step }, { scale }]}>
-                  <Path path={LANDMARK_PATHS[world.landmark]} color={palette.near} />
+                  <Path path={info.path} color={palette.near} />
                 </Group>
               ))}
               <Group transform={[{ translateX: x }, { translateY: y }, { scale }]}>
-                <Path path={LANDMARK_PATHS[world.landmark]} color={palette.accent} />
+                <Path path={info.path} color={palette.accent} />
               </Group>
             </Group>
           );
@@ -184,6 +195,25 @@ export const WorldChunk = memo(function WorldChunkView({
         </View>
       )}
 
+      {/* paper name plaque at the foot of each sight; one line so it never covers the next node */}
+      {landmarks.map(({ id, info, artX, artY }) => (
+        <View
+          key={`tag${id}`}
+          pointerEvents="none"
+          importantForAccessibility="no-hide-descendants"
+          style={[styles.tag, { left: artX - 4, top: artY + LANDMARK_SIZE - 2, width: LANDMARK_SIZE + 8 }]}
+        >
+          <Text
+            style={[styles.tagText, { borderColor: palette.accent }]}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.7}
+          >
+            {t(landmarkKey(info.key))}
+          </Text>
+        </View>
+      ))}
+
       {levels.map(l => {
         const state: NodeState =
           l.id < currentLevel || stars[l.id] ? 'done' : l.id === currentLevel ? 'current' : 'locked';
@@ -194,6 +224,7 @@ export const WorldChunk = memo(function WorldChunkView({
             state={state}
             stars={stars[l.id] ?? 0}
             landmark={isLandmark(l.id)}
+            landmarkName={landmarkName(l.id)}
             x={l.x}
             y={l.y}
             reduceMotion={reduceMotion}
@@ -219,6 +250,22 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
     borderColor: colors.primaryOcean,
     alignItems: 'center',
+  },
+  tag: {
+    position: 'absolute',
+    alignItems: 'center',
+  },
+  tagText: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+    borderWidth: 1.5,
+    backgroundColor: colors.bgCream,
+    fontSize: 14,
+    fontFamily: fonts.uiBold,
+    color: colors.ink,
+    textAlign: 'center',
+    overflow: 'hidden',
   },
   bannerSmall: {
     fontSize: 16,
