@@ -103,7 +103,8 @@ export function MapScreen({ navigation, route }: ScreenProps<'Map'>) {
         onPlayDaily={() => navigation.navigate('Level', { levelId: DAILY_LEVEL_ID })}
       />
       <ShopModal visible={shopOpen} onClose={() => setShopOpen(false)} />
-      <Toast toast={toast} />
+      {/* the bottom bar holds the Play button, so messages show at the top */}
+      <Toast toast={toast} placement="top" />
     </View>
   );
 }

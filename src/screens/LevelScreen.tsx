@@ -243,7 +243,8 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
       {meaningWord && meaning && (
         <MeaningCard word={meaningWord} meaning={meaning} onClose={closeMeaning} />
       )}
-      <Toast toast={toast} />
+      {/* at the top, so praise never covers the meaning card or word list at the bottom */}
+      <Toast toast={toast} placement="top" />
       <PauseSheet
         visible={paused}
         onResume={() => setPaused(false)}
