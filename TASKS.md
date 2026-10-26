@@ -106,4 +106,4 @@ APK: `android/app/build/outputs/apk/release/app-release.apk`
 | Audit | 2026-10-26 | WordEase-audit.apk | 155 Jest tests (14 suites) pass, 1200 levels playable + validated, lint/TS clean. 9 bugs fixed (1 crash). Phone test baaki |
 | Globe 3D | 2026-10-26 | WordEase-globe3d.apk | 3D globe (Natural Earth), world cards; 178 Jest tests pass; phone test baaki |
 | T22, T23, T25 | 2026-10-26 | WordEase-a11y.apk | Text size, Huge 10x10, high contrast, colour-blind patterns, tutorial hand; 190 Jest tests pass; phone test baaki |
-| T35 (UI) | 2026-10-26 | WordEase-i18n.apk | 6 UI languages wired, sound/music toggles hidden until T24; 217 Jest tests pass; phone test baaki |
+| T35 (UI) | 2026-10-26 | WordEase-i18n.apk | 6 UI languages wired, sound/music toggles hidden until T24; 215 Jest tests pass; phone test baaki |
