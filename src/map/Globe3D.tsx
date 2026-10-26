@@ -38,6 +38,8 @@ import {
   shortestYaw,
 } from './globeMath';
 import { PlaneIcon } from './PaperPlane';
+import type { WorldStatus } from './worldProgress';
+import { useT, worldKey } from '../i18n';
 
 const RINGS = prepareRings(require('./land110.json') as number[][]);
 const WORLD_GEO = WORLDS.map(w => [w.geo.lon, w.geo.lat] as [number, number]);
@@ -47,7 +49,6 @@ const TAP_RADIUS = 34;
 const MIN_ZOOM = 0.85;
 const MAX_ZOOM = 2.4;
 
-export type WorldStatus = 'done' | 'current' | 'open' | 'locked';
 
 type Props = {
   width: number;
@@ -90,6 +91,7 @@ function GlobePin({
   unveil: boolean;
   camera: Camera;
 }) {
+  const t = useT();
   const { yaw, pitch, zoom, cx, cy, baseR } = camera;
   const { lon, lat } = world.geo;
 
@@ -122,7 +124,7 @@ function GlobePin({
       {selected && (
         <View style={styles.labelWrap}>
           <Text style={styles.label} numberOfLines={1}>
-            {world.name}
+            {t(worldKey(world.id))}
           </Text>
         </View>
       )}
@@ -273,6 +275,7 @@ export function Globe3D({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- shared values are stable
   }, [baseR, cx, cy, reduceMotion, onSelectWorld]);
 
+  const t = useT();
   const camera: Camera = { yaw, pitch, zoom, cx, cy, baseR };
   // Selected pin last so it draws on top
   const order = WORLDS.filter(w => w.id !== selectedWorld).concat(WORLDS[selectedWorld - 1]);
@@ -282,7 +285,7 @@ export function Globe3D({
       <View
         style={{ width, height }}
         accessible
-        accessibilityLabel="3D globe of your World Trip. Drag to spin, pinch to zoom. Use the world cards to choose a stop."
+        accessibilityLabel={t('globe.a11y')}
       >
         <Canvas style={StyleSheet.absoluteFill}>
           {/* soft paper shadow under the globe */}

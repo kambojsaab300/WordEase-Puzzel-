@@ -1,29 +1,58 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
+import { TextSizeIndex } from './a11y';
 import { colors, fonts, fontSizes } from './theme';
+import { useT } from '../i18n';
 
 type Props = {
   word: string;
   found: boolean;
   color?: string; // capsule colour of the found word
+  textSize?: TextSizeIndex;
+  highContrast?: boolean;
+  mark?: string; // colour-blind mode: symbol matching the word's pattern on the grid
   onPress?: () => void; // found chips open the meaning card again
 };
 
-export function WordChip({ word, found, color = colors.okGreen, onPress }: Props) {
+export function WordChip({
+  word,
+  found,
+  color = colors.okGreen,
+  textSize = 0,
+  highContrast = false,
+  mark,
+  onPress,
+}: Props) {
+  const t = useT();
+  const fontSize = fontSizes.wordChip[textSize];
   return (
     <Pressable
       onPress={onPress}
       disabled={!onPress}
-      style={[styles.chip, found && { borderColor: color, backgroundColor: colors.white }]}
+      style={[
+        styles.chip,
+        { minHeight: Math.max(44, fontSize + 22) },
+        highContrast && styles.chipContrast,
+        found && { borderColor: highContrast ? colors.ink : color, backgroundColor: colors.white },
+      ]}
       accessibilityRole={onPress ? 'button' : 'text'}
-      accessibilityLabel={found ? `${word}, found` : word}
+      accessibilityLabel={found ? t('chip.found', { word }) : word}
     >
-      {found && <Text style={[styles.tick, { color }]}>✓</Text>}
-      <Text style={[styles.text, found && styles.foundText]}>{word}</Text>
+      {found && <Text style={[styles.tick, { color, fontSize }]}>{mark ?? '✓'}</Text>}
+      <Text style={[styles.text, { fontSize }, highContrast && styles.textContrast, found && styles.foundText]}>
+        {word}
+      </Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
+  chipContrast: {
+    borderColor: colors.ink,
+    backgroundColor: colors.white,
+  },
+  textContrast: {
+    color: '#000000',
+  },
   chip: {
     flexDirection: 'row',
     alignItems: 'center',

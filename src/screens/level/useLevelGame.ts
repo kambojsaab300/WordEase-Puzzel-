@@ -4,11 +4,13 @@ import { BONUS_WORD_COINS } from '../../game/engine/rewards';
 import { matchSelection } from '../../game/engine/validate';
 import { sanitizeSaved } from '../../game/engine/restore';
 import { DAILY_LEVEL_ID, getLevel } from '../../game/levels/levelRepo';
+import { fitGridSize } from '../../game/levels/textSizeVariant';
 import type { FoundWord } from '../../game/render/GridCanvas';
 import { Cell, PlacedWord } from '../../game/types';
 import { getTodayKey, useDaily } from '../../store/daily';
 import { useProgress } from '../../store/progress';
 import { useWallet } from '../../store/wallet';
+import { HUGE_MAX_GRID, TextSizeIndex } from '../../ui/a11y';
 import { colors } from '../../ui/theme';
 
 export type SelectResult =
@@ -19,11 +21,15 @@ export type SelectResult =
 
 export type HintResult = 'ok' | 'no-coins' | 'none-left';
 
-export function useLevelGame(levelId: number) {
+export function useLevelGame(levelId: number, textSize: TextSizeIndex = 0) {
   const isDaily = levelId === DAILY_LEVEL_ID;
   // The Daily puzzle is fixed to the day it was opened, even across midnight
   const dayKey = useMemo(() => getTodayKey(), []);
-  const level = useMemo(() => getLevel(levelId), [levelId]);
+  // Huge text never shows more than a 10x10 grid
+  const level = useMemo(() => {
+    const full = getLevel(levelId);
+    return textSize === 2 ? fitGridSize(full, HUGE_MAX_GRID) : full;
+  }, [levelId, textSize]);
 
   // Resume where the player left off, keeping only what fits this exact puzzle
   const saved = useMemo(() => {

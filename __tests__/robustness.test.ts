@@ -9,7 +9,7 @@ import { getTodayKey, getYesterdayKey, INITIAL_DAILY, useDaily, weekKeyOf } from
 import { useProgress } from '../src/store/progress';
 import { useWallet } from '../src/store/wallet';
 import { useSettings } from '../src/store/settings';
-import { t } from '../src/i18n';
+import { translate } from '../src/i18n';
 
 describe('Comprehensive Positive & Negative Edge Testing', () => {
   beforeEach(() => {
@@ -247,10 +247,9 @@ describe('Comprehensive Positive & Negative Edge Testing', () => {
   });
 
   describe('Localization Edge Fallbacks', () => {
-    it('falls back to English translation when key is missing in another language', () => {
-      // Pass unknown language code
-      expect(t('play', 'xx' as any)).toBe('Play');
-      expect(t('appName', 'zz' as any)).toBe('WordEase');
+    it('falls back to English for an unknown language code', () => {
+      expect(translate('xx', 'common.continue')).toBe('Continue');
+      expect(translate('zz', 'app.name')).toBe('WordEase');
     });
   });
 });

@@ -7,6 +7,7 @@ import { CoinPill } from './CoinPill';
 import { IconButton } from './IconButton';
 import { PrimaryButton } from './PrimaryButton';
 import { colors, fonts } from './theme';
+import { useT } from '../i18n';
 
 type Props = {
   visible: boolean;
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export function ShopModal({ visible, onClose }: Props) {
+  const t = useT();
   const coins = useWallet(s => s.coins);
   const adFree = useWallet(s => s.adFree);
   const addCoins = useWallet(s => s.add);
@@ -25,17 +27,17 @@ export function ShopModal({ visible, onClose }: Props) {
   // TEST BUILD: no Google Play Billing yet (T29), so nothing is charged
   const handleRemoveAds = () => {
     setAdFree(true);
-    Alert.alert('Test purchase', 'Ads removed. No payment was taken (test build).');
+    Alert.alert(t('shop.testPurchase'), t('shop.adsRemoved'));
   };
 
   const handleBuyCoins = (amount: number, price: string) => {
     addCoins(amount);
-    Alert.alert('Test purchase', `+${amount} coins (${price} pack). No payment was taken (test build).`);
+    Alert.alert(t('shop.testPurchase'), t('shop.coinsAdded', { n: amount, price }));
   };
 
   const handleWatchAd = async () => {
     if (!AdsManager.canClaimFreeCoins(todayKey)) {
-      Alert.alert('Daily Limit', 'You have reached the maximum 5 free coin rewards for today. Come back tomorrow!');
+      Alert.alert(t('shop.dailyLimit'), t('shop.dailyLimitMsg'));
       return;
     }
 
@@ -43,7 +45,7 @@ export function ShopModal({ visible, onClose }: Props) {
       addCoins(50);
       AdsManager.recordFreeCoinsClaimed(todayKey);
       setCanClaimFree(AdsManager.canClaimFreeCoins(todayKey));
-      Alert.alert('Reward Earned', '+50 coins added to your wallet!');
+      Alert.alert(t('shop.reward'), t('shop.rewardMsg'));
     });
   };
 
@@ -52,26 +54,26 @@ export function ShopModal({ visible, onClose }: Props) {
       <View style={styles.overlay}>
         <View style={styles.card}>
           <View style={styles.header}>
-            <Text style={styles.title}>Coin Shop</Text>
-            <IconButton icon="✕" label="Close Shop" onPress={onClose} />
+            <Text style={styles.title}>{t('shop.title')}</Text>
+            <IconButton icon="✕" label={t('shop.close')} onPress={onClose} />
           </View>
 
-          <Text style={styles.testNote}>Test build: no real payments or ads yet</Text>
+          <Text style={styles.testNote}>{t('shop.testNote')}</Text>
 
           <View style={styles.balanceRow}>
-            <Text style={styles.balanceLabel}>Your Balance:</Text>
+            <Text style={styles.balanceLabel}>{t('shop.balance')}</Text>
             <CoinPill coins={coins} />
           </View>
 
           {/* Remove Ads Item */}
           <View style={styles.productCard}>
             <View style={styles.productLeft}>
-              <Text style={styles.productName}>🚫 Remove Ads</Text>
-              <Text style={styles.productSub}>No banner, interstitial or pop-up ads</Text>
+              <Text style={styles.productName}>{t('shop.removeAds')}</Text>
+              <Text style={styles.productSub}>{t('shop.removeAdsDesc')}</Text>
             </View>
             {adFree ? (
               <View style={styles.purchasedBadge}>
-                <Text style={styles.purchasedText}>Active ✓</Text>
+                <Text style={styles.purchasedText}>{t('shop.active')}</Text>
               </View>
             ) : (
               <TouchableOpacity style={styles.priceBtn} onPress={handleRemoveAds}>
@@ -83,22 +85,22 @@ export function ShopModal({ visible, onClose }: Props) {
           {/* Free coins via rewarded ad */}
           <View style={styles.productCard}>
             <View style={styles.productLeft}>
-              <Text style={styles.productName}>🎁 Free 50 Coins</Text>
-              <Text style={styles.productSub}>Watch a short video sponsor</Text>
+              <Text style={styles.productName}>{t('shop.free')}</Text>
+              <Text style={styles.productSub}>{t('shop.freeDesc')}</Text>
             </View>
             <TouchableOpacity
               style={[styles.priceBtn, !canClaimFree && styles.priceBtnDisabled]}
               onPress={handleWatchAd}
             >
-              <Text style={styles.priceText}>{canClaimFree ? 'Watch Ad' : 'Limit'}</Text>
+              <Text style={styles.priceText}>{canClaimFree ? t('shop.watch') : t('shop.limit')}</Text>
             </TouchableOpacity>
           </View>
 
           {/* Coin Packs */}
           <View style={styles.productCard}>
             <View style={styles.productLeft}>
-              <Text style={styles.productName}>🪙 500 Coins</Text>
-              <Text style={styles.productSub}>Handy bundle for hints</Text>
+              <Text style={styles.productName}>{t('shop.small')}</Text>
+              <Text style={styles.productSub}>{t('shop.smallDesc')}</Text>
             </View>
             <TouchableOpacity style={styles.priceBtn} onPress={() => handleBuyCoins(500, '$0.99')}>
               <Text style={styles.priceText}>$0.99</Text>
@@ -107,8 +109,8 @@ export function ShopModal({ visible, onClose }: Props) {
 
           <View style={styles.productCard}>
             <View style={styles.productLeft}>
-              <Text style={styles.productName}>💎 2,000 Coins</Text>
-              <Text style={styles.productSub}>Best value for long journeys</Text>
+              <Text style={styles.productName}>{t('shop.big')}</Text>
+              <Text style={styles.productSub}>{t('shop.bigDesc')}</Text>
             </View>
             <TouchableOpacity style={styles.priceBtn} onPress={() => handleBuyCoins(2000, '$2.99')}>
               <Text style={styles.priceText}>$2.99</Text>
@@ -116,7 +118,7 @@ export function ShopModal({ visible, onClose }: Props) {
           </View>
 
           <View style={styles.footer}>
-            <PrimaryButton label="Done" variant="ocean" onPress={onClose} />
+            <PrimaryButton label={t('common.done')} variant="ocean" onPress={onClose} />
           </View>
         </View>
       </View>

@@ -18,8 +18,10 @@ import { PrimaryButton } from '../ui/PrimaryButton';
 import { ShopModal } from '../ui/ShopModal';
 import { Toast } from '../ui/Toast';
 import { colors, fonts, fontSizes, sizes } from '../ui/theme';
+import { useT } from '../i18n';
 
 export function MapScreen({ navigation, route }: ScreenProps<'Map'>) {
+  const t = useT();
   const insets = useSafeAreaInsets();
   const coins = useWallet(s => s.coins);
   const currentLevel = useProgress(s => s.currentLevel);
@@ -52,12 +54,12 @@ export function MapScreen({ navigation, route }: ScreenProps<'Map'>) {
   const openLevel = useCallback(
     (levelId: number) => {
       if (levelId > useProgress.getState().currentLevel) {
-        setToast({ text: `Finish level ${useProgress.getState().currentLevel} first` });
+        setToast({ text: t('map.finishFirst', { n: useProgress.getState().currentLevel }) });
         return;
       }
       navigation.navigate('Level', { levelId });
     },
-    [navigation],
+    [navigation, t],
   );
 
   const classicPlay = currentLevel > SHIPPED_LEVELS;
@@ -75,24 +77,24 @@ export function MapScreen({ navigation, route }: ScreenProps<'Map'>) {
       <MapClouds scrollY={scrollY} reduceMotion={reduceMotion} />
 
       <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
-        <TouchableOpacity accessibilityRole="button" accessibilityLabel="Open Coin Shop" onPress={() => setShopOpen(true)}>
+        <TouchableOpacity accessibilityRole="button" accessibilityLabel={t('map.shopA11y')} onPress={() => setShopOpen(true)}>
           <CoinPill coins={coins} />
         </TouchableOpacity>
         <View style={styles.row}>
-          <IconButton icon="📅" label="Daily Postcard" onPress={() => setDailyOpen(true)} />
+          <IconButton icon="📅" label={t('map.daily')} onPress={() => setDailyOpen(true)} />
           <View style={styles.gap} />
-          <IconButton icon="⚙" label="Settings" onPress={() => navigation.navigate('Settings')} />
+          <IconButton icon="⚙" label={t('map.settings')} onPress={() => navigation.navigate('Settings')} />
         </View>
       </View>
 
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 12 }]}>
-        <IconButton icon="🌍" label="Globe view" onPress={() => navigation.navigate('Globe')} />
+        <IconButton icon="🌍" label={t('map.globe')} onPress={() => navigation.navigate('Globe')} />
         <PrimaryButton
-          label={classicPlay ? `Classic · ${currentLevel}` : `Play ${currentLevel}`}
+          label={t(classicPlay ? 'map.classic' : 'map.play', { n: currentLevel })}
           variant="coral"
           onPress={() => navigation.navigate('Level', { levelId: currentLevel })}
         />
-        <IconButton icon="📘" label="Passport album" onPress={() => navigation.navigate('Album')} />
+        <IconButton icon="📘" label={t('map.album')} onPress={() => navigation.navigate('Album')} />
       </View>
 
       <DailyCalendarModal

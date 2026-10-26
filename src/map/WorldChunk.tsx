@@ -18,6 +18,7 @@ import { LANDMARK_PATHS } from './landmarks';
 import { levelX, levelYInSegment, Segment, SEGMENT_GAP, SEGMENT_HEIGHT } from './layout';
 import { LevelNode, NodeState } from './LevelNode';
 import { PaperPlane } from './PaperPlane';
+import { useT, worldKey } from '../i18n';
 
 const SHADOW = 'rgba(31, 42, 55, 0.10)';
 const LANDMARK_SIZE = 120;
@@ -86,6 +87,7 @@ export const WorldChunk = memo(function WorldChunkView({
   reduceMotion,
   onPressLevel,
 }: Props) {
+  const t = useT();
   const world = WORLDS[segment.world - 1];
   const { palette } = world;
   const scenery = useMemo(
@@ -120,11 +122,11 @@ export const WorldChunk = memo(function WorldChunkView({
             <Oval x={h.cx - h.rx} y={h.cy - h.ry} width={h.rx * 2} height={h.ry * 2} color={h.color} />
           </Group>
         ))}
-        {scenery.trees.map((t, i) => (
+        {scenery.trees.map((tree, i) => (
           <Group key={`t${i}`}>
-            <Rect x={t.x - 3} y={t.y} width={6} height={t.r * 1.6} color={palette.near} />
-            <Circle cx={t.x} cy={t.y + 3} r={t.r} color={SHADOW} />
-            <Circle cx={t.x} cy={t.y} r={t.r} color={palette.near} />
+            <Rect x={tree.x - 3} y={tree.y} width={6} height={tree.r * 1.6} color={palette.near} />
+            <Circle cx={tree.x} cy={tree.y + 3} r={tree.r} color={SHADOW} />
+            <Circle cx={tree.x} cy={tree.y} r={tree.r} color={palette.near} />
           </Group>
         ))}
 
@@ -152,8 +154,8 @@ export const WorldChunk = memo(function WorldChunkView({
 
       {segment.part === 0 && (
         <View style={[styles.banner, { top: SEGMENT_HEIGHT - SEGMENT_GAP / 2 - 28 }]}>
-          <Text style={styles.bannerSmall}>World {world.id}</Text>
-          <Text style={styles.bannerTitle}>{world.name}</Text>
+          <Text style={styles.bannerSmall}>{t('common.world', { n: world.id })}</Text>
+          <Text style={styles.bannerTitle}>{t(worldKey(world.id))}</Text>
         </View>
       )}
 

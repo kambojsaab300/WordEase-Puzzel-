@@ -5,8 +5,13 @@ import { InputMode, useSettings } from '../store/settings';
 import { PrimaryButton } from '../ui/PrimaryButton';
 import { Screen } from '../ui/Screen';
 import { colors, fonts } from '../ui/theme';
+import { SUPPORTED_LANGUAGES, useT } from '../i18n';
+
+const SIZE_LABELS = { 1: 'textSize.normal', 1.25: 'textSize.large', 1.5: 'textSize.huge' } as const;
 
 export function OnboardingScreen({ navigation }: ScreenProps<'Onboarding'>) {
+  const t = useT();
+  const lang = useSettings(s => s.lang);
   const currentSettings = useSettings();
   const update = useSettings(s => s.update);
 
@@ -28,35 +33,51 @@ export function OnboardingScreen({ navigation }: ScreenProps<'Onboarding'>) {
       right={
         <TouchableOpacity
           accessibilityRole="button"
-          accessibilityLabel="Skip onboarding"
+          accessibilityLabel={t('onboarding.skipA11y')}
           onPress={handleSkip}
           style={styles.skipBtn}
         >
-          <Text style={styles.skipText}>Skip</Text>
+          <Text style={styles.skipText}>{t('common.skip')}</Text>
         </TouchableOpacity>
       }
     >
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to WordEase</Text>
-        <Text style={styles.tagline}>
-          Handcrafted word puzzles with big, clear letters for easy, relaxing play.
-        </Text>
+        {/* Language first, so a new player can read the rest */}
+        <View style={styles.langRow}>
+          {SUPPORTED_LANGUAGES.map(l => (
+            <TouchableOpacity
+              key={l.code}
+              onPress={() => update({ lang: l.code })}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: lang === l.code }}
+              style={[styles.langChip, lang === l.code && styles.segmentBtnActive]}
+            >
+              <Text style={[styles.langText, lang === l.code && styles.segmentTextActive]}>{l.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <Text style={styles.welcome}>{t('onboarding.welcome')}</Text>
+        <Text style={styles.tagline}>{t('onboarding.tagline')}</Text>
 
         {/* Step 1: Text Size */}
         <View style={styles.card}>
-          <Text style={styles.stepTitle}>1. Choose Your Letter Size</Text>
+          <Text style={styles.stepTitle}>{t('onboarding.step1')}</Text>
           <View style={styles.segmentRow}>
             {([1, 1.25, 1.5] as const).map(scale => {
               const active = textScale === scale;
-              const labels = { 1: 'Normal', 1.25: 'Large', 1.5: 'Huge' };
+              const label = t(SIZE_LABELS[scale]);
               return (
                 <TouchableOpacity
                   key={scale}
                   onPress={() => setTextScale(scale)}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: active }}
+                  accessibilityLabel={t('textSize.a11y', { size: label })}
                   style={[styles.segmentBtn, active && styles.segmentBtnActive]}
                 >
                   <Text style={[styles.segmentText, active && styles.segmentTextActive]}>
-                    {labels[scale]}
+                    {label}
                   </Text>
                 </TouchableOpacity>
               );
@@ -69,16 +90,16 @@ export function OnboardingScreen({ navigation }: ScreenProps<'Onboarding'>) {
 
         {/* Step 2: Input Mode */}
         <View style={styles.card}>
-          <Text style={styles.stepTitle}>2. How Do You Prefer To Play?</Text>
+          <Text style={styles.stepTitle}>{t('onboarding.step2')}</Text>
           <View style={styles.modeRow}>
             <TouchableOpacity
               onPress={() => setInputMode('drag')}
               style={[styles.modeCard, inputMode === 'drag' && styles.modeCardActive]}
             >
               <Text style={[styles.modeTitle, inputMode === 'drag' && styles.modeTitleActive]}>
-                👆 Drag & Draw
+                👆 {t('input.drag.title')}
               </Text>
-              <Text style={styles.modeDesc}>Glide your finger across letters</Text>
+              <Text style={styles.modeDesc}>{t('input.drag.desc')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -86,16 +107,16 @@ export function OnboardingScreen({ navigation }: ScreenProps<'Onboarding'>) {
               style={[styles.modeCard, inputMode === 'tap' && styles.modeCardActive]}
             >
               <Text style={[styles.modeTitle, inputMode === 'tap' && styles.modeTitleActive]}>
-                🎯 Tap-Tap
+                🎯 {t('input.tap.title')}
               </Text>
-              <Text style={styles.modeDesc}>Tap start letter, then tap end letter</Text>
+              <Text style={styles.modeDesc}>{t('input.tap.desc')}</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.footer}>
           <PrimaryButton
-            label="Start Level 1"
+            label={t('onboarding.start')}
             variant="coral"
             onPress={handleStart}
           />
@@ -106,6 +127,27 @@ export function OnboardingScreen({ navigation }: ScreenProps<'Onboarding'>) {
 }
 
 const styles = StyleSheet.create({
+  langRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  langChip: {
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+    margin: 4,
+    borderRadius: 22,
+    borderWidth: 2,
+    borderColor: colors.primaryOcean,
+    backgroundColor: colors.white,
+  },
+  langText: {
+    fontSize: 16,
+    fontFamily: fonts.uiBold,
+    color: colors.ink,
+  },
   container: {
     flex: 1,
     width: '100%',

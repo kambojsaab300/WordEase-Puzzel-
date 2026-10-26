@@ -3,22 +3,22 @@ import type { ScreenProps } from '../app/navigation';
 import { PrimaryButton } from '../ui/PrimaryButton';
 import { Screen } from '../ui/Screen';
 import { colors, fonts } from '../ui/theme';
+import { useT } from '../i18n';
 
 export function AboutScreen({ navigation }: ScreenProps<'About'>) {
+  const t = useT();
   return (
-    <Screen title="About & Licenses" onBack={() => navigation.goBack()}>
+    <Screen title={t('about.title')} onBack={() => navigation.goBack()}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         <View style={styles.card}>
           <Text style={styles.appTitle}>WordEase: Word Search Puzzle</Text>
-          <Text style={styles.version}>Version 1.0.0 (Build 2026)</Text>
-          <Text style={styles.description}>
-            A relaxing, large-print word search puzzle handcrafted for seniors and casual word lovers.
-            Big clear letters, no timers, no pressure.
-          </Text>
+          <Text style={styles.version}>{t('about.version', { v: '1.0.0' })}</Text>
+          <Text style={styles.description}>{t('about.intro')}</Text>
+          <Text style={styles.version}>{t('about.legalNote')}</Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Typography & Fonts</Text>
+          <Text style={styles.sectionTitle}>{t('about.fonts')}</Text>
           <Text style={styles.licenseItemTitle}>Atkinson Hyperlegible</Text>
           <Text style={styles.licenseBody}>
             Designed by Braille Institute of America. Licensed under the SIL Open Font License, Version 1.1.
@@ -32,7 +32,7 @@ export function AboutScreen({ navigation }: ScreenProps<'About'>) {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Dictionary & Definitions</Text>
+          <Text style={styles.sectionTitle}>{t('about.dictionary')}</Text>
           <Text style={styles.licenseItemTitle}>WordNet 3.0</Text>
           <Text style={styles.licenseBody}>
             This software includes WordNet 3.0 Copyright 2006 by Princeton University.
@@ -53,16 +53,19 @@ export function AboutScreen({ navigation }: ScreenProps<'About'>) {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Art & Audio</Text>
+          <Text style={styles.sectionTitle}>{t('about.art')}</Text>
           <Text style={styles.licenseBody}>
-            Landmark silhouettes, the paper plane, clouds and the world map are original WordEase
-            artwork.
+            Landmark silhouettes, the paper plane and clouds are original WordEase artwork.
+          </Text>
+          <Text style={styles.licenseItemTitle}>Natural Earth</Text>
+          <Text style={styles.licenseBody}>
+            Globe coastlines: Natural Earth 1:110m land, public domain (naturalearthdata.com).
           </Text>
         </View>
 
         <View style={styles.footer}>
           <PrimaryButton
-            label="Back"
+            label={t('common.back')}
             variant="ocean"
             onPress={() => navigation.goBack()}
           />

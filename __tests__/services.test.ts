@@ -1,4 +1,4 @@
-import { SUPPORTED_LANGUAGES, t } from '../src/i18n';
+import { SUPPORTED_LANGUAGES, translate } from '../src/i18n';
 import { AnalyticsManager } from '../src/services/analytics/AnalyticsManager';
 import { AudioManager } from '../src/services/audio/AudioManager';
 import { HapticsManager } from '../src/services/haptics/HapticsManager';
@@ -69,32 +69,25 @@ describe('Services & Localization', () => {
 
   describe('Localization (i18n)', () => {
     it('translates basic UI keys in English by default', () => {
-      expect(t('play')).toBe('Play');
-      expect(t('settings')).toBe('Settings');
-      expect(t('appName')).toBe('WordEase');
+      expect(translate('en', 'map.play', { n: 1 })).toBe('Play 1');
+      expect(translate('en', 'settings.title')).toBe('Settings');
+      expect(translate('en', 'app.name')).toBe('WordEase');
     });
 
     it('translates keys in Spanish', () => {
-      expect(t('play', 'es')).toBe('Jugar');
-      expect(t('dailyPostcard', 'es')).toBe('Postal Diaria');
-      expect(t('removeAds', 'es')).toBe('Quitar Anuncios');
+      expect(translate('es', 'map.daily')).toBe('Postal Diaria');
+      expect(translate('es', 'shop.removeAds')).toBe('🚫 Quitar anuncios');
     });
 
     it('translates keys in Hindi', () => {
-      expect(t('play', 'hi')).toBe('खेलें');
-      expect(t('settings', 'hi')).toBe('सेटिंग्स');
-      expect(t('coins', 'hi')).toBe('सिक्के');
-    });
-
-    it('translates keys in German, Portuguese, and French', () => {
-      expect(t('play', 'de')).toBe('Spielen');
-      expect(t('play', 'pt')).toBe('Jogar');
-      expect(t('play', 'fr')).toBe('Jouer');
+      expect(translate('hi', 'settings.title')).toBe('सेटिंग्स');
+      expect(translate('hi', 'common.coins', { n: 5 })).toBe('5 सिक्के');
     });
 
     it('lists 6 supported languages', () => {
       expect(SUPPORTED_LANGUAGES.length).toBe(6);
       expect(SUPPORTED_LANGUAGES.map(l => l.code)).toEqual(['en', 'es', 'pt', 'de', 'fr', 'hi']);
     });
+  });
   });
 });

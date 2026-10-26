@@ -8,6 +8,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { colors, fonts } from '../ui/theme';
+import { useT } from '../i18n';
 
 export type NodeState = 'locked' | 'current' | 'done';
 
@@ -41,6 +42,7 @@ export const LevelNode = memo(function LevelNodeView({
   reduceMotion,
   onPress,
 }: Props) {
+  const t = useT();
   const size = landmark ? LANDMARK_SIZE : SIZE;
 
   // The current node breathes gently so it is easy to spot
@@ -57,10 +59,10 @@ export const LevelNode = memo(function LevelNodeView({
 
   const label =
     state === 'locked'
-      ? `Level ${levelId}, locked`
+      ? t('map.node.locked', { n: levelId })
       : state === 'current'
-        ? `Level ${levelId}, play now`
-        : `Level ${levelId}, ${stars} stars`;
+        ? t('map.node.current', { n: levelId })
+        : t('map.node.done', { n: levelId, stars });
 
   return (
     <View style={[styles.wrap, { left: x - size / 2, top: y - size / 2, width: size }]}>

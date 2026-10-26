@@ -15,7 +15,7 @@ import { AudioManager } from '../services/audio/AudioManager';
 import { HapticsManager } from '../services/haptics/HapticsManager';
 import { useDaily } from '../store/daily';
 import { GridCanvas, HintOverlay } from '../game/render/GridCanvas';
-import { Cell } from '../game/types';
+import { Cell, wordCells } from '../game/types';
 import { useProgress } from '../store/progress';
 import { useSettings } from '../store/settings';
 import { useWallet } from '../store/wallet';
@@ -26,17 +26,23 @@ import { MeaningCard } from '../ui/MeaningCard';
 import { ProgressBar } from '../ui/ProgressBar';
 import { Screen } from '../ui/Screen';
 import { Toast } from '../ui/Toast';
+import { TutorialHand } from '../ui/TutorialHand';
 import { WordChip } from '../ui/WordChip';
 import { colors, fonts, fontSizes, sizes } from '../ui/theme';
+import { FOUND_MARKS, MAX_CELL, useTextSize } from '../ui/a11y';
 import { useLevelGame } from './level/useLevelGame';
+import { TKey, useT } from '../i18n';
 
-const MAX_CELL = 64;
 const FINISH_DELAY_MS = 900;
-const PRAISE = ['Great!', 'Well done!', 'Lovely!', 'Nice find!', 'Wonderful!'];
+const PRAISE: TKey[] = ['level.praise.1', 'level.praise.2', 'level.praise.3', 'level.praise.4', 'level.praise.5'];
 
 export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
   const { levelId } = route.params;
-  const game = useLevelGame(levelId);
+  const t = useT();
+  const textSize = useTextSize();
+  const highContrast = useSettings(s => s.highContrast);
+  const colorBlind = useSettings(s => s.colorBlind);
+  const game = useLevelGame(levelId, textSize);
   const { level } = game;
   const coins = useWallet(s => s.coins);
   const inputMode = useSettings(s => s.inputMode);
@@ -45,7 +51,7 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
 
   const { width } = useWindowDimensions();
   // Big grids shrink to fit for now; pinch-zoom for small phones comes later
-  const cellSize = Math.min(MAX_CELL, Math.floor((width - sizes.gutter * 2) / level.cols));
+  const cellSize = Math.min(MAX_CELL[textSize], Math.floor((width - sizes.gutter * 2) / level.cols));
 
   const [toast, setToast] = useState<{ text: string } | null>(null);
   const [meaningWord, setMeaningWord] = useState<string | null>(null);
@@ -61,12 +67,12 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
       if (result.kind === 'word') {
         AudioManager.playWordFound();
         HapticsManager.wordFound();
-        setToast({ text: PRAISE[game.found.length % PRAISE.length] });
+        setToast({ text: t(PRAISE[game.found.length % PRAISE.length]) });
         if (showMeanings && meaningOf(result.word)) setMeaningWord(result.word);
       } else if (result.kind === 'bonus') {
         AudioManager.playCoinGain();
         HapticsManager.wordFound();
-        setToast({ text: `Bonus word ${result.word}! +1 coin` });
+        setToast({ text: t('level.bonus', { word: result.word }) });
       } else if (result.kind === 'miss') {
         AudioManager.playWrongSelection();
         HapticsManager.errorThud();
@@ -79,14 +85,14 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
         }
       }
     },
-    [game, showMeanings, reduceMotion, shakeX],
+    [game, showMeanings, reduceMotion, shakeX, t],
   );
 
   const handleHint = (kind: HintKind) => {
     const result = game.buyHint(kind);
     setHintsOpen(false);
-    if (result === 'no-coins') setToast({ text: 'Not enough coins' });
-    if (result === 'none-left') setToast({ text: 'All words are found' });
+    if (result === 'no-coins') setToast({ text: t('level.noCoins') });
+    if (result === 'none-left') setToast({ text: t('level.allFound') });
   };
 
   // Show the latest spotlight/compass hint until that word is found
@@ -124,19 +130,22 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
     return () => clearTimeout(timer);
   }, [allFound, markCompleted, hints.length, levelId, navigation, isDaily, dayKey]);
 
+  // Level 1 shows a hand on the first word until the player finds one
+  const tutorialWord = levelId === 1 && game.found.length === 0 ? level.words[0] : null;
+
   const closeMeaning = useCallback(() => setMeaningWord(null), []);
   const meaning = meaningWord ? meaningOf(meaningWord) : undefined;
 
   return (
     <Screen
-      title={levelId === DAILY_LEVEL_ID ? 'Daily Postcard' : `Level ${levelId}`}
+      title={levelId === DAILY_LEVEL_ID ? t('level.dailyTitle') : t('common.level', { n: levelId })}
       // A first-run player arrives here straight from onboarding, with nothing to go back to
       onBack={() => (navigation.canGoBack() ? navigation.goBack() : navigation.replace('Map'))}
       right={
         <IconButton
           icon="💡"
-          label={`Hints, ${coins} coins`}
-          onPress={() => (game.hintTarget ? setHintsOpen(true) : setToast({ text: 'All words are found' }))}
+          label={t('level.hintsA11y', { n: coins })}
+          onPress={() => (game.hintTarget ? setHintsOpen(true) : setToast({ text: t('level.allFound') }))}
         />
       }
     >
@@ -153,8 +162,8 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
           <View style={styles.tutorialPill}>
             <Text style={styles.tutorialText}>
               {inputMode === 'tap'
-                ? '🎯 Tap first letter, then last letter to select'
-                : '👆 Slide your finger across letters to find the word'}
+                ? t('level.tutorial.tap')
+                : t('level.tutorial.drag')}
             </Text>
           </View>
         )}
@@ -167,25 +176,41 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
             hint={hintOverlay}
             inputMode={inputMode}
             reduceMotion={reduceMotion}
+            textSize={textSize}
+            highContrast={highContrast}
+            colorBlind={colorBlind}
             onSelect={handleSelect}
           />
+          {tutorialWord && (
+            <TutorialHand
+              from={tutorialWord.start}
+              to={wordCells(tutorialWord).slice(-1)[0]}
+              cellSize={cellSize}
+              inputMode={inputMode}
+              reduceMotion={reduceMotion}
+            />
+          )}
         </Animated.View>
 
         <ScrollView style={styles.chipScroll} contentContainerStyle={styles.chips}>
           {level.words.map(pw => {
-            const f = game.foundWords.find(x => x.word.w === pw.w);
+            const foundIndex = game.found.indexOf(pw.w);
+            const f = foundIndex >= 0 ? game.foundWords[foundIndex] : undefined;
             return (
               <WordChip
                 key={pw.w}
                 word={pw.w}
                 found={Boolean(f)}
                 color={f?.color}
+                textSize={textSize}
+                highContrast={highContrast}
+                mark={colorBlind && f ? FOUND_MARKS[foundIndex % FOUND_MARKS.length] : undefined}
                 onPress={f && meaningOf(pw.w) ? () => setMeaningWord(pw.w) : undefined}
               />
             );
           })}
           {game.bonusFound.length > 0 && (
-            <Text style={styles.bonus}>Bonus words: {game.bonusFound.join(', ')}</Text>
+            <Text style={styles.bonus}>{t('level.bonusList', { words: game.bonusFound.join(', ') })}</Text>
           )}
         </ScrollView>
       </View>

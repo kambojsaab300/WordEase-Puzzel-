@@ -6,19 +6,21 @@ import { useProgress } from '../store/progress';
 import { PassportStamp } from '../ui/PassportStamp';
 import { Screen } from '../ui/Screen';
 import { colors, fonts, sizes } from '../ui/theme';
+import { useT } from '../i18n';
 
 // One stamp per finished world: the long-term goal of the World Trip
 export function AlbumScreen({ navigation }: ScreenProps<'Album'>) {
+  const t = useT();
   const { width } = useWindowDimensions();
   const stars = useProgress(s => s.stars);
   const collected = WORLDS.filter(w => stars[w.id * LEVELS_PER_WORLD]).length;
   const stampSize = Math.floor((width - sizes.gutter * 2 - 24) / 2);
 
   return (
-    <Screen title="Passport" onBack={() => navigation.goBack()}>
+    <Screen title={t('album.title')} onBack={() => navigation.goBack()}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.grid}>
         <Text style={styles.count}>
-          {collected} of {WORLDS.length} stamps collected
+          {t('album.count', { n: collected, total: WORLDS.length })}
         </Text>
         <View style={styles.row}>
           {WORLDS.map(w => (

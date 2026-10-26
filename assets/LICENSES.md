@@ -20,4 +20,10 @@ Har asset ka source aur license yahan likhna zaroori hai (design flow rule).
 
 ## Art
 
-Landmark silhouettes, paper plane, clouds and continent outlines (`src/map/landmarks.ts`, `src/map/continents.ts`) are our own simple shapes.
+Landmark silhouettes, paper plane and clouds (`src/map/landmarks.ts`) are our own simple shapes.
+
+## Map data
+
+| Data | Used for | Source | License |
+|---|---|---|---|
+| Natural Earth 1:110m land | 3D globe coastlines, `src/map/land110.json` (built by `tools/build-land.ts`) | naturalearthdata.com via github.com/nvkelso/natural-earth-vector | Public domain |

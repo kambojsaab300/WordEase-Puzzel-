@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
 import { AudioManager } from '../services/audio/AudioManager';
 import { HapticsManager } from '../services/haptics/HapticsManager';
+import { useTextSize } from './a11y';
 import { colors, fonts, fontSizes, sizes } from './theme';
 
 type Props = {
@@ -11,6 +12,7 @@ type Props = {
 
 export function PrimaryButton({ label, onPress, variant = 'ocean' }: Props) {
   const backgroundColor = variant === 'coral' ? colors.accentCoral : colors.primaryOcean;
+  const fontSize = fontSizes.ui[useTextSize()];
 
   const handlePress = () => {
     AudioManager.playButtonTap();
@@ -25,7 +27,7 @@ export function PrimaryButton({ label, onPress, variant = 'ocean' }: Props) {
       onPress={handlePress}
       style={({ pressed }) => [styles.button, { backgroundColor }, pressed && styles.pressed]}
     >
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label, { fontSize }]}>{label}</Text>
     </Pressable>
   );
 }

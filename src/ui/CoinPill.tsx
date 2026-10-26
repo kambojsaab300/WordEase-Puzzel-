@@ -1,9 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { colors, fonts } from './theme';
+import { useT } from '../i18n';
 
 export function CoinPill({ coins }: { coins: number }) {
+  const t = useT();
   return (
-    <View style={styles.pill} accessibilityLabel={`${coins} coins`}>
+    <View style={styles.pill} accessibilityLabel={t('common.coins', { n: coins })}>
       <View style={styles.coin} />
       <Text style={styles.text}>{coins.toLocaleString()}</Text>
     </View>

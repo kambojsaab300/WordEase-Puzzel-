@@ -10,44 +10,24 @@ import {
   View,
 } from 'react-native';
 import type { ScreenProps } from '../app/navigation';
-import { LEVELS_PER_WORLD } from '../game/levels/levelSpec';
 import { WORLD_COUNT, WorldDef, WORLDS } from '../game/levels/worlds';
-import { Globe3D, WorldStatus } from '../map/Globe3D';
-import { WorldCard, WorldStats } from '../map/WorldCard';
+import { Globe3D } from '../map/Globe3D';
+import { WorldCard } from '../map/WorldCard';
+import { unlockedWorldOf, worldStats, worldStatuses } from '../map/worldProgress';
 import { useProgress } from '../store/progress';
 import { useSettings } from '../store/settings';
 import { Screen } from '../ui/Screen';
 import { Toast } from '../ui/Toast';
 import { colors, fonts } from '../ui/theme';
+import { useT, worldKey } from '../i18n';
 
 const CARD_GAP = 12;
 const WIDE_PANEL = 340;
 const UNLOCK_DELAY_MS = 700;
 const UNLOCK_SHOWN_MS = 1800;
 
-export function worldStatuses(currentLevel: number, stars: Record<number, number>): WorldStatus[] {
-  const unlocked = Math.min(WORLD_COUNT, Math.ceil(currentLevel / LEVELS_PER_WORLD));
-  return WORLDS.map(w => {
-    if (stars[w.id * LEVELS_PER_WORLD]) return 'done';
-    if (w.id === unlocked) return 'current';
-    return w.id < unlocked ? 'open' : 'locked';
-  });
-}
-
-export function worldStats(world: number, stars: Record<number, number>): WorldStats {
-  const first = (world - 1) * LEVELS_PER_WORLD + 1;
-  let levelsDone = 0;
-  let total = 0;
-  for (let id = first; id < first + LEVELS_PER_WORLD; id++) {
-    if (stars[id]) {
-      levelsDone += 1;
-      total += stars[id];
-    }
-  }
-  return { levelsDone, stars: total, total: LEVELS_PER_WORLD };
-}
-
 export function GlobeScreen({ navigation }: ScreenProps<'Globe'>) {
+  const t = useT();
   const { width, height } = useWindowDimensions();
   const currentLevel = useProgress(s => s.currentLevel);
   const stars = useProgress(s => s.stars);
@@ -56,7 +36,7 @@ export function GlobeScreen({ navigation }: ScreenProps<'Globe'>) {
   const reduceMotion = useSettings(s => s.reduceMotion);
 
   const statuses = useMemo(() => worldStatuses(currentLevel, stars), [currentLevel, stars]);
-  const unlockedWorld = Math.min(WORLD_COUNT, Math.ceil(currentLevel / LEVELS_PER_WORLD));
+  const unlockedWorld = unlockedWorldOf(currentLevel);
   const newlyUnlocked = unlockedWorld > lastSeenWorld;
   // With an unlock to show, start at the last stop and fly to the new one
   const startWorld = newlyUnlocked && !reduceMotion ? Math.max(1, lastSeenWorld) : unlockedWorld;
@@ -91,7 +71,7 @@ export function GlobeScreen({ navigation }: ScreenProps<'Globe'>) {
     const fly = setTimeout(() => {
       setUnveil(unlockedWorld);
       select(unlockedWorld);
-      setToast({ text: `New stop unlocked: ${WORLDS[unlockedWorld - 1].name}!` });
+      setToast({ text: t('globe.unlocked', { world: t(worldKey(unlockedWorld)) }) });
     }, UNLOCK_DELAY_MS);
     const done = setTimeout(() => markWorldSeen(unlockedWorld), UNLOCK_DELAY_MS + UNLOCK_SHOWN_MS);
     return () => {
@@ -124,7 +104,7 @@ export function GlobeScreen({ navigation }: ScreenProps<'Globe'>) {
       stats={worldStats(item.id, stars)}
       selected={item.id === selected}
       width={cardWidth}
-      lockedHint={item.id > 1 ? `Finish ${WORLDS[item.id - 2].name} to unlock` : ''}
+      lockedHint={item.id > 1 ? t('globe.lockedHint', { world: t(worldKey(item.id - 1)) }) : ''}
       onPress={() => select(item.id)}
       onOpen={() => openWorld(item.id)}
     />
@@ -148,7 +128,7 @@ export function GlobeScreen({ navigation }: ScreenProps<'Globe'>) {
   );
 
   return (
-    <Screen title="World Trip" onBack={() => navigation.goBack()}>
+    <Screen title={t('globe.title')} onBack={() => navigation.goBack()}>
       <View style={styles.body}>
         <Text style={styles.summary} accessibilityRole="summary">
           🌍 {unlockedWorld}/{WORLD_COUNT} stops  ·  🎫 {worldsDone} stamps  ·  ★ {totalStars}

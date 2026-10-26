@@ -68,12 +68,12 @@ APK: `android/app/build/outputs/apk/release/app-release.apk`
 ## Phase 6 — Economy, hints, daily
 - [x] **T20. Coins + Hints** — Spotlight 25 / Compass 40 / Reveal 60; stars hint ke hisaab se.
 - [x] **T21. Daily Postcard** — calendar, streak, freeze (sirf 1 chhoota din, har hafte 1 refill), 7-din reward cycle, date-peeche par inaam nahi, apna save slot. 2026-10-26 audit mein streak bugs fix.
-- [~] **T22. Onboarding + Tutorial level** — text size preview, input mode, Level 1 par text hint. **Baaki:** haath ka animated pointer (flow).
+- [x] **T22. Onboarding + Tutorial level** — text size preview, input mode, Level 1 par animated haath (drag ya tap-tap dikhata hai, Reduce Motion par sthir).
 
 ## Phase 7 — Settings, audio, accessibility
-- [~] **T23. Settings screen** — saare toggles save hote hain. **Baaki:** Text Size, High Contrast, Colour-blind ka game par koi asar nahi (sirf preview); Huge mode mein grid ≤10x10 nahi.
+- [x] **T23. Settings screen** — Text Size ab grid letters (28/34/42), cells, chips, meaning card aur buttons par lagta hai; Huge mode mein grid max 10x10 (bade levels ka 10x10 version). **Baaki:** baaki screens ka text scale.
 - [~] **T24. Audio + Haptics** — Haptics kaam karta hai (VIBRATE permission audit mein jodi, pehle crash hota). **Baaki:** `AudioManager` stub hai — react-native-audio-api aur sound files nahi, koi aawaz nahi bajti.
-- [~] **T25. Accessibility pass** — labels aur 56dp targets. **Baaki:** high contrast mode laagu nahi, TalkBack aur font scale "Largest" asli phone par test nahi.
+- [~] **T25. Accessibility pass** — High contrast (safed board, kaale letters, grid lines, gehre outlines) aur colour-blind patterns + chip symbols game screen par. **Baaki:** TalkBack aur font scale "Largest" asli phone par test; high contrast baaki screens par.
 
 ## Phase 8 — Kamai (ads + IAP)
 - [ ] **T26. UMP consent + AdMob init** (EEA debug geography se test).
@@ -104,3 +104,5 @@ APK: `android/app/build/outputs/apk/release/app-release.apk`
 | T4-T10 | 2026-10-26 | WordEase-T10.apk | Build OK, 35 Jest tests pass |
 | T11-T25, T27-T31, T35 | 2026-10-26 | All Suites Pass | 77 Jest tests pass (8 suites), 1,200 levels validate OK, TS 0 errors |
 | Audit | 2026-10-26 | WordEase-audit.apk | 155 Jest tests (14 suites) pass, 1200 levels playable + validated, lint/TS clean. 9 bugs fixed (1 crash). Phone test baaki |
+| Globe 3D | 2026-10-26 | WordEase-globe3d.apk | 3D globe (Natural Earth), world cards; 178 Jest tests pass; phone test baaki |
+| T22, T23, T25 | 2026-10-26 | WordEase-a11y.apk | Text size, Huge 10x10, high contrast, colour-blind patterns, tutorial hand; 190 Jest tests pass; phone test baaki |

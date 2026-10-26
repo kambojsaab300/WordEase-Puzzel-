@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconButton } from './IconButton';
 import { colors, fonts, sizes } from './theme';
+import { useT } from '../i18n';
 
 type Props = {
   title?: string;
@@ -13,6 +14,7 @@ type Props = {
 
 // Common screen shell: cream background, safe area, optional top bar
 export function Screen({ title, onBack, right, children }: Props) {
+  const t = useT();
   const insets = useSafeAreaInsets();
   const showTopBar = Boolean(title || onBack || right);
 
@@ -21,7 +23,7 @@ export function Screen({ title, onBack, right, children }: Props) {
       {showTopBar && (
         <View style={styles.topBar}>
           <View style={styles.side}>
-            {onBack && <IconButton icon="←" label="Back" onPress={onBack} />}
+            {onBack && <IconButton icon="←" label={t('common.back')} onPress={onBack} />}
           </View>
           <Text style={styles.title} numberOfLines={1}>
             {title}

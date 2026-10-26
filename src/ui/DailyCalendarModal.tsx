@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { Modal, StyleSheet, Text, View } from 'react-native';
+import { localeOf, useT } from '../i18n';
 import { getTodayKey, useDaily } from '../store/daily';
+import { useSettings } from '../store/settings';
 import { IconButton } from './IconButton';
 import { PrimaryButton } from './PrimaryButton';
 import { colors, fonts } from './theme';
@@ -11,7 +13,18 @@ type Props = {
   onPlayDaily: () => void;
 };
 
+// Month name in the player's language; falls back to English if the phone lacks that locale
+function monthNameOf(date: Date, locale: string): string {
+  try {
+    return date.toLocaleString(locale, { month: 'long' });
+  } catch {
+    return date.toLocaleString('en-US', { month: 'long' });
+  }
+}
+
 export function DailyCalendarModal({ visible, onClose, onPlayDaily }: Props) {
+  const t = useT();
+  const lang = useSettings(s => s.lang);
   const streak = useDaily(s => s.streak);
   const freezes = useDaily(s => s.freezes);
   const done = useDaily(s => s.done);
@@ -21,7 +34,7 @@ export function DailyCalendarModal({ visible, onClose, onPlayDaily }: Props) {
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
-  const monthName = now.toLocaleString('en-US', { month: 'long' });
+  const monthName = monthNameOf(now, localeOf(lang));
   const todayDate = now.getDate();
 
   // Days in this month
@@ -39,28 +52,28 @@ export function DailyCalendarModal({ visible, onClose, onPlayDaily }: Props) {
     return days;
   }, [firstDayIndex, totalDays]);
 
-  const weekHeaders = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  const weekHeaders = t('daily.weekdays').split(',');
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View style={styles.card}>
           <View style={styles.header}>
-            <Text style={styles.title}>Daily Postcard</Text>
-            <IconButton icon="✕" label="Close" onPress={onClose} />
+            <Text style={styles.title}>{t('daily.title')}</Text>
+            <IconButton icon="✕" label={t('common.close')} onPress={onClose} />
           </View>
 
           <View style={styles.statsRow}>
             <View style={styles.statPill}>
               <Text style={styles.statEmoji}>🔥</Text>
               <Text style={styles.statText}>
-                {streak} {streak === 1 ? 'day' : 'days'} streak
+                {t('daily.streak', { n: streak })}
               </Text>
             </View>
             <View style={styles.statPill}>
               <Text style={styles.statEmoji}>❄️</Text>
               <Text style={styles.statText}>
-                {freezes} {freezes === 1 ? 'freeze' : 'freezes'}
+                {t('daily.freezes', { n: freezes })}
               </Text>
             </View>
           </View>
@@ -115,11 +128,11 @@ export function DailyCalendarModal({ visible, onClose, onPlayDaily }: Props) {
           <View style={styles.actionSection}>
             {isTodayDone ? (
               <View style={styles.doneBanner}>
-                <Text style={styles.doneText}>🎉 Today&apos;s Postcard Collected!</Text>
+                <Text style={styles.doneText}>{t('daily.collected')}</Text>
               </View>
             ) : (
               <PrimaryButton
-                label="Play Today's Puzzle (+50 🪙)"
+                label={t('daily.play')}
                 variant="coral"
                 onPress={() => {
                   onClose();

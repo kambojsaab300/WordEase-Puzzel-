@@ -3,6 +3,7 @@ import { Canvas, Group, Path } from '@shopify/react-native-skia';
 import type { WorldDef } from '../game/levels/worlds';
 import { LANDMARK_PATHS } from '../map/landmarks';
 import { colors, fonts } from './theme';
+import { useT, worldKey } from '../i18n';
 
 type Props = {
   world: WorldDef;
@@ -11,6 +12,8 @@ type Props = {
 };
 
 export function PassportStamp({ world, collected, size = 150 }: Props) {
+  const t = useT();
+  const name = t(worldKey(world.id));
   const art = size * 0.48;
   return (
     <View
@@ -21,7 +24,7 @@ export function PassportStamp({ world, collected, size = 150 }: Props) {
           ? { backgroundColor: world.palette.sky, borderColor: world.palette.accent }
           : styles.empty,
       ]}
-      accessibilityLabel={collected ? `${world.name} stamp, collected` : `${world.name} stamp, not collected yet`}
+      accessibilityLabel={t(collected ? 'stamp.collected' : 'stamp.missing', { world: name })}
     >
       {collected ? (
         <Canvas style={{ width: art, height: art }}>
@@ -32,9 +35,9 @@ export function PassportStamp({ world, collected, size = 150 }: Props) {
       ) : (
         <Text style={[styles.question, { height: art, fontSize: art * 0.7 }]}>?</Text>
       )}
-      <Text style={styles.world}>World {world.id}</Text>
+      <Text style={styles.world}>{t('common.world', { n: world.id })}</Text>
       <Text style={[styles.name, !collected && styles.muted]} numberOfLines={2}>
-        {world.name}
+        {name}
       </Text>
     </View>
   );

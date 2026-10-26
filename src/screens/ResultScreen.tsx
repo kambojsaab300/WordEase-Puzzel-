@@ -12,8 +12,10 @@ import { PrimaryButton } from '../ui/PrimaryButton';
 import { Screen } from '../ui/Screen';
 import { StarRow } from '../ui/StarRow';
 import { colors, fonts } from '../ui/theme';
+import { useT, worldKey } from '../i18n';
 
 export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
+  const t = useT();
   const { levelId, stars, coins, worldCompleted } = route.params;
   const [stampOpen, setStampOpen] = useState(worldCompleted !== null);
   const [earnedCoins, setEarnedCoins] = useState(coins);
@@ -38,13 +40,13 @@ export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
   return (
     <Screen>
       <Text style={styles.title}>
-        {levelId === DAILY_LEVEL_ID ? 'Daily Postcard Complete!' : `Level ${levelId} complete!`}
+        {levelId === DAILY_LEVEL_ID ? t('result.dailyDone') : t('result.levelDone', { n: levelId })}
       </Text>
       <Animated.View entering={ZoomIn.delay(150)} style={styles.stars}>
         <StarRow stars={stars} size={56} />
       </Animated.View>
 
-      <View style={styles.coins} accessibilityLabel={`${earnedCoins} coins earned`}>
+      <View style={styles.coins} accessibilityLabel={t('result.coinsA11y', { n: earnedCoins })}>
         <View style={styles.coinDot} />
         <Text style={styles.coinText}>+{earnedCoins}</Text>
       </View>
@@ -52,7 +54,7 @@ export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
       {!doubled && earnedCoins > 0 && (
         <View style={styles.btnRow}>
           <PrimaryButton
-            label="Double Coins (x2 🪙)"
+            label={t('result.double')}
             variant="ocean"
             onPress={handleDoubleCoins}
           />
@@ -61,17 +63,17 @@ export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
       )}
 
       {/* The flow returns to the map after every level */}
-      <PrimaryButton label="Continue" variant="coral" onPress={handleContinue} />
+      <PrimaryButton label={t('common.continue')} variant="coral" onPress={handleContinue} />
 
       {world && (
         <PostcardModal
           visible={stampOpen}
-          title={`${world.name} complete!`}
-          buttonLabel="Add to passport"
+          title={t('result.worldDone', { world: t(worldKey(world.id)) })}
+          buttonLabel={t('result.addToPassport')}
           onClose={() => setStampOpen(false)}
         >
           <PassportStamp world={world} collected size={170} />
-          <Text style={styles.stampNote}>New passport stamp · includes +150 coins</Text>
+          <Text style={styles.stampNote}>{t('result.stampNote')}</Text>
         </PostcardModal>
       )}
     </Screen>

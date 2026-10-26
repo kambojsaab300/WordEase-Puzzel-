@@ -1,23 +1,26 @@
 import { Alert, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import type { ScreenProps } from '../app/navigation';
-import { SUPPORTED_LANGUAGES } from '../i18n';
+import { SUPPORTED_LANGUAGES, useT } from '../i18n';
 import { InputMode, useSettings } from '../store/settings';
 import { resetAllProgress } from '../store/reset';
 import { Screen } from '../ui/Screen';
 import { colors, fonts } from '../ui/theme';
 
+const SIZE_LABELS = { 1: 'textSize.normal', 1.25: 'textSize.large', 1.5: 'textSize.huge' } as const;
+
 export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
+  const t = useT();
   const settings = useSettings();
   const update = useSettings(s => s.update);
 
   const confirmReset = () => {
     Alert.alert(
-      'Reset All Progress',
-      'Are you sure you want to reset all completed levels, stars, and collected coins? This cannot be undone.',
+      t('settings.reset'),
+      t('settings.resetConfirm'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Reset',
+          text: t('settings.resetButton'),
           style: 'destructive',
           onPress: () => {
             resetAllProgress();
@@ -29,26 +32,27 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
   };
 
   return (
-    <Screen title="Settings" onBack={() => navigation.goBack()}>
+    <Screen title={t('settings.title')} onBack={() => navigation.goBack()}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         {/* Text Size Control */}
         <View style={styles.section}>
-          <Text style={styles.sectionHeader}>Text Size</Text>
-          <Text style={styles.sectionDesc}>Choose a size comfortable for your eyes:</Text>
+          <Text style={styles.sectionHeader}>{t('settings.textSize')}</Text>
+          <Text style={styles.sectionDesc}>{t('settings.textSizeDesc')}</Text>
           <View style={styles.segmentRow}>
             {([1, 1.25, 1.5] as const).map(scale => {
               const active = settings.textScale === scale;
-              const labels = { 1: 'Normal', 1.25: 'Large', 1.5: 'Huge' };
+              const label = t(SIZE_LABELS[scale]);
               return (
                 <TouchableOpacity
                   key={scale}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${labels[scale]} text size`}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: active }}
+                  accessibilityLabel={t('textSize.a11y', { size: label })}
                   onPress={() => update({ textScale: scale })}
                   style={[styles.segmentBtn, active && styles.segmentBtnActive]}
                 >
                   <Text style={[styles.segmentText, active && styles.segmentTextActive]}>
-                    {labels[scale]}
+                    {label}
                   </Text>
                 </TouchableOpacity>
               );
@@ -56,19 +60,19 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
           </View>
           <View style={styles.previewBox}>
             <Text style={[styles.previewText, { fontSize: 20 * settings.textScale }]}>
-              Aa · B · C (Preview)
+              {t('settings.preview')}
             </Text>
           </View>
         </View>
 
         {/* Input Mode */}
         <View style={styles.section}>
-          <Text style={styles.sectionHeader}>How You Select Words</Text>
+          <Text style={styles.sectionHeader}>{t('settings.selectWords')}</Text>
           <View style={styles.inputModeRow}>
             {(
               [
-                { mode: 'drag', title: 'Drag & Draw', desc: 'Slide finger across word' },
-                { mode: 'tap', title: 'Tap-Tap', desc: 'Tap first letter, then last letter' },
+                { mode: 'drag', title: 'input.drag.title', desc: 'input.drag.desc' },
+                { mode: 'tap', title: 'input.tap.title', desc: 'input.tap.desc' },
               ] as const
             ).map(opt => {
               const active = settings.inputMode === opt.mode;
@@ -76,12 +80,14 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
                 <TouchableOpacity
                   key={opt.mode}
                   onPress={() => update({ inputMode: opt.mode as InputMode })}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: active }}
                   style={[styles.modeCard, active && styles.modeCardActive]}
                 >
                   <Text style={[styles.modeTitle, active && styles.modeTitleActive]}>
-                    {opt.title}
+                    {t(opt.title)}
                   </Text>
-                  <Text style={styles.modeDesc}>{opt.desc}</Text>
+                  <Text style={styles.modeDesc}>{t(opt.desc)}</Text>
                 </TouchableOpacity>
               );
             })}
@@ -90,19 +96,11 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
 
         {/* Audio & Haptics */}
         <View style={styles.section}>
-          <Text style={styles.sectionHeader}>Audio & Haptics</Text>
+          <Text style={styles.sectionHeader}>{t('settings.audio')}</Text>
+          {/* Sound and music switches return with real audio (T24); today they would do nothing */}
           <SettingRow
-            title="Sound Effects"
-            value={settings.sfx > 0}
-            onToggle={val => update({ sfx: val ? 0.8 : 0 })}
-          />
-          <SettingRow
-            title="Calm Background Music"
-            value={settings.music > 0}
-            onToggle={val => update({ music: val ? 0.5 : 0 })}
-          />
-          <SettingRow
-            title="Vibration & Haptics"
+            title={t('settings.haptics')}
+            desc={t('settings.hapticsDesc')}
             value={settings.haptics}
             onToggle={val => update({ haptics: val })}
           />
@@ -110,28 +108,28 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
 
         {/* Accessibility & Visuals */}
         <View style={styles.section}>
-          <Text style={styles.sectionHeader}>Accessibility & Visuals</Text>
+          <Text style={styles.sectionHeader}>{t('settings.visuals')}</Text>
           <SettingRow
-            title="Word Meanings Card"
-            desc="Show short dictionary definition upon finding a word"
+            title={t('settings.meanings')}
+            desc={t('settings.meaningsDesc')}
             value={settings.meanings}
             onToggle={val => update({ meanings: val })}
           />
           <SettingRow
-            title="High Contrast Mode"
-            desc="Higher contrast borders and letter styling"
+            title={t('settings.contrast')}
+            desc={t('settings.contrastDesc')}
             value={settings.highContrast}
             onToggle={val => update({ highContrast: val })}
           />
           <SettingRow
-            title="Color-blind Palette"
-            desc="Use high-differentiation Okabe-Ito colors"
+            title={t('settings.colorBlind')}
+            desc={t('settings.colorBlindDesc')}
             value={settings.colorBlind}
             onToggle={val => update({ colorBlind: val })}
           />
           <SettingRow
-            title="Reduce Motion"
-            desc="Minimize background floating animations"
+            title={t('settings.motion')}
+            desc={t('settings.motionDesc')}
             value={settings.reduceMotion}
             onToggle={val => update({ reduceMotion: val })}
           />
@@ -139,7 +137,7 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
 
         {/* Language Selection */}
         <View style={styles.section}>
-          <Text style={styles.sectionHeader}>Language / Bhasha</Text>
+          <Text style={styles.sectionHeader}>🌐 {t('settings.language')}</Text>
           <View style={styles.langGrid}>
             {SUPPORTED_LANGUAGES.map(item => {
               const active = (settings.lang || 'en') === item.code;
@@ -147,6 +145,8 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
                 <TouchableOpacity
                   key={item.code}
                   onPress={() => update({ lang: item.code })}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: active }}
                   style={[styles.langChip, active && styles.langChipActive]}
                 >
                   <Text style={[styles.langChipText, active && styles.langChipTextActive]}>
@@ -164,14 +164,14 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
             style={styles.actionRow}
             onPress={() => navigation.navigate('About')}
           >
-            <Text style={styles.actionText}>ℹ️ About WordEase & Licenses</Text>
+            <Text style={styles.actionText}>ℹ️ {t('settings.about')}</Text>
             <Text style={styles.chevron}>›</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.dangerSection}>
           <TouchableOpacity style={styles.resetBtn} onPress={confirmReset}>
-            <Text style={styles.resetText}>Reset All Progress</Text>
+            <Text style={styles.resetText}>{t('settings.reset')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -199,6 +199,8 @@ function SettingRow({
       <Switch
         value={value}
         onValueChange={onToggle}
+        accessibilityLabel={title}
+        accessibilityHint={desc}
         trackColor={{ false: '#D1D5DB', true: '#A0D8C5' }}
         thumbColor={value ? colors.okGreen : '#9CA3AF'}
       />
