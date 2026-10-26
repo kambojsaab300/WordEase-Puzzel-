@@ -110,6 +110,13 @@ export function useLevelGame(levelId: number, textSize: TextSizeIndex = 0) {
     [level.words, foundSet, hints, addFound],
   );
 
+  // Pause menu "Restart": clear found words and hints. Coins already spent stay spent,
+  // and bonus words already paid are not paid again.
+  const restart = useCallback(() => {
+    setFound([]);
+    setHints([]);
+  }, []);
+
   const markCompleted = useCallback(() => {
     completed.current = true;
   }, []);
@@ -126,6 +133,7 @@ export function useLevelGame(levelId: number, textSize: TextSizeIndex = 0) {
     hintTarget: pickHintWord(level.words, foundSet, hints),
     select,
     buyHint,
+    restart,
     markCompleted,
   };
 }

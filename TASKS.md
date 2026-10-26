@@ -109,3 +109,4 @@ APK: `android/app/build/outputs/apk/release/app-release.apk`
 | T35 (UI) | 2026-10-26 | WordEase-i18n.apk | 6 UI languages wired, sound/music toggles hidden until T24; 215 Jest tests pass; phone test baaki |
 | Map 3D | 2026-10-26 | WordEase-map3d.apk | Globe: climate-coloured land (no country borders), 3D markers; route: 3D stepping stones, road, extruded landmarks; 221 Jest tests; phone test baaki |
 | Countries | 2026-10-26 | WordEase-countries.apk | Coloured countries on globe; India point of view (J&K, Ladakh incl. Aksai Chin, Arunachal in India) for India region / Hindi; 236 Jest tests; phone test baaki |
+| Polish 1 | 2026-10-26 | WordEase-polish1.apk | Pause menu (resume/restart/settings/map, auto-pause, Back), pinch-zoom + zoom buttons for big grids, 80 themes (4 per world, 699 words); 247 Jest tests; phone test baaki |

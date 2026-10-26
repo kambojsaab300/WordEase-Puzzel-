@@ -8,22 +8,23 @@ import { useT } from '../i18n';
 type Props = {
   title?: string;
   onBack?: () => void;
+  left?: ReactNode; // replaces the back button (e.g. the Level screen's pause button)
   right?: ReactNode;
   children: ReactNode;
 };
 
 // Common screen shell: cream background, safe area, optional top bar
-export function Screen({ title, onBack, right, children }: Props) {
+export function Screen({ title, onBack, left, right, children }: Props) {
   const t = useT();
   const insets = useSafeAreaInsets();
-  const showTopBar = Boolean(title || onBack || right);
+  const showTopBar = Boolean(title || onBack || left || right);
 
   return (
     <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       {showTopBar && (
         <View style={styles.topBar}>
           <View style={styles.side}>
-            {onBack && <IconButton icon="←" label={t('common.back')} onPress={onBack} />}
+            {left ?? (onBack && <IconButton icon="←" label={t('common.back')} onPress={onBack} />)}
           </View>
           <Text style={styles.title} numberOfLines={1}>
             {title}

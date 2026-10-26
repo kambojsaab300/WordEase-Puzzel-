@@ -1,7 +1,6 @@
 {
   "app.name": "WordEase",
   "app.tagline": "Mots Mêlés",
-
   "common.back": "Retour",
   "common.close": "Fermer",
   "common.ok": "OK",
@@ -13,24 +12,20 @@
   "common.stars": "{n} étoiles sur 3",
   "common.level": "Niveau {n}",
   "common.world": "Monde {n}",
-
   "textSize.normal": "Normal",
   "textSize.large": "Grand",
   "textSize.huge": "Très grand",
   "textSize.a11y": "Taille du texte {size}",
-
   "input.drag.title": "Glisser",
   "input.drag.desc": "Faites glisser le doigt sur le mot",
   "input.tap.title": "Toucher-Toucher",
   "input.tap.desc": "Touchez la première lettre, puis la dernière",
-
   "onboarding.welcome": "Bienvenue dans WordEase",
   "onboarding.tagline": "Des mots mêlés en grandes lettres claires, pour jouer en toute détente.",
   "onboarding.step1": "1. Choisissez la taille des lettres",
   "onboarding.step2": "2. Comment préférez-vous jouer ?",
   "onboarding.start": "Commencer le niveau 1",
   "onboarding.skipA11y": "Passer la configuration",
-
   "map.shopA11y": "Ouvrir la boutique de pièces",
   "map.daily": "Carte Postale du Jour",
   "map.settings": "Réglages",
@@ -42,7 +37,6 @@
   "map.node.locked": "Niveau {n}, verrouillé",
   "map.node.current": "Niveau {n}, jouer maintenant",
   "map.node.done": "Niveau {n}, {stars} étoiles",
-
   "level.dailyTitle": "Carte Postale du Jour",
   "level.praise.1": "Bravo !",
   "level.praise.2": "Bien joué !",
@@ -58,9 +52,18 @@
   "level.tutorial.tap": "🎯 Touchez la première lettre, puis la dernière",
   "level.gridA11y.drag": "Grille de lettres. Glissez sur les lettres pour choisir un mot.",
   "level.gridA11y.tap": "Grille de lettres. Touchez la première puis la dernière lettre d'un mot.",
+  "pause.a11y": "Pause",
+  "pause.title": "En pause",
+  "pause.resume": "Reprendre",
+  "pause.restart": "Recommencer le niveau",
+  "pause.map": "Retour à la carte",
+  "pause.saved": "Votre progression est enregistrée.",
+  "pause.restarted": "Niveau recommencé",
+  "zoom.in": "Agrandir",
+  "zoom.out": "Réduire",
+  "zoom.hint": "Utilisez deux doigts pour zoomer et déplacer",
   "chip.found": "{word}, trouvé",
   "meaning.a11y": "{word} : {meaning}. Touchez pour fermer.",
-
   "hints.title": "Besoin d'un indice ?",
   "hints.balance": "Vous avez {n} pièces",
   "hints.spotlight.title": "Projecteur",
@@ -72,7 +75,6 @@
   "hints.optionA11y": "{title}, {n} pièces. {desc}",
   "hints.closeA11y": "Fermer les indices",
   "hints.noCoins": "Pas assez de pièces. Gagnez des niveaux ou trouvez des mots bonus.",
-
   "result.levelDone": "Niveau {n} réussi !",
   "result.dailyDone": "Carte postale du jour réussie !",
   "result.coinsA11y": "{n} pièces gagnées",
@@ -80,7 +82,6 @@
   "result.worldDone": "{world} terminé !",
   "result.addToPassport": "Ajouter au passeport",
   "result.stampNote": "Nouveau tampon dans le passeport · +150 pièces incluses",
-
   "settings.title": "Réglages",
   "settings.textSize": "Taille du texte",
   "settings.textSizeDesc": "Choisissez une taille confortable pour vos yeux :",
@@ -107,7 +108,6 @@
   "settings.reset": "Effacer toute la progression",
   "settings.resetConfirm": "Effacer tous les niveaux, étoiles, pièces et votre série quotidienne ? Impossible d'annuler.",
   "settings.resetButton": "Effacer",
-
   "about.title": "À propos et licences",
   "about.version": "Version {v}",
   "about.intro": "Des mots mêlés relaxants en gros caractères. Lettres claires, sans chrono, sans pression.",
@@ -115,12 +115,10 @@
   "about.dictionary": "Dictionnaire et listes de mots",
   "about.art": "Illustrations",
   "about.legalNote": "Les textes des licences sont affichés en anglais.",
-
   "album.title": "Passeport",
   "album.count": "Tampons obtenus : {n} sur {total}",
   "stamp.collected": "Tampon {world}, obtenu",
   "stamp.missing": "Tampon {world}, pas encore obtenu",
-
   "globe.title": "Tour du Monde",
   "globe.unlocked": "Nouvelle étape débloquée : {world} !",
   "globe.lockedHint": "Terminez {world} pour débloquer",
@@ -133,14 +131,12 @@
   "card.openMap": "Ouvrir sur la carte",
   "card.openMapA11y": "Ouvrir {world} sur la carte",
   "card.a11y": "Monde {n}, {world}. {status}. {done} niveaux sur {total}, {stars} étoiles.",
-
   "daily.title": "Carte Postale du Jour",
   "daily.streak": "Série : {n}",
   "daily.freezes": "Jokers : {n}",
   "daily.collected": "🎉 La carte postale du jour est à vous !",
   "daily.play": "Jouer la grille du jour (+50)",
   "daily.weekdays": "D,L,M,M,J,V,S",
-
   "shop.title": "Boutique de pièces",
   "shop.close": "Fermer la boutique",
   "shop.testNote": "Version de test : pas encore de vrais paiements ni de publicités",
@@ -163,7 +159,6 @@
   "shop.dailyLimitMsg": "Vous avez utilisé les 5 récompenses gratuites du jour. Revenez demain !",
   "shop.reward": "Récompense obtenue",
   "shop.rewardMsg": "+50 pièces ajoutées à votre porte-monnaie !",
-
   "world.1": "Ma Ville",
   "world.2": "Paris",
   "world.3": "Italie",

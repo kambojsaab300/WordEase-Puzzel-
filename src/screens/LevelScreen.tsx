@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { AppState, BackHandler, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -15,6 +16,7 @@ import { AudioManager } from '../services/audio/AudioManager';
 import { HapticsManager } from '../services/haptics/HapticsManager';
 import { useDaily } from '../store/daily';
 import { GridCanvas, HintOverlay } from '../game/render/GridCanvas';
+import { maxZoomFor, MIN_CELL } from '../game/render/zoom';
 import { Cell, wordCells } from '../game/types';
 import { useProgress } from '../store/progress';
 import { useSettings } from '../store/settings';
@@ -23,6 +25,7 @@ import { CoinPill } from '../ui/CoinPill';
 import { HintSheet } from '../ui/HintSheet';
 import { IconButton } from '../ui/IconButton';
 import { MeaningCard } from '../ui/MeaningCard';
+import { PauseSheet } from '../ui/PauseSheet';
 import { ProgressBar } from '../ui/ProgressBar';
 import { Screen } from '../ui/Screen';
 import { Toast } from '../ui/Toast';
@@ -50,12 +53,33 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
   const reduceMotion = useSettings(s => s.reduceMotion);
 
   const { width } = useWindowDimensions();
-  // Big grids shrink to fit for now; pinch-zoom for small phones comes later
   const cellSize = Math.min(MAX_CELL[textSize], Math.floor((width - sizes.gutter * 2) / level.cols));
+  // Too small for the chosen text size: let the player zoom (tablets never need it)
+  const maxZoom = maxZoomFor(cellSize, MIN_CELL[textSize]);
 
   const [toast, setToast] = useState<{ text: string } | null>(null);
   const [meaningWord, setMeaningWord] = useState<string | null>(null);
   const [hintsOpen, setHintsOpen] = useState(false);
+  const [paused, setPaused] = useState(false);
+
+  // Flow: a phone call or leaving the app pauses the level
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', state => {
+      if (state !== 'active') setPaused(true);
+    });
+    return () => sub.remove();
+  }, []);
+
+  // Android Back opens the pause menu (or closes it) instead of leaving mid-puzzle
+  useFocusEffect(
+    useCallback(() => {
+      const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+        setPaused(p => !p);
+        return true;
+      });
+      return () => sub.remove();
+    }, []),
+  );
 
   // Gentle shake on a wrong selection, never a penalty
   const shakeX = useSharedValue(0);
@@ -139,8 +163,7 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
   return (
     <Screen
       title={levelId === DAILY_LEVEL_ID ? t('level.dailyTitle') : t('common.level', { n: levelId })}
-      // A first-run player arrives here straight from onboarding, with nothing to go back to
-      onBack={() => (navigation.canGoBack() ? navigation.goBack() : navigation.replace('Map'))}
+      left={<IconButton icon="⏸" label={t('pause.a11y')} onPress={() => setPaused(true)} />}
       right={
         <IconButton
           icon="💡"
@@ -179,6 +202,7 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
             textSize={textSize}
             highContrast={highContrast}
             colorBlind={colorBlind}
+            maxZoom={maxZoom}
             onSelect={handleSelect}
           />
           {tutorialWord && (
@@ -219,6 +243,25 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
         <MeaningCard word={meaningWord} meaning={meaning} onClose={closeMeaning} />
       )}
       <Toast toast={toast} />
+      <PauseSheet
+        visible={paused}
+        onResume={() => setPaused(false)}
+        onRestart={() => {
+          game.restart();
+          setMeaningWord(null);
+          setPaused(false);
+          setToast({ text: t('pause.restarted') });
+        }}
+        onSettings={() => {
+          setPaused(false);
+          navigation.navigate('Settings');
+        }}
+        onMap={() => {
+          setPaused(false);
+          // popTo also works for a first-run player who came straight from onboarding
+          navigation.popTo('Map');
+        }}
+      />
       <HintSheet
         visible={hintsOpen}
         coins={coins}

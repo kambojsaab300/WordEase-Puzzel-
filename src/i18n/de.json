@@ -1,7 +1,6 @@
 {
   "app.name": "WordEase",
   "app.tagline": "Wortsuche",
-
   "common.back": "Zurück",
   "common.close": "Schließen",
   "common.ok": "OK",
@@ -13,24 +12,20 @@
   "common.stars": "{n} von 3 Sternen",
   "common.level": "Level {n}",
   "common.world": "Welt {n}",
-
   "textSize.normal": "Normal",
   "textSize.large": "Groß",
   "textSize.huge": "Sehr groß",
   "textSize.a11y": "Textgröße {size}",
-
   "input.drag.title": "Ziehen",
   "input.drag.desc": "Mit dem Finger über das Wort streichen",
   "input.tap.title": "Tipp-Tipp",
   "input.tap.desc": "Ersten Buchstaben antippen, dann den letzten",
-
   "onboarding.welcome": "Willkommen bei WordEase",
   "onboarding.tagline": "Wortsuchrätsel mit großen, klaren Buchstaben – ganz entspannt.",
   "onboarding.step1": "1. Wählen Sie die Buchstabengröße",
   "onboarding.step2": "2. Wie möchten Sie spielen?",
   "onboarding.start": "Level 1 starten",
   "onboarding.skipA11y": "Einrichtung überspringen",
-
   "map.shopA11y": "Münzladen öffnen",
   "map.daily": "Tägliche Postkarte",
   "map.settings": "Einstellungen",
@@ -42,7 +37,6 @@
   "map.node.locked": "Level {n}, gesperrt",
   "map.node.current": "Level {n}, jetzt spielen",
   "map.node.done": "Level {n}, {stars} Sterne",
-
   "level.dailyTitle": "Tägliche Postkarte",
   "level.praise.1": "Super!",
   "level.praise.2": "Gut gemacht!",
@@ -58,9 +52,18 @@
   "level.tutorial.tap": "🎯 Tippen Sie den ersten und dann den letzten Buchstaben an",
   "level.gridA11y.drag": "Buchstabenfeld. Über Buchstaben ziehen, um ein Wort zu wählen.",
   "level.gridA11y.tap": "Buchstabenfeld. Ersten und dann letzten Buchstaben eines Wortes antippen.",
+  "pause.a11y": "Pause",
+  "pause.title": "Pause",
+  "pause.resume": "Weiterspielen",
+  "pause.restart": "Level neu starten",
+  "pause.map": "Zurück zur Karte",
+  "pause.saved": "Ihr Fortschritt ist gespeichert.",
+  "pause.restarted": "Level neu gestartet",
+  "zoom.in": "Vergrößern",
+  "zoom.out": "Verkleinern",
+  "zoom.hint": "Mit zwei Fingern zoomen und verschieben",
   "chip.found": "{word}, gefunden",
   "meaning.a11y": "{word}: {meaning}. Zum Schließen tippen.",
-
   "hints.title": "Brauchen Sie einen Tipp?",
   "hints.balance": "Sie haben {n} Münzen",
   "hints.spotlight.title": "Scheinwerfer",
@@ -72,7 +75,6 @@
   "hints.optionA11y": "{title}, {n} Münzen. {desc}",
   "hints.closeA11y": "Tipps schließen",
   "hints.noCoins": "Nicht genug Münzen. Gewinnen Sie Level oder finden Sie Bonuswörter.",
-
   "result.levelDone": "Level {n} geschafft!",
   "result.dailyDone": "Tägliche Postkarte geschafft!",
   "result.coinsA11y": "{n} Münzen verdient",
@@ -80,7 +82,6 @@
   "result.worldDone": "{world} geschafft!",
   "result.addToPassport": "In den Reisepass",
   "result.stampNote": "Neuer Stempel im Reisepass · inklusive +150 Münzen",
-
   "settings.title": "Einstellungen",
   "settings.textSize": "Textgröße",
   "settings.textSizeDesc": "Wählen Sie eine angenehme Größe für Ihre Augen:",
@@ -107,7 +108,6 @@
   "settings.reset": "Gesamten Fortschritt löschen",
   "settings.resetConfirm": "Alle Level, Sterne, Münzen und Ihre tägliche Serie löschen? Das lässt sich nicht rückgängig machen.",
   "settings.resetButton": "Löschen",
-
   "about.title": "Über und Lizenzen",
   "about.version": "Version {v}",
   "about.intro": "Eine entspannende Wortsuche in Großdruck. Klare Buchstaben, keine Zeitnot, kein Druck.",
@@ -115,12 +115,10 @@
   "about.dictionary": "Wörterbuch und Wortlisten",
   "about.art": "Grafik",
   "about.legalNote": "Lizenztexte werden auf Englisch angezeigt.",
-
   "album.title": "Reisepass",
   "album.count": "Gesammelte Stempel: {n} von {total}",
   "stamp.collected": "Stempel {world}, gesammelt",
   "stamp.missing": "Stempel {world}, noch nicht gesammelt",
-
   "globe.title": "Weltreise",
   "globe.unlocked": "Neues Reiseziel freigeschaltet: {world}!",
   "globe.lockedHint": "Schließen Sie {world} ab, um es freizuschalten",
@@ -133,14 +131,12 @@
   "card.openMap": "Auf der Karte öffnen",
   "card.openMapA11y": "{world} auf der Karte öffnen",
   "card.a11y": "Welt {n}, {world}. {status}. {done} von {total} Level, {stars} Sterne.",
-
   "daily.title": "Tägliche Postkarte",
   "daily.streak": "Serie: {n}",
   "daily.freezes": "Schutztage: {n}",
   "daily.collected": "🎉 Die heutige Postkarte gehört Ihnen!",
   "daily.play": "Heutiges Rätsel spielen (+50)",
   "daily.weekdays": "S,M,D,M,D,F,S",
-
   "shop.title": "Münzladen",
   "shop.close": "Laden schließen",
   "shop.testNote": "Testversion: noch keine echten Zahlungen oder Werbung",
@@ -163,7 +159,6 @@
   "shop.dailyLimitMsg": "Sie haben heute alle 5 Gratis-Belohnungen genutzt. Kommen Sie morgen wieder!",
   "shop.reward": "Belohnung erhalten",
   "shop.rewardMsg": "+50 Münzen wurden Ihrem Guthaben hinzugefügt!",
-
   "world.1": "Heimatstadt",
   "world.2": "Paris",
   "world.3": "Italien",

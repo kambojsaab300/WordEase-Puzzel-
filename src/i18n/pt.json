@@ -1,7 +1,6 @@
 {
   "app.name": "WordEase",
   "app.tagline": "Caça-Palavras",
-
   "common.back": "Voltar",
   "common.close": "Fechar",
   "common.ok": "OK",
@@ -13,24 +12,20 @@
   "common.stars": "{n} de 3 estrelas",
   "common.level": "Nível {n}",
   "common.world": "Mundo {n}",
-
   "textSize.normal": "Normal",
   "textSize.large": "Grande",
   "textSize.huge": "Enorme",
   "textSize.a11y": "Tamanho de texto {size}",
-
   "input.drag.title": "Arrastar",
   "input.drag.desc": "Deslize o dedo sobre a palavra",
   "input.tap.title": "Toque-Toque",
   "input.tap.desc": "Toque na primeira letra e depois na última",
-
   "onboarding.welcome": "Boas-vindas ao WordEase",
   "onboarding.tagline": "Caça-palavras com letras grandes e claras para jogar com calma.",
   "onboarding.step1": "1. Escolha o tamanho das letras",
   "onboarding.step2": "2. Como você prefere jogar?",
   "onboarding.start": "Começar o nível 1",
   "onboarding.skipA11y": "Pular a configuração",
-
   "map.shopA11y": "Abrir a loja de moedas",
   "map.daily": "Cartão-Postal Diário",
   "map.settings": "Configurações",
@@ -42,7 +37,6 @@
   "map.node.locked": "Nível {n}, bloqueado",
   "map.node.current": "Nível {n}, jogar agora",
   "map.node.done": "Nível {n}, {stars} estrelas",
-
   "level.dailyTitle": "Cartão-Postal Diário",
   "level.praise.1": "Ótimo!",
   "level.praise.2": "Muito bem!",
@@ -58,9 +52,18 @@
   "level.tutorial.tap": "🎯 Toque na primeira letra e depois na última",
   "level.gridA11y.drag": "Grade de letras. Arraste sobre as letras para escolher uma palavra.",
   "level.gridA11y.tap": "Grade de letras. Toque na primeira e depois na última letra de uma palavra.",
+  "pause.a11y": "Pausar",
+  "pause.title": "Pausado",
+  "pause.resume": "Continuar",
+  "pause.restart": "Reiniciar nível",
+  "pause.map": "Voltar ao mapa",
+  "pause.saved": "Seu progresso está salvo.",
+  "pause.restarted": "Nível reiniciado",
+  "zoom.in": "Aproximar",
+  "zoom.out": "Afastar",
+  "zoom.hint": "Use dois dedos para aproximar e mover",
   "chip.found": "{word}, encontrada",
   "meaning.a11y": "{word}: {meaning}. Toque para fechar.",
-
   "hints.title": "Precisa de uma dica?",
   "hints.balance": "Você tem {n} moedas",
   "hints.spotlight.title": "Holofote",
@@ -72,7 +75,6 @@
   "hints.optionA11y": "{title}, {n} moedas. {desc}",
   "hints.closeA11y": "Fechar dicas",
   "hints.noCoins": "Moedas insuficientes. Vença níveis ou encontre palavras bônus.",
-
   "result.levelDone": "Nível {n} concluído!",
   "result.dailyDone": "Cartão-Postal Diário concluído!",
   "result.coinsA11y": "{n} moedas ganhas",
@@ -80,7 +82,6 @@
   "result.worldDone": "{world} concluído!",
   "result.addToPassport": "Adicionar ao passaporte",
   "result.stampNote": "Novo carimbo no passaporte · inclui +150 moedas",
-
   "settings.title": "Configurações",
   "settings.textSize": "Tamanho do texto",
   "settings.textSizeDesc": "Escolha um tamanho confortável para os olhos:",
@@ -107,7 +108,6 @@
   "settings.reset": "Apagar todo o progresso",
   "settings.resetConfirm": "Apagar todos os níveis, estrelas, moedas e sua sequência diária? Não dá para desfazer.",
   "settings.resetButton": "Apagar",
-
   "about.title": "Sobre e licenças",
   "about.version": "Versão {v}",
   "about.intro": "Um caça-palavras relaxante com letras grandes. Letras claras, sem tempo, sem pressa.",
@@ -115,12 +115,10 @@
   "about.dictionary": "Dicionário e listas de palavras",
   "about.art": "Arte",
   "about.legalNote": "Os textos das licenças aparecem em inglês.",
-
   "album.title": "Passaporte",
   "album.count": "Carimbos: {n} de {total}",
   "stamp.collected": "Carimbo de {world}, conquistado",
   "stamp.missing": "Carimbo de {world}, ainda não conquistado",
-
   "globe.title": "Volta ao Mundo",
   "globe.unlocked": "Nova parada liberada: {world}!",
   "globe.lockedHint": "Termine {world} para liberar",
@@ -133,14 +131,12 @@
   "card.openMap": "Abrir no mapa",
   "card.openMapA11y": "Abrir {world} no mapa",
   "card.a11y": "Mundo {n}, {world}. {status}. {done} de {total} níveis, {stars} estrelas.",
-
   "daily.title": "Cartão-Postal Diário",
   "daily.streak": "Sequência: {n}",
   "daily.freezes": "Proteções: {n}",
   "daily.collected": "🎉 O cartão-postal de hoje já é seu!",
   "daily.play": "Jogar o desafio de hoje (+50)",
   "daily.weekdays": "D,S,T,Q,Q,S,S",
-
   "shop.title": "Loja de moedas",
   "shop.close": "Fechar a loja",
   "shop.testNote": "Versão de teste: ainda sem pagamentos ou anúncios reais",
@@ -163,7 +159,6 @@
   "shop.dailyLimitMsg": "Você já usou as 5 recompensas de moedas grátis de hoje. Volte amanhã!",
   "shop.reward": "Recompensa recebida",
   "shop.rewardMsg": "+50 moedas adicionadas à sua carteira!",
-
   "world.1": "Minha Cidade",
   "world.2": "Paris",
   "world.3": "Itália",

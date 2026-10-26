@@ -1,7 +1,6 @@
 {
   "app.name": "WordEase",
   "app.tagline": "Word Search Puzzle",
-
   "common.back": "Back",
   "common.close": "Close",
   "common.ok": "OK",
@@ -13,24 +12,20 @@
   "common.stars": "{n} of 3 stars",
   "common.level": "Level {n}",
   "common.world": "World {n}",
-
   "textSize.normal": "Normal",
   "textSize.large": "Large",
   "textSize.huge": "Huge",
   "textSize.a11y": "{size} text size",
-
   "input.drag.title": "Drag",
   "input.drag.desc": "Slide your finger across the word",
   "input.tap.title": "Tap-Tap",
   "input.tap.desc": "Tap the first letter, then the last",
-
   "onboarding.welcome": "Welcome to WordEase",
   "onboarding.tagline": "Word puzzles with big, clear letters for easy, relaxing play.",
   "onboarding.step1": "1. Choose your letter size",
   "onboarding.step2": "2. How do you like to play?",
   "onboarding.start": "Start Level 1",
   "onboarding.skipA11y": "Skip setup",
-
   "map.shopA11y": "Open coin shop",
   "map.daily": "Daily Postcard",
   "map.settings": "Settings",
@@ -42,7 +37,6 @@
   "map.node.locked": "Level {n}, locked",
   "map.node.current": "Level {n}, play now",
   "map.node.done": "Level {n}, {stars} stars",
-
   "level.dailyTitle": "Daily Postcard",
   "level.praise.1": "Great!",
   "level.praise.2": "Well done!",
@@ -58,9 +52,18 @@
   "level.tutorial.tap": "🎯 Tap the first letter, then the last letter",
   "level.gridA11y.drag": "Letter grid. Drag across letters to select a word.",
   "level.gridA11y.tap": "Letter grid. Tap the first letter, then the last letter of a word.",
+  "pause.a11y": "Pause",
+  "pause.title": "Paused",
+  "pause.resume": "Resume",
+  "pause.restart": "Restart level",
+  "pause.map": "Back to map",
+  "pause.saved": "Your progress is saved.",
+  "pause.restarted": "Level restarted",
+  "zoom.in": "Zoom in",
+  "zoom.out": "Zoom out",
+  "zoom.hint": "Pinch with two fingers to zoom and move",
   "chip.found": "{word}, found",
   "meaning.a11y": "{word}: {meaning}. Tap to close.",
-
   "hints.title": "Need a hint?",
   "hints.balance": "You have {n} coins",
   "hints.spotlight.title": "Spotlight",
@@ -72,7 +75,6 @@
   "hints.optionA11y": "{title}, {n} coins. {desc}",
   "hints.closeA11y": "Close hints",
   "hints.noCoins": "Not enough coins. Win levels or find bonus words to earn more.",
-
   "result.levelDone": "Level {n} complete!",
   "result.dailyDone": "Daily Postcard complete!",
   "result.coinsA11y": "{n} coins earned",
@@ -80,7 +82,6 @@
   "result.worldDone": "{world} complete!",
   "result.addToPassport": "Add to passport",
   "result.stampNote": "New passport stamp · includes +150 coins",
-
   "settings.title": "Settings",
   "settings.textSize": "Text Size",
   "settings.textSizeDesc": "Choose a size comfortable for your eyes:",
@@ -107,7 +108,6 @@
   "settings.reset": "Reset all progress",
   "settings.resetConfirm": "Reset all levels, stars, coins and your daily streak? This cannot be undone.",
   "settings.resetButton": "Reset",
-
   "about.title": "About & Licenses",
   "about.version": "Version {v}",
   "about.intro": "A relaxing, large-print word search. Big clear letters, no timers, no pressure.",
@@ -115,12 +115,10 @@
   "about.dictionary": "Dictionary & word lists",
   "about.art": "Art",
   "about.legalNote": "Licence texts are shown in English.",
-
   "album.title": "Passport",
   "album.count": "Stamps collected: {n} of {total}",
   "stamp.collected": "{world} stamp, collected",
   "stamp.missing": "{world} stamp, not collected yet",
-
   "globe.title": "World Trip",
   "globe.unlocked": "New stop unlocked: {world}!",
   "globe.lockedHint": "Finish {world} to unlock",
@@ -133,14 +131,12 @@
   "card.openMap": "Open on map",
   "card.openMapA11y": "Open {world} on the map",
   "card.a11y": "World {n}, {world}. {status}. {done} of {total} levels, {stars} stars.",
-
   "daily.title": "Daily Postcard",
   "daily.streak": "Streak: {n}",
   "daily.freezes": "Freezes: {n}",
   "daily.collected": "🎉 Today's postcard is collected!",
   "daily.play": "Play today's puzzle (+50)",
   "daily.weekdays": "S,M,T,W,T,F,S",
-
   "shop.title": "Coin Shop",
   "shop.close": "Close shop",
   "shop.testNote": "Test build: no real payments or ads yet",
@@ -163,7 +159,6 @@
   "shop.dailyLimitMsg": "You have used all 5 free coin rewards for today. Come back tomorrow!",
   "shop.reward": "Reward earned",
   "shop.rewardMsg": "+50 coins added to your wallet!",
-
   "world.1": "Home Town",
   "world.2": "Paris",
   "world.3": "Italy",

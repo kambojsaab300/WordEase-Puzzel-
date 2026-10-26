@@ -1,7 +1,6 @@
 {
   "app.name": "WordEase",
   "app.tagline": "Sopa de Letras",
-
   "common.back": "Atrás",
   "common.close": "Cerrar",
   "common.ok": "Aceptar",
@@ -13,24 +12,20 @@
   "common.stars": "{n} de 3 estrellas",
   "common.level": "Nivel {n}",
   "common.world": "Mundo {n}",
-
   "textSize.normal": "Normal",
   "textSize.large": "Grande",
   "textSize.huge": "Enorme",
   "textSize.a11y": "Tamaño de texto {size}",
-
   "input.drag.title": "Arrastrar",
   "input.drag.desc": "Desliza el dedo sobre la palabra",
   "input.tap.title": "Toque-Toque",
   "input.tap.desc": "Toca la primera letra y luego la última",
-
   "onboarding.welcome": "Bienvenido a WordEase",
   "onboarding.tagline": "Sopas de letras con letras grandes y claras para jugar con calma.",
   "onboarding.step1": "1. Elige el tamaño de las letras",
   "onboarding.step2": "2. ¿Cómo prefieres jugar?",
   "onboarding.start": "Empezar el nivel 1",
   "onboarding.skipA11y": "Omitir la configuración",
-
   "map.shopA11y": "Abrir la tienda de monedas",
   "map.daily": "Postal Diaria",
   "map.settings": "Ajustes",
@@ -42,7 +37,6 @@
   "map.node.locked": "Nivel {n}, bloqueado",
   "map.node.current": "Nivel {n}, jugar ahora",
   "map.node.done": "Nivel {n}, {stars} estrellas",
-
   "level.dailyTitle": "Postal Diaria",
   "level.praise.1": "¡Genial!",
   "level.praise.2": "¡Muy bien!",
@@ -58,9 +52,18 @@
   "level.tutorial.tap": "🎯 Toca la primera letra y luego la última",
   "level.gridA11y.drag": "Tablero de letras. Arrastra sobre las letras para elegir una palabra.",
   "level.gridA11y.tap": "Tablero de letras. Toca la primera y luego la última letra de una palabra.",
+  "pause.a11y": "Pausa",
+  "pause.title": "En pausa",
+  "pause.resume": "Continuar",
+  "pause.restart": "Reiniciar nivel",
+  "pause.map": "Volver al mapa",
+  "pause.saved": "Tu progreso está guardado.",
+  "pause.restarted": "Nivel reiniciado",
+  "zoom.in": "Acercar",
+  "zoom.out": "Alejar",
+  "zoom.hint": "Usa dos dedos para acercar y mover",
   "chip.found": "{word}, encontrada",
   "meaning.a11y": "{word}: {meaning}. Toca para cerrar.",
-
   "hints.title": "¿Necesitas una pista?",
   "hints.balance": "Tienes {n} monedas",
   "hints.spotlight.title": "Foco",
@@ -72,7 +75,6 @@
   "hints.optionA11y": "{title}, {n} monedas. {desc}",
   "hints.closeA11y": "Cerrar pistas",
   "hints.noCoins": "No tienes suficientes monedas. Gana niveles o encuentra palabras extra.",
-
   "result.levelDone": "¡Nivel {n} completado!",
   "result.dailyDone": "¡Postal Diaria completada!",
   "result.coinsA11y": "{n} monedas ganadas",
@@ -80,7 +82,6 @@
   "result.worldDone": "¡{world} completado!",
   "result.addToPassport": "Añadir al pasaporte",
   "result.stampNote": "Nuevo sello de pasaporte · incluye +150 monedas",
-
   "settings.title": "Ajustes",
   "settings.textSize": "Tamaño del texto",
   "settings.textSizeDesc": "Elige un tamaño cómodo para tus ojos:",
@@ -107,7 +108,6 @@
   "settings.reset": "Borrar todo el progreso",
   "settings.resetConfirm": "¿Borrar todos los niveles, estrellas, monedas y tu racha diaria? No se puede deshacer.",
   "settings.resetButton": "Borrar",
-
   "about.title": "Acerca de y licencias",
   "about.version": "Versión {v}",
   "about.intro": "Una sopa de letras relajante con letra grande. Letras claras, sin tiempo, sin prisa.",
@@ -115,12 +115,10 @@
   "about.dictionary": "Diccionario y listas de palabras",
   "about.art": "Arte",
   "about.legalNote": "Los textos de las licencias se muestran en inglés.",
-
   "album.title": "Pasaporte",
   "album.count": "Sellos conseguidos: {n} de {total}",
   "stamp.collected": "Sello de {world}, conseguido",
   "stamp.missing": "Sello de {world}, aún no conseguido",
-
   "globe.title": "Viaje por el Mundo",
   "globe.unlocked": "¡Nueva parada desbloqueada: {world}!",
   "globe.lockedHint": "Termina {world} para desbloquear",
@@ -133,14 +131,12 @@
   "card.openMap": "Abrir en el mapa",
   "card.openMapA11y": "Abrir {world} en el mapa",
   "card.a11y": "Mundo {n}, {world}. {status}. {done} de {total} niveles, {stars} estrellas.",
-
   "daily.title": "Postal Diaria",
   "daily.streak": "Racha: {n}",
   "daily.freezes": "Comodines: {n}",
   "daily.collected": "🎉 ¡Ya tienes la postal de hoy!",
   "daily.play": "Jugar el puzle de hoy (+50)",
   "daily.weekdays": "D,L,M,X,J,V,S",
-
   "shop.title": "Tienda de monedas",
   "shop.close": "Cerrar la tienda",
   "shop.testNote": "Versión de prueba: aún sin pagos ni anuncios reales",
@@ -163,7 +159,6 @@
   "shop.dailyLimitMsg": "Ya usaste las 5 recompensas de monedas gratis de hoy. ¡Vuelve mañana!",
   "shop.reward": "Recompensa obtenida",
   "shop.rewardMsg": "¡+50 monedas añadidas a tu monedero!",
-
   "world.1": "Mi Pueblo",
   "world.2": "París",
   "world.3": "Italia",
