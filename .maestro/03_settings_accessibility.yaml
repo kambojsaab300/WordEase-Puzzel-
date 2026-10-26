@@ -1,0 +1,30 @@
+appId: com.wordease
+---
+# Flow 3: Settings, High Contrast, Huge Text & Language Switching
+- launchApp
+
+- assertVisible: "World Trip"
+- tapOn: "Settings"
+
+- assertVisible: "Settings"
+- assertVisible: "Text Size"
+
+# Change to Huge text size
+- tapOn: "Huge"
+
+# Switch to Tap-Tap mode
+- tapOn: "Tap-Tap"
+
+# Toggle high contrast & colorblind
+- tapOn: "High Contrast Mode"
+- tapOn: "Color-blind Palette"
+
+# Check About & Licenses link
+- tapOn: ".*About WordEase & Licenses.*"
+- assertVisible: "About & Licenses"
+- assertVisible: "WordNet 3.0"
+- assertVisible: "Atkinson Hyperlegible"
+
+- back
+- back
+- assertVisible: "World Trip"

@@ -44,10 +44,12 @@
     "@types/node": "^24.19.2",
     "@types/react": "^19.2.0",
     "@types/react-test-renderer": "^19.1.0",
+    "@types/shapefile": "^0.6.4",
     "eslint": "^8.19.0",
     "jest": "^29.6.3",
     "prettier": "2.8.8",
     "react-test-renderer": "19.3.0",
+    "shapefile": "^0.6.6",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3"
   },

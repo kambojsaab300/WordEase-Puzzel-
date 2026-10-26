@@ -1,3 +1,4 @@
+import { useAdState } from '../../store/adState';
 import { useWallet } from '../../store/wallet';
 
 export type AdsConfig = {
@@ -18,10 +19,6 @@ export const DEFAULT_ADS_CONFIG: AdsConfig = {
 
 class AdsManagerService {
   private config: AdsConfig = DEFAULT_ADS_CONFIG;
-  private lastFullscreenTime = 0;
-  private levelsSinceAd = 0;
-  private freeCoinsClaimedToday = 0;
-  private lastDayKey = '';
 
   constructor(config?: Partial<AdsConfig>) {
     if (config) {
@@ -34,10 +31,7 @@ class AdsManagerService {
   }
 
   public resetForTesting() {
-    this.lastFullscreenTime = 0;
-    this.levelsSinceAd = 0;
-    this.freeCoinsClaimedToday = 0;
-    this.lastDayKey = '';
+    useAdState.getState().resetForTesting();
   }
 
   public isAdFree(): boolean {
@@ -57,14 +51,15 @@ class AdsManagerService {
     if (levelId < this.config.firstInterstitialLevel) return false;
     if (levelId % 15 === 0) return false; // Landmark milestone breather
 
-    this.levelsSinceAd += 1;
+    const levelsSinceAd = useAdState.getState().incrementLevelsSinceAd();
 
-    if (this.levelsSinceAd < this.config.interstitialEveryNLevels) {
+    if (levelsSinceAd < this.config.interstitialEveryNLevels) {
       return false;
     }
 
-    if (this.lastFullscreenTime > 0) {
-      const elapsedSeconds = (currentTimeMs - this.lastFullscreenTime) / 1000;
+    const lastTime = useAdState.getState().lastFullscreenAt;
+    if (lastTime > 0) {
+      const elapsedSeconds = (currentTimeMs - lastTime) / 1000;
       if (elapsedSeconds < this.config.minGapSeconds) {
         return false;
       }
@@ -74,8 +69,7 @@ class AdsManagerService {
   }
 
   public recordInterstitialShown(currentTimeMs = Date.now()) {
-    this.lastFullscreenTime = currentTimeMs;
-    this.levelsSinceAd = 0;
+    useAdState.getState().recordInterstitialShown(currentTimeMs);
   }
 
   /**
@@ -88,20 +82,20 @@ class AdsManagerService {
   }
 
   public canClaimFreeCoins(todayKey: string): boolean {
-    if (this.lastDayKey !== todayKey) {
-      this.lastDayKey = todayKey;
-      this.freeCoinsClaimedToday = 0;
-    }
-    return this.freeCoinsClaimedToday < this.config.dailyFreeCoinsCap;
+    return useAdState.getState().canClaimFreeCoins(todayKey, this.config.dailyFreeCoinsCap);
   }
 
   public recordFreeCoinsClaimed(todayKey: string): number {
-    if (this.lastDayKey !== todayKey) {
-      this.lastDayKey = todayKey;
-      this.freeCoinsClaimedToday = 0;
-    }
-    this.freeCoinsClaimedToday += 1;
-    return this.config.dailyFreeCoinsCap - this.freeCoinsClaimedToday;
+    const claimed = useAdState.getState().recordFreeCoinsClaimed(todayKey);
+    return Math.max(0, this.config.dailyFreeCoinsCap - claimed);
+  }
+
+  public canWatchRewardedHint(todayKey: string): boolean {
+    return useAdState.getState().canWatchRewardedHint(todayKey, this.config.dailyRewardedHintCap);
+  }
+
+  public recordRewardedHint(todayKey: string) {
+    useAdState.getState().recordRewardedHint(todayKey);
   }
 }
 

@@ -1,0 +1,20 @@
+appId: com.wordease
+---
+# Flow 4: Coin Shop, Free Coins & Hints
+- launchApp
+
+- assertVisible: "World Trip"
+
+# Tap coin pill to open shop
+- tapOn: "Open coin shop"
+- assertVisible: "Coin Shop"
+- assertVisible: "Remove Ads"
+- assertVisible: "Free 50 Coins"
+
+# Claim free coins (test mock)
+- tapOn: "Watch Ad"
+- assertVisible: "Reward Earned"
+- tapOn: "OK"
+
+- tapOn: "Done"
+- assertVisible: "World Trip"

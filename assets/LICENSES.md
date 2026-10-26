@@ -27,3 +27,6 @@ Landmark silhouettes, paper plane and clouds (`src/map/landmarks.ts`) are our ow
 | Data | Used for | Source | License |
 |---|---|---|---|
 | Natural Earth 1:110m land | 3D globe coastlines, `src/map/land110.json` (built by `tools/build-land.ts`) | naturalearthdata.com via github.com/nvkelso/natural-earth-vector | Public domain |
+| Natural Earth 1:10m admin-0 countries, default view and India point of view (`_ind`) | Country colours on the globe, `src/map/countries.default.json` / `countries.ind.json` (built by `tools/build-countries.ts`, which checks J&K, Ladakh incl. Aksai Chin and Arunachal Pradesh are inside India in the India view) | naturalearthdata.com via github.com/nvkelso/natural-earth-vector | Public domain |
+
+The globe shows the India view when the phone region is India or the UI language is Hindi, and Natural Earth's default view elsewhere. Before release in India, have the India view checked against the Survey of India outline.

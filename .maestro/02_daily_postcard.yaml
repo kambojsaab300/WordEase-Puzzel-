@@ -1,0 +1,20 @@
+appId: com.wordease
+---
+# Flow 2: Daily Postcard Calendar & Streak
+- launchApp
+
+- assertVisible: "World Trip"
+- tapOn: "Daily Postcard"
+
+# Calendar modal verification
+- assertVisible: "Daily Postcard"
+- assertVisible: "streak"
+- assertVisible: "freeze"
+
+# Can play daily puzzle if not done
+- tapOn:
+    text: "Play Today's Puzzle.*"
+    optional: true
+
+- back
+- assertVisible: "World Trip"

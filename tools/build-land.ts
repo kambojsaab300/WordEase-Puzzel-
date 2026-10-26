@@ -1,9 +1,8 @@
 /**
- * Builds the 3D globe data from Natural Earth 1:110m land
- * (public domain, tools/.cache/ne_110m_land.geojson):
- *  - src/map/land110.json: coastline rings, each a flat [lon, lat, lon, lat, ...] array
- *  - src/map/climate110.json: the same land cut into climate bands (ice, boreal, temperate,
- *    dry, tropical) so the globe can be coloured without drawing any country borders
+ * Builds src/map/land110.json (coastlines for the globe's shadow and coast line) from
+ * Natural Earth 1:110m land (public domain, tools/.cache/ne_110m_land.geojson).
+ * Each ring becomes a flat [lon, lat, lon, lat, ...] array. Country colours come from
+ * tools/build-countries.ts.
  * Run: npx tsx tools/build-land.ts
  */
 import fs from 'node:fs';
@@ -56,39 +55,6 @@ function densify(points: Pt[]): Pt[] {
   return out;
 }
 
-// Latitude bands by absolute latitude; index = colour slot on the globe
-export const CLIMATE_BANDS: [number, number][] = [
-  [64, 90], // ice
-  [50, 64], // boreal forest
-  [32, 50], // temperate
-  [16, 32], // dry belt (Sahara, Arabia, inland Australia)
-  [0, 16], // tropics
-];
-
-// Sutherland-Hodgman clip of a ring against minLat <= lat <= maxLat
-function clipLat(points: Pt[], minLat: number, maxLat: number): Pt[] {
-  const clipEdge = (pts: Pt[], inside: (p: Pt) => boolean, edgeLat: number): Pt[] => {
-    const out: Pt[] = [];
-    for (let i = 0; i < pts.length; i++) {
-      const cur = pts[i];
-      const prev = pts[(i + pts.length - 1) % pts.length];
-      const crossing = (): Pt => {
-        const t = (edgeLat - prev[1]) / (cur[1] - prev[1]);
-        return [prev[0] + (cur[0] - prev[0]) * t, edgeLat];
-      };
-      if (inside(cur)) {
-        if (!inside(prev)) out.push(crossing());
-        out.push(cur);
-      } else if (inside(prev)) {
-        out.push(crossing());
-      }
-    }
-    return out;
-  };
-  const below = clipEdge(points, p => p[1] <= maxLat, maxLat);
-  return clipEdge(below, p => p[1] >= minLat, minLat);
-}
-
 const geo = JSON.parse(fs.readFileSync(path.join(ROOT, 'tools', '.cache', 'ne_110m_land.geojson'), 'utf8'));
 const rings: number[][] = [];
 let pointCount = 0;
@@ -105,26 +71,6 @@ for (const feature of geo.features) {
   }
 }
 
-const flat = (ring: Pt[]) => ring.flatMap(([lon, lat]) => [Math.round(lon * 10) / 10, Math.round(lat * 10) / 10]);
-
 const out = path.join(ROOT, 'src', 'map', 'land110.json');
 fs.writeFileSync(out, JSON.stringify(rings));
 console.log(`${rings.length} rings, ${pointCount} points -> ${path.relative(ROOT, out)} (${fs.statSync(out).size} bytes)`);
-
-// Climate bands: clip each simplified coastline to the band, both hemispheres, then densify
-const bands: number[][][] = CLIMATE_BANDS.map(() => []);
-for (const flatRing of rings) {
-  const ring: Pt[] = [];
-  for (let i = 0; i < flatRing.length; i += 2) ring.push([flatRing[i], flatRing[i + 1]]);
-  CLIMATE_BANDS.forEach(([lo, hi], band) => {
-    for (const [min, max] of [[lo, hi], [-hi, -lo]]) {
-      const clipped = clipLat(ring, min, max);
-      if (clipped.length >= 3) bands[band].push(flat(densify(clipped)));
-    }
-  });
-}
-const climateOut = path.join(ROOT, 'src', 'map', 'climate110.json');
-fs.writeFileSync(climateOut, JSON.stringify(bands));
-console.log(
-  `climate bands: ${bands.map(b => b.length).join('/')} rings -> ${path.relative(ROOT, climateOut)} (${fs.statSync(climateOut).size} bytes)`,
-);

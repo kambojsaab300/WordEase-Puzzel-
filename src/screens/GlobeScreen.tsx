@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import type { ScreenProps } from '../app/navigation';
 import { WORLD_COUNT, WorldDef, WORLDS } from '../game/levels/worlds';
+import { borderViewFor, deviceLocale } from '../map/borderView';
 import { Globe3D } from '../map/Globe3D';
 import { WorldCard } from '../map/WorldCard';
 import { unlockedWorldOf, worldStats, worldStatuses } from '../map/worldProgress';
@@ -34,6 +35,8 @@ export function GlobeScreen({ navigation }: ScreenProps<'Globe'>) {
   const lastSeenWorld = useProgress(s => s.lastSeenWorld);
   const markWorldSeen = useProgress(s => s.markWorldSeen);
   const reduceMotion = useSettings(s => s.reduceMotion);
+  const lang = useSettings(s => s.lang);
+  const borderView = useMemo(() => borderViewFor(lang, deviceLocale()), [lang]);
 
   const statuses = useMemo(() => worldStatuses(currentLevel, stars), [currentLevel, stars]);
   const unlockedWorld = unlockedWorldOf(currentLevel);
@@ -120,6 +123,7 @@ export function GlobeScreen({ navigation }: ScreenProps<'Globe'>) {
           selectedWorld={selected}
           focus={focus}
           unveilWorld={unveil}
+          borderView={borderView}
           reduceMotion={reduceMotion}
           onSelectWorld={select}
         />

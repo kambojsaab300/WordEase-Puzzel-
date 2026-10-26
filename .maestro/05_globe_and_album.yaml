@@ -1,0 +1,19 @@
+appId: com.wordease
+---
+# Flow 5: Globe View & Passport Album Progression
+- launchApp
+
+- assertVisible: "World Trip"
+
+# Open Globe view
+- tapOn: "World Trip globe"
+- assertVisible: "World Trip"
+- back
+
+# Open Passport Album
+- tapOn: "Passport album"
+- assertVisible: "Passport"
+- assertVisible: "stamps collected"
+- back
+
+- assertVisible: "World Trip"

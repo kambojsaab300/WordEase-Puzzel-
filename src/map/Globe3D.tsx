@@ -38,14 +38,13 @@ import {
   shortestYaw,
 } from './globeMath';
 import { PlaneIcon } from './PaperPlane';
+import { BorderView, loadCountries } from './borderView';
 import type { WorldStatus } from './worldProgress';
 import { useT, worldKey } from '../i18n';
 
 const COAST = prepareRings(require('./land110.json') as number[][]);
-// Land cut into climate bands (tools/build-land.ts): ice, boreal, temperate, dry, tropics.
-// Colour by climate, not by country, so the globe shows no political borders.
-const CLIMATE = (require('./climate110.json') as number[][][]).map(prepareRings);
-const CLIMATE_COLORS = ['#F2F6F8', '#A9CFA0', '#C6E19B', '#EFD79B', '#8FD18A'];
+// Soft paper colours for the 7 country colour groups (neighbours never share one)
+const COUNTRY_COLORS = ['#F7C59F', '#B5D99C', '#9AD0EC', '#F4E285', '#E5B3D6', '#C7B8EA', '#A8E0C8'];
 const WORLD_GEO = WORLDS.map(w => [w.geo.lon, w.geo.lat] as [number, number]);
 
 const PIN = 30;
@@ -65,6 +64,7 @@ type Props = {
   // Bump `seq` to fly the camera to `world`
   focus: { world: number; seq: number };
   unveilWorld: number | null; // a newly unlocked world whose cloud blows away
+  borderView: BorderView;
   reduceMotion: boolean;
   onSelectWorld: (world: number) => void;
 };
@@ -165,9 +165,21 @@ export function Globe3D({
   selectedWorld,
   focus,
   unveilWorld,
+  borderView,
   reduceMotion,
   onSelectWorld,
 }: Props) {
+  const countries = useMemo(() => {
+    const data = loadCountries(borderView);
+    return { data, groups: data.colors.map(prepareRings) };
+  }, [borderView]);
+  // Countries of the stops reached so far are drawn raised, with a gold edge
+  const reachedRings = useMemo(() => {
+    const isos = new Set(
+      statuses.flatMap((st, i) => (st === 'locked' ? [] : [countries.data.worlds[String(i + 1)]])),
+    );
+    return prepareRings([...isos].flatMap(iso => countries.data.worldRings[iso] ?? []));
+  }, [statuses, countries]);
   const cx = width / 2;
   const cy = height / 2;
   const baseR = Math.max(60, Math.min(width, height) * 0.4);
@@ -209,18 +221,26 @@ export function Globe3D({
     appendLand(p, COAST, view());
     return p.build();
   });
-  const climatePaths = useDerivedValue(() =>
-    CLIMATE.map(band => {
+  const groups = countries.groups;
+  const countryPaths = useDerivedValue(() =>
+    groups.map(group => {
       const p = Skia.PathBuilder.Make();
-      appendLand(p, band, view());
+      appendLand(p, group, view());
       return p.build();
     }),
   );
-  const ice = useDerivedValue(() => climatePaths.value[0]);
-  const boreal = useDerivedValue(() => climatePaths.value[1]);
-  const temperate = useDerivedValue(() => climatePaths.value[2]);
-  const dry = useDerivedValue(() => climatePaths.value[3]);
-  const tropics = useDerivedValue(() => climatePaths.value[4]);
+  const c0 = useDerivedValue(() => countryPaths.value[0]);
+  const c1 = useDerivedValue(() => countryPaths.value[1]);
+  const c2 = useDerivedValue(() => countryPaths.value[2]);
+  const c3 = useDerivedValue(() => countryPaths.value[3]);
+  const c4 = useDerivedValue(() => countryPaths.value[4]);
+  const c5 = useDerivedValue(() => countryPaths.value[5]);
+  const c6 = useDerivedValue(() => countryPaths.value[6]);
+  const reachedPath = useDerivedValue(() => {
+    const p = Skia.PathBuilder.Make();
+    appendLand(p, reachedRings, view());
+    return p.build();
+  });
   const gridPath = useDerivedValue(() => {
     const p = Skia.PathBuilder.Make();
     appendGraticule(p, view());
@@ -330,16 +350,23 @@ export function Globe3D({
           </Circle>
           <Path path={gridPath} style="stroke" strokeWidth={1} color="rgba(255,255,255,0.22)" />
           <Group>
-            {/* paper-cut land: a soft drop shadow, then the climate colours, then the coast line */}
+            {/* paper-cut land: a soft drop shadow, coloured countries, white borders, coast line */}
             <Group transform={[{ translateX: 1.5 }, { translateY: 2.5 }]}>
               <Path path={coastPath} color="rgba(10,40,60,0.28)" />
             </Group>
-            <Path path={ice} color={CLIMATE_COLORS[0]} />
-            <Path path={boreal} color={CLIMATE_COLORS[1]} />
-            <Path path={temperate} color={CLIMATE_COLORS[2]} />
-            <Path path={dry} color={CLIMATE_COLORS[3]} />
-            <Path path={tropics} color={CLIMATE_COLORS[4]} />
-            <Path path={coastPath} style="stroke" strokeWidth={1.2} color="rgba(70,60,40,0.55)" strokeJoin="round" />
+            {[c0, c1, c2, c3, c4, c5, c6].map((path, i) => (
+              <Path key={i} path={path} color={COUNTRY_COLORS[i]} />
+            ))}
+            {[c0, c1, c2, c3, c4, c5, c6].map((path, i) => (
+              <Path key={`b${i}`} path={path} style="stroke" strokeWidth={0.8} color="rgba(255,255,255,0.9)" />
+            ))}
+            {/* reached countries: lifted with a shadow and a gold edge */}
+            <Group transform={[{ translateX: 1 }, { translateY: 2 }]}>
+              <Path path={reachedPath} color="rgba(120,70,0,0.35)" />
+            </Group>
+            <Path path={reachedPath} color="rgba(255,236,170,0.55)" />
+            <Path path={reachedPath} style="stroke" strokeWidth={1.6} color={colors.coinGold} strokeJoin="round" />
+            <Path path={coastPath} style="stroke" strokeWidth={1.1} color="rgba(70,60,40,0.5)" strokeJoin="round" />
           </Group>
           <Path path={routePath} style="stroke" strokeWidth={3} color={colors.accentCoral} strokeCap="round">
             <DashPathEffect intervals={[2, 8]} />

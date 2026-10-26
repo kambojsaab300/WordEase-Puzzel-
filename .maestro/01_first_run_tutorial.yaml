@@ -1,0 +1,28 @@
+appId: com.wordease
+---
+# Flow 1: First Run, Onboarding & Level 1 Tutorial
+- launchApp:
+    clearState: true
+
+# Splash to Onboarding transition
+- assertVisible: "Welcome to WordEase"
+- assertVisible: "1. Choose your letter size"
+
+# Step 1: Select Large text size
+- tapOn: "Large"
+- assertVisible: "W O R D"
+
+# Step 2: Select Tap-Tap or Drag mode
+- tapOn: "Drag"
+
+# Start Level 1
+- tapOn: "Start Level 1"
+- assertVisible: "Level 1"
+
+# Tutorial hand guide is displayed on Level 1
+- assertVisible: "Slide your finger across the word"
+
+# Back to Map
+- back
+- assertVisible: "World Trip"
+- assertVisible: "Play 1"
