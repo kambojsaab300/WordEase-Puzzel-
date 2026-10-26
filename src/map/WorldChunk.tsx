@@ -6,9 +6,11 @@ import {
   DashPathEffect,
   FractalNoise,
   Group,
+  LinearGradient,
   Oval,
   Path,
   Rect,
+  vec,
 } from '@shopify/react-native-skia';
 import { mulberry32 } from '../game/generator/prng';
 import { isLandmark } from '../game/levels/levelSpec';
@@ -21,6 +23,7 @@ import { PaperPlane } from './PaperPlane';
 import { useT, worldKey } from '../i18n';
 
 const SHADOW = 'rgba(31, 42, 55, 0.10)';
+const EXTRUDE_STEPS = [5, 4, 3, 2, 1];
 const LANDMARK_SIZE = 120;
 
 type Props = {
@@ -110,7 +113,15 @@ export const WorldChunk = memo(function WorldChunkView({
   return (
     <View style={{ width, height: SEGMENT_HEIGHT }}>
       <Canvas style={StyleSheet.absoluteFill}>
-        <Rect x={0} y={0} width={width} height={SEGMENT_HEIGHT} color={palette.sky} />
+        {/* sky: palette colour fading lighter towards the bottom of each stretch */}
+        <Rect x={0} y={0} width={width} height={SEGMENT_HEIGHT}>
+          <LinearGradient
+            start={vec(0, 0)}
+            end={vec(0, SEGMENT_HEIGHT)}
+            colors={[palette.sky, '#FFFFFF', palette.sky]}
+            positions={[0, 0.5, 1]}
+          />
+        </Rect>
         {/* faint paper grain */}
         <Rect x={0} y={0} width={width} height={SEGMENT_HEIGHT} opacity={0.05}>
           <FractalNoise freqX={0.7} freqY={0.7} octaves={2} />
@@ -137,18 +148,32 @@ export const WorldChunk = memo(function WorldChunkView({
           const scale = LANDMARK_SIZE / 100;
           return (
             <Group key={`l${l.id}`}>
-              <Group transform={[{ translateX: x + 4 }, { translateY: y + 5 }, { scale }]}>
+              <Group transform={[{ translateX: x + 7 }, { translateY: y + 9 }, { scale }]}>
                 <Path path={LANDMARK_PATHS[world.landmark]} color={SHADOW} />
               </Group>
+              {/* stacked layers give the silhouette a solid, extruded depth */}
+              {EXTRUDE_STEPS.map(step => (
+                <Group key={step} transform={[{ translateX: x + step }, { translateY: y + step }, { scale }]}>
+                  <Path path={LANDMARK_PATHS[world.landmark]} color={palette.near} />
+                </Group>
+              ))}
               <Group transform={[{ translateX: x }, { translateY: y }, { scale }]}>
-                <Path path={LANDMARK_PATHS[world.landmark]} color={palette.accent} opacity={0.85} />
+                <Path path={LANDMARK_PATHS[world.landmark]} color={palette.accent} />
               </Group>
             </Group>
           );
         })}
 
-        <Path path={road} color="rgba(31, 42, 55, 0.35)" style="stroke" strokeWidth={8} strokeCap="round">
-          <DashPathEffect intervals={[1, 18]} />
+        {/* 3D road: shadow, raised edge, cream surface and a dashed centre line */}
+        <Group transform={[{ translateY: 5 }]}>
+          <Path path={road} color={SHADOW} style="stroke" strokeWidth={30} strokeCap="round" />
+        </Group>
+        <Group transform={[{ translateY: 3 }]}>
+          <Path path={road} color={palette.mid} style="stroke" strokeWidth={26} strokeCap="round" />
+        </Group>
+        <Path path={road} color="#FBF3E2" style="stroke" strokeWidth={24} strokeCap="round" />
+        <Path path={road} color={palette.accent} opacity={0.55} style="stroke" strokeWidth={3} strokeCap="round">
+          <DashPathEffect intervals={[10, 12]} />
         </Path>
       </Canvas>
 

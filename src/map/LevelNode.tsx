@@ -31,6 +31,13 @@ const FILL: Record<NodeState, string> = {
   current: colors.accentCoral,
   done: colors.primaryOcean,
 };
+// Darker side of each stepping stone, so it reads as a solid 3D disc
+const SIDE: Record<NodeState, string> = {
+  locked: '#A39B8C',
+  current: '#C04F36',
+  done: '#0A4C63',
+};
+const DEPTH = 7;
 
 export const LevelNode = memo(function LevelNodeView({
   levelId,
@@ -67,18 +74,26 @@ export const LevelNode = memo(function LevelNodeView({
   return (
     <View style={[styles.wrap, { left: x - size / 2, top: y - size / 2, width: size }]}>
       <Pressable onPress={() => onPress(levelId)} accessibilityRole="button" accessibilityLabel={label}>
-        <Animated.View
-          style={[
-            styles.node,
-            { width: size, height: size, borderRadius: size / 2, backgroundColor: FILL[state] },
-            landmark && styles.landmark,
-            pulseStyle,
-          ]}
-        >
-          <Text style={[styles.number, state === 'locked' && styles.lockedText, landmark && styles.bigNumber]}>
-            {levelId}
-          </Text>
-          {state === 'locked' && <Text style={styles.lock}>🔒</Text>}
+        <Animated.View style={[{ width: size, height: size + DEPTH }, pulseStyle]}>
+          <View
+            style={[
+              styles.side,
+              { width: size, height: size, borderRadius: size / 2, backgroundColor: SIDE[state] },
+            ]}
+          />
+          <View
+            style={[
+              styles.node,
+              { width: size, height: size, borderRadius: size / 2, backgroundColor: FILL[state] },
+              landmark && styles.landmark,
+            ]}
+          >
+            <View style={[styles.shine, { width: size * 0.42, height: size * 0.2, borderRadius: size }]} />
+            <Text style={[styles.number, state === 'locked' && styles.lockedText, landmark && styles.bigNumber]}>
+              {levelId}
+            </Text>
+            {state === 'locked' && <Text style={styles.lock}>🔒</Text>}
+          </View>
         </Animated.View>
       </Pressable>
       {state === 'done' && (
@@ -101,7 +116,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 3,
     borderColor: colors.white,
-    elevation: 3,
+  },
+  side: {
+    position: 'absolute',
+    top: DEPTH,
+    left: 0,
+    elevation: 4,
+  },
+  shine: {
+    position: 'absolute',
+    top: '12%',
+    left: '18%',
+    backgroundColor: 'rgba(255,255,255,0.35)',
   },
   landmark: {
     borderWidth: 4,
