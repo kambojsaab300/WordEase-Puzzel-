@@ -1,6 +1,5 @@
 import { WORLDS } from '../src/game/levels/worlds';
 import { borderViewFor, CountryData, loadCountries, regionOf } from '../src/map/borderView';
-import { appendLand, DEG, PathSink, prepareRings } from '../src/map/globeMath';
 
 const IND = loadCountries('ind');
 const DEFAULT = loadCountries('default');
@@ -86,20 +85,6 @@ describe('country data', () => {
     for (const data of [IND, DEFAULT]) {
       expect(WORLDS.map(w => data.worlds[String(w.id)])).toEqual(expected);
       for (const iso of expected) expect(data.worldRings[iso]?.length).toBeGreaterThan(0);
-    }
-  });
-
-  test('countries draw only inside the globe circle', () => {
-    const v = { yaw: 78 * DEG, pitch: 25 * DEG, r: 140, cx: 160, cy: 160 };
-    for (const group of IND.colors) {
-      const pts: [number, number][] = [];
-      const sink: PathSink = {
-        moveTo: (x, y) => pts.push([x, y]),
-        lineTo: (x, y) => pts.push([x, y]),
-        close: () => {},
-      };
-      appendLand(sink, prepareRings(group), v);
-      expect(pts.every(([x, y]) => Math.hypot(x - v.cx, y - v.cy) <= v.r + 1e-6)).toBe(true);
     }
   });
 });

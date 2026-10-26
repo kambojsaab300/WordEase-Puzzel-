@@ -88,7 +88,7 @@ export function MapScreen({ navigation, route }: ScreenProps<'Map'>) {
       </View>
 
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 12 }]}>
-        <IconButton icon="🌍" label={t('map.globe')} onPress={() => navigation.navigate('Globe')} />
+        <IconButton icon="🗺️" label={t('map.globe')} onPress={() => navigation.navigate('Globe')} />
         <PrimaryButton
           label={t(classicPlay ? 'map.classic' : 'map.play', { n: currentLevel })}
           variant="coral"

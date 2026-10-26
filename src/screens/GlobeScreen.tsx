@@ -12,7 +12,7 @@ import {
 import type { ScreenProps } from '../app/navigation';
 import { WORLD_COUNT, WorldDef, WORLDS } from '../game/levels/worlds';
 import { borderViewFor, deviceLocale } from '../map/borderView';
-import { Globe3D } from '../map/Globe3D';
+import { FlatMap } from '../map/FlatMap';
 import { WorldCard } from '../map/WorldCard';
 import { unlockedWorldOf, worldStats, worldStatuses } from '../map/worldProgress';
 import { useProgress } from '../store/progress';
@@ -116,7 +116,7 @@ export function GlobeScreen({ navigation }: ScreenProps<'Globe'>) {
   const globe = (
     <View style={styles.globeArea} onLayout={onGlobeLayout}>
       {globeBox.w > 0 && (
-        <Globe3D
+        <FlatMap
           width={globeBox.w}
           height={globeBox.h}
           statuses={statuses}

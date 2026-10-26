@@ -59,7 +59,7 @@ export function AboutScreen({ navigation }: ScreenProps<'About'>) {
           </Text>
           <Text style={styles.licenseItemTitle}>Natural Earth</Text>
           <Text style={styles.licenseBody}>
-            Globe coastlines and country outlines: Natural Earth, public domain (naturalearthdata.com).
+            World map country outlines: Natural Earth, public domain (naturalearthdata.com).
           </Text>
         </View>
 
