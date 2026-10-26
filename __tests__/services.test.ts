@@ -89,5 +89,4 @@ describe('Services & Localization', () => {
       expect(SUPPORTED_LANGUAGES.map(l => l.code)).toEqual(['en', 'es', 'pt', 'de', 'fr', 'hi']);
     });
   });
-  });
 });
