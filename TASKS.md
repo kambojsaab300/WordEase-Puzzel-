@@ -1,0 +1,106 @@
+# WordEase — Chhote Tasks ka Plan
+
+Source: `WordEase: Word Search Puzzle — Game Design & Build Flow.pdf` (26 pages).
+
+**Kaam karne ka tareeka:** ek baar mein ek task. Har task ke end mein APK banegi, aap phone par
+test karoge, "OK" bologe, tab agla task. Har task ka status yahan update hoga.
+
+Status: `[ ]` baaki · `[~]` chal raha hai · `[x]` ho gaya, test pass
+
+APK banana:
+```bash
+cd android && gradlew.bat assembleRelease
+```
+APK: `android/app/build/outputs/apk/release/app-release.apk`
+
+---
+
+## Phase 0 — Base app
+- [x] **T0. Hello World app** — RN 0.88 CLI + TypeScript, New Arch + Hermes, ABIs `arm64-v8a,x86_64`.
+  - Test: app khule, cream screen par "Hello World".
+
+## Phase 1 — Foundation (UI system)
+- [x] **T1. Theme + folder structure + basic buttons**
+  - `src/` folders (flow ka structure), `src/ui/theme.ts` (colour tokens, sizes), `PrimaryButton` (56dp pill), `IconButton` (56dp).
+  - Home screen par logo text + Play button.
+  - Test: rang flow jaise, button bada (56dp), tap par response.
+- [x] **T2. Fonts** — Atkinson Hyperlegible (grid, chips), Nunito Bold (UI); OFL license `assets/LICENSES.md` mein.
+  - Test: naye fonts dikhen, text saaf padha jaye.
+- [x] **T3. Navigation** — React Navigation 7 native-stack; screens: Splash, Onboarding, Map, Globe, Album, Level, Result, Settings, About.
+  - Test: buttons se har screen par jaana aur Back se wapas.
+- [x] **T4. Baaki UI components** — CoinPill, StarRow, WordChip, ProgressBar, Toast, PostcardModal, HintSheet, MeaningCard, PassportStamp, ShopModal, DailyCalendarModal.
+  - Test: har component pixel-perfect aur responsive.
+
+## Phase 2 — Game engine (pure TypeScript + Jest tests)
+- [x] **T5. Seeded random + generator v1** — `prng.ts` (mulberry32), `placeWords.ts` (lambe se chhote, backtracking), `fill.ts`; directions.
+  - Jest: same seed = same puzzle, har word theek ek baar.
+  - Test: 35 engine & generator Jest tests pass.
+- [x] **T6. Selection logic** — `selection.ts` (8-direction snap, 22.5°), `validate.ts` (aage + ulta match).
+  - Jest: har direction, ulta drag, kinare.
+
+## Phase 3 — Core gameplay (sabse bada hissa)
+- [x] **T7. Skia + Reanimated 4 + Gesture Handler install** — Skia canvas aur gesture handling.
+  - Test: 60/120 FPS GPU rendering.
+- [x] **T8. Grid render (Skia)** — `GridCanvas.tsx`, 8x8 grid, dynamic cell size auto-fit, Atkinson font.
+  - Test: grid saaf, phone par fit.
+- [x] **T9. Drag selection + capsule highlight** — line snap, mila word rangeen capsule (Okabe-Ito rang), galat par halka shake.
+  - Test: ungli se word smoothly dhoondh sakein.
+- [x] **T10. Word chips + level complete** — chips par tick, saare words mile → Result screen (stars, coins).
+  - Test: pura level khel kar Result tak jaana.
+- [x] **T11. Tap-Tap input mode** — pehla + aakhri letter tap (GridCanvas + Settings toggle + Onboarding).
+  - Test: Tap-Tap mode perfectly working.
+- [x] **T12. Save (MMKV v4 + zustand)** — progress, wallet, settings, daily; har word par `inProgress` save; `schemaVersion`.
+  - Test: level ke beech app band karo, kholo → wahi se shuru.
+
+## Phase 4 — Levels content
+- [x] **T13. `tools/generate-levels.ts`** — World 1 se 20, 1,200 levels JSON pre-generated; difficulty table + sawtooth.
+- [x] **T14. Level checks (CI script)** — har word ek baar, blocklist scan, `npm run levels:validate` pass.
+  - Test: 1,200 shipped levels automated verification OK.
+- [x] **T15. Meaning card + bonus words** — WordNet meanings card; ENABLE list se bonus +1 coin.
+
+## Phase 5 — Map & progression
+- [x] **T16. Route map v1** — FlashList, level nodes (Locked / Current / Done / Landmark), auto-scroll to current.
+  - Test: map se level kholo, jeeto, agla node khule.
+- [x] **T17. Map art + paper plane + parallax** (Reduce Motion par band).
+- [x] **T18. Globe view + 20 worlds + baadal unlock animation.**
+- [x] **T19. Passport album** — har world par stamp.
+
+## Phase 6 — Economy, hints, daily
+- [x] **T20. Coins + Hints** — Spotlight 25 / Compass 40 / Reveal 60; stars hint ke hisaab se.
+- [x] **T21. Daily Postcard** — calendar, streak, freeze (sirf 1 chhoota din, har hafte 1 refill), 7-din reward cycle, date-peeche par inaam nahi, apna save slot. 2026-10-26 audit mein streak bugs fix.
+- [~] **T22. Onboarding + Tutorial level** — text size preview, input mode, Level 1 par text hint. **Baaki:** haath ka animated pointer (flow).
+
+## Phase 7 — Settings, audio, accessibility
+- [~] **T23. Settings screen** — saare toggles save hote hain. **Baaki:** Text Size, High Contrast, Colour-blind ka game par koi asar nahi (sirf preview); Huge mode mein grid ≤10x10 nahi.
+- [~] **T24. Audio + Haptics** — Haptics kaam karta hai (VIBRATE permission audit mein jodi, pehle crash hota). **Baaki:** `AudioManager` stub hai — react-native-audio-api aur sound files nahi, koi aawaz nahi bajti.
+- [~] **T25. Accessibility pass** — labels aur 56dp targets. **Baaki:** high contrast mode laagu nahi, TalkBack aur font scale "Largest" asli phone par test nahi.
+
+## Phase 8 — Kamai (ads + IAP)
+- [ ] **T26. UMP consent + AdMob init** (EEA debug geography se test).
+- [~] **T27. AdsManager** — caps ka logic aur tests hain. **Baaki:** koi ad SDK nahi; free-coin cap memory mein (restart par reset).
+- [~] **T28. Rewarded ads** — **STUB:** `showRewardedAd` bina ad ke turant inaam deta hai. react-native-google-mobile-ads chahiye.
+- [~] **T29. Shop + Remove Ads / coin packs** — UI hai, "Test build" label ke saath. **STUB:** koi payment nahi; react-native-iap + Play Billing chahiye.
+
+## Phase 9 — Launch prep
+- [~] **T30. Analytics** — event list `AnalyticsManager` mein. **Baaki:** sirf memory mein; Firebase Analytics/Crashlytics/Remote Config nahi.
+- [x] **T31. About screen** — WordNet notice, ENABLE, LDNOOBW (CC BY 4.0), fonts. (Splash/icon wala hissa baaki.)
+- [ ] **T32. Release signing + AAB, R8 on** (apni upload key).
+- [ ] **T33. Maestro E2E 7 flows + device matrix test.**
+- [ ] **T34. Play Console: closed test 20+ testers, 14 din.**
+
+## Phase 10 — Bhashayein (localization)
+- [~] **T35. Multi-language i18n** — 6 bhashaon ki strings likhi hain. **Baaki:** koi screen `t()` use nahi karti, bhasha badalne se UI nahi badalta; har bhasha ki word lists nahi.
+- [ ] **T36. Hindi Devanagari grid generator pack** — Hindi grapheme splitting.
+
+---
+
+## Progress log
+| Task | Date | APK / Tests | Result |
+|---|---|---|---|
+| T0 | 2026-10-26 | app-release.apk | Build OK |
+| T1 | 2026-10-26 | WordEase-T1.apk | Phone test OK |
+| T2 | 2026-10-26 | WordEase-T2.apk | Phone test OK |
+| T3 | 2026-10-26 | WordEase-T3.apk | Phone test OK |
+| T4-T10 | 2026-10-26 | WordEase-T10.apk | Build OK, 35 Jest tests pass |
+| T11-T25, T27-T31, T35 | 2026-10-26 | All Suites Pass | 77 Jest tests pass (8 suites), 1,200 levels validate OK, TS 0 errors |
+| Audit | 2026-10-26 | WordEase-audit.apk | 155 Jest tests (14 suites) pass, 1200 levels playable + validated, lint/TS clean. 9 bugs fixed (1 crash). Phone test baaki |
