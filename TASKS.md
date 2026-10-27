@@ -61,7 +61,7 @@ APK: `android/app/build/outputs/apk/release/app-release.apk`
 ## Phase 5 — Map & progression
 - [x] **T16. Route map v1** — FlashList, level nodes (Locked / Current / Done / Landmark), auto-scroll to current.
   - Test: map se level kholo, jeeto, agla node khule.
-- [x] **T17. Map art + paper plane + parallax** (Reduce Motion par band).
+- [x] **T17. Map art + paper plane + parallax** (Reduce Motion par band). 2026-10-27: "Level Map" design — paper plane ki jagah hot-air balloon, naya scenery/road/nodes (Progress log dekho).
 - [x] **T18. Globe view + 20 worlds + baadal unlock animation.**
 - [x] **T19. Passport album** — har world par stamp.
 - [x] **T19b. Landmarks visual plan** (upgrade PDF) — har world ke 4 famous landmarks (level 15/30/45/60), 80 apne paper-cutout silhouettes; route par har landmark level ka apna sight + naam plaque, TalkBack label mein naam; Result par "You reached …" postcard (pehli jeet par); album mein har stamp ke neeche 4 landmarks + total ginti; 6 bhashaon mein naam.
@@ -84,7 +84,7 @@ APK: `android/app/build/outputs/apk/release/app-release.apk`
 
 ## Phase 9 — Launch prep
 - [~] **T30. Analytics** — event list `AnalyticsManager` mein. **Baaki:** sirf memory mein; Firebase Analytics/Crashlytics/Remote Config nahi.
-- [x] **T31. About screen** — WordNet notice, ENABLE, LDNOOBW (CC BY 4.0), fonts. (Splash/icon wala hissa baaki.)
+- [x] **T31. About screen** — WordNet notice, ENABLE, LDNOOBW (CC BY 4.0), fonts. Splash + app icon 2026-10-27 ko bane (logo concept A "Found Word", animated splash) — Progress log dekho.
 - [ ] **T32. Release signing + AAB, R8 on** (apni upload key).
 - [ ] **T33. Maestro E2E 7 flows + device matrix test.**
 - [ ] **T34. Play Console: closed test 20+ testers, 14 din.**
@@ -120,3 +120,10 @@ APK: `android/app/build/outputs/apk/release/app-release.apk`
 | Toast fix | 2026-10-26 | WordEase.apk (cloudflare link) | Level par praise toast neeche meaning card/word list ko dhak raha tha (dono bottom par); ab Level aur Map par toast upar (top bar ke neeche), baaki screens par neeche; 376 Jest tests, TS + lint clean; phone test baaki |
 | Country unlock | 2026-10-27 | app-release.apk | World Trip par locked country coins se kholo: 7500 + (world − 2) × 2250 (Antarctica 48000); kharidi country ke level ek-ek karke khulte hain, main route alag rehta hai; 6 bhashayein; 380 Jest tests, TS + lint clean; phone test baaki |
 | Daily Word Quiz | 2026-10-27 | app-release.apk | Offline roz naya quiz (date seed, word list + meanings + landmarks se): 5 sawaal (meaning, missing letters, landmark silhouette, "kahan milega", jumble), Mon→Sun mushkil, Sunday double coins, combo, 50/50 (din mein 1), "did you know" card, mystery chest, streak (3/7/14/30 gifts, hafte mein 1 chhuta din maaf), countdown, share; map par 🧠 Quiz button; 6 bhashayein; 392 Jest tests, TS + lint clean; sound abhi stub (AudioManager); phone test baaki |
+| Postcards | 2026-10-27 | WordEase.apk (cloudflare link) | 20 worlds ka postcard art pack `src/assets/postcards` (art, grey sketch, thumb, level bg, stamp, `worlds.json`, `PaintPostcard`); World Trip card par postcard banner jo levels jeetne par grey se rangeen hota hai; world-complete popup mein postcard; 376 Jest tests, TS + lint clean; phone test baaki |
+| Logo + icon | 2026-10-27 | WordEase.apk (cloudflare link) | "WordEase Logo" concept A (Found Word) chuna: launcher icon saari densities + round + adaptive (Nunito Bold se render, `src/assets/logo/logo-icon.png`); purana coral W icon hata; 376 Jest tests; phone test baaki |
+| Splash | 2026-10-27 | WordEase.apk (cloudflare link) | "WordEase Splash Screen" design: ocean background, letters pop, WORD/EASE pills sweep, suraj paani se uthta, naam + loading dots; tap se skip, Reduce Motion par seedha final; ~3.2 s; 376 Jest tests; phone test baaki |
+| Level Map | 2026-10-27 | WordEase.apk (cloudflare link) | "WordEase Level Map" design, har world ke apne palette rangon mein: jhaadiyan, ghaas, ped, talaab/ghar, cream road, world-start par taped postcard (progress se rangeen), current level ke upar pencil-grey sketch, naye level nodes (current coral + ring, world-end gold), hot-air balloon, top bar world chip, 📍 jump-to-current; 6 bhashayein; 376 Jest tests, TS + lint clean; phone test baaki. Chhoda: level-tap postcard sheet, ad banner |
+| Celebration | 2026-10-27 | WordEase.apk (cloudflare link) | "WordEase Celebration Screen" design: ocean burst + ghoomti kirnein + sparkles, world ka cheer 3D title mein, 3 glossy 3D stars, tilted postcard grey→colour, sikke, 3D buttons; "Next level" seedha agla level (world finale/daily par "Continue" → Map); milestone/stamp/landmark popups wahi; 392 Jest tests, TS + lint clean; phone test baaki |
+| Popup fix | 2026-10-27 | WordEase.apk (cloudflare link) | Edge-to-edge: saare popups (Shop, Daily, Hint, Pause, Postcard) poori screen dhakte hain, status/nav bar se door, lambe hon toh scroll (`ui/ModalScroll.tsx`); Hint sheet nav bar ke upar; 392 Jest tests; emulator nahi, phone test baaki |
+| Sound + music (T24) | 2026-10-27 | WordEase.apk (cloudflare link) | 18 aawazein + background music khud synthesize (`tools/generate-sfx.py`, koi bahar ki file nahi): taps, grid, shabd, galat, hint, star dings, level jingle, landmark/world fanfare, unlock, chest, splash jingle, popup swish, locked knock; `music_calm` loop Onboarding/Map/Level/Quiz par (Level par dheema), app background par rukta; native `SoundModule.kt` (SoundPool + MediaPlayer); Settings mein Sound effects + Background music switch; har press par pop (`ui/withTap.ts`); plan `docs/SOUND-FLOW.md`; `docs` tsconfig se bahar; 392 Jest tests, TS + lint clean; phone par sun ke test baaki |
