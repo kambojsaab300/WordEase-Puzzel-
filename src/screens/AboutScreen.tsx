@@ -60,7 +60,7 @@ export function AboutScreen({ navigation }: ScreenProps<'About'>) {
           <Text style={styles.licenseItemTitle}>Natural Earth</Text>
           <Text style={styles.licenseBody}>
             World map country outlines: Natural Earth, public domain (naturalearthdata.com).
-          </Text>
+          </Text>    
         </View>
 
         <View style={styles.footer}>

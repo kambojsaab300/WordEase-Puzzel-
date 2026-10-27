@@ -9,6 +9,7 @@ export const WORLD_COMPLETE_COINS = 150;
 export const WORLD_UNLOCK_BASE = 7500;
 export const WORLD_UNLOCK_STEP = 2250;
 
+
 export function worldUnlockCost(world: number): number {
   return WORLD_UNLOCK_BASE + Math.max(0, world - 2) * WORLD_UNLOCK_STEP;
 }
