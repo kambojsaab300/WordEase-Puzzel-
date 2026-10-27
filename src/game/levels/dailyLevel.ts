@@ -12,7 +12,7 @@ const WORD_COUNT = 5;
 const FILL_BUDGET = 0.55;
 const DIRS: Dir[] = ['E', 'S', 'SE'];
 
-function hashString(s: string): number {
+export function hashString(s: string): number {
   let hash = 0;
   for (let i = 0; i < s.length; i++) {
     hash = (hash << 5) - hash + s.charCodeAt(i);

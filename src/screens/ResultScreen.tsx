@@ -1,30 +1,49 @@
 import { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Animated, { FadeInDown, ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { ScreenProps } from '../app/navigation';
+import { POSTCARD_ASSETS, type WorldId } from '../assets/postcards';
 import { celebrationFor } from '../game/engine/celebration';
 import { DAILY_LEVEL_ID } from '../game/levels/levelRepo';
 import { WORLDS } from '../game/levels/worlds';
 import { landmarkAt, landmarkKey, LANDMARKS_PER_WORLD, worldLandmarks } from '../map/landmarkPlan';
-import { LANDMARK_PATHS } from '../map/landmarks';
 import { AdsManager } from '../services/ads/AdsManager';
 import { useProgress } from '../store/progress';
 import { useSettings } from '../store/settings';
 import { useWallet } from '../store/wallet';
+import { Backdrop } from '../ui/celebration/Backdrop';
+import { CelebrationPostcard } from '../ui/celebration/CelebrationPostcard';
+import { CoinIcon, Star3D } from '../ui/celebration/Star3D';
 import { Confetti } from '../ui/Confetti';
 import { LandmarkArt } from '../ui/LandmarkArt';
 import { PassportStamp } from '../ui/PassportStamp';
 import { PostcardModal } from '../ui/PostcardModal';
-import { PrimaryButton } from '../ui/PrimaryButton';
-import { colors, fonts, sizes } from '../ui/theme';
+import { colors, fonts } from '../ui/theme';
 import { useT, worldKey } from '../i18n';
 
-const STAR_SIZE = 58;
+// Positions of the three stars on the 390-wide design artboard
+const STARS = [
+  { left: 62, top: 46, size: 84, tilt: -14, delay: 800 },
+  { left: 136, top: 0, size: 118, tilt: 0, delay: 1150 },
+  { left: 244, top: 46, size: 84, tilt: 14, delay: 1500 },
+];
+const TITLE_DEPTH = [10, 9, 8, 7, 6, 5, 4, 3, 2];
+const TITLE_SIDE = [7, 6, 5, 4, 3, 2, 1];
+const COIN_DEPTH: [number, string][] = [
+  [6, '#A64B10'],
+  [5, '#A64B10'],
+  [4, '#B8561A'],
+  [3, '#B8561A'],
+  [2, '#C2631A'],
+  [1, '#C2631A'],
+];
 
 export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
   const t = useT();
   const insets = useSafeAreaInsets();
+  const { width, height } = useWindowDimensions();
+  const u = Math.min(width, 480) / 390;
   const reduceMotion = useSettings(s => s.reduceMotion);
   const { levelId, stars, coins, worldCompleted, newLandmark } = route.params;
   const daily = levelId === DAILY_LEVEL_ID;
@@ -41,15 +60,18 @@ export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
   const [earnedCoins, setEarnedCoins] = useState(coins);
   const [doubled, setDoubled] = useState(false);
   const stampWorld = worldCompleted ? WORLDS[worldCompleted - 1] : null;
-  // The postcard shows this level's landmark when there is one, else the world's signature sight
-  const art = (!daily && landmarkAt(levelId)?.path) || LANDMARK_PATHS[world.landmark];
   const worldName = t(worldKey(world.id));
+  const cheer = t(party.cheerKey);
 
-  const handleContinue = () => {
+  // A world finale or the daily puzzle goes back to the map; otherwise straight on to the next level
+  const toMap = daily || worldCompleted !== null;
+
+  const handleNext = () => {
     if (AdsManager.shouldShowInterstitial(levelId)) {
       AdsManager.recordInterstitialShown();
     }
-    navigation.popTo('Map');
+    if (toMap) navigation.popTo('Map');
+    else navigation.replace('Level', { levelId: levelId + 1 });
   };
 
   const handleDoubleCoins = async () => {
@@ -61,64 +83,96 @@ export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
   };
 
   const enter = <T,>(anim: T) => (reduceMotion ? undefined : anim);
+  const titleSize = 41 * u;
+  const starsTop = insets.top + 176 * u;
 
   return (
-    <View style={[styles.root, { backgroundColor: world.palette.sky }]}>
-      {/* soft paper sun and hills behind the postcard */}
-      <View style={[styles.sun, { backgroundColor: world.palette.far }]} />
-      <View style={[styles.hill, styles.hillBack, { backgroundColor: world.palette.mid }]} />
-      <View style={[styles.hill, styles.hillFront, { backgroundColor: world.palette.near }]} />
+    <View style={styles.root}>
+      <Backdrop width={width} height={height} centerY={starsTop + 80 * u} reduceMotion={reduceMotion} />
 
       <ScrollView
-        contentContainerStyle={[styles.content, { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 20 }]}
+        contentContainerStyle={[styles.content, { paddingTop: insets.top + 20 * u, paddingBottom: insets.bottom + 24 }]}
         showsVerticalScrollIndicator={false}
       >
-        <Animated.View
-          entering={enter(ZoomIn.springify().damping(12))}
-          style={[styles.postcard, { borderColor: world.palette.accent }]}
+        <View
           accessible
           accessibilityRole="header"
-          accessibilityLabel={`${t(party.cheerKey)} ${t(party.meaningKey)}. ${
+          accessibilityLabel={`${cheer} ${t(party.meaningKey)}. ${
             daily ? t('result.dailyDone') : t('result.levelDone', { n: levelId })
           }`}
+          style={styles.header}
         >
-          <View style={[styles.chip, { backgroundColor: world.palette.accent }]}>
-            <Text style={styles.chipText} numberOfLines={1}>
+          <Animated.View entering={enter(FadeInDown.delay(100))} style={styles.levelPill}>
+            <Text style={[styles.levelText, { fontSize: 17 * u }]} numberOfLines={1}>
               {daily ? t('result.dailyDone') : `${t('common.level', { n: levelId })} · ${worldName}`}
             </Text>
-          </View>
-          <View style={[styles.artBox, { backgroundColor: world.palette.far }]}>
-            <LandmarkArt path={art} color={world.palette.accent} size={120} />
-            <View style={[styles.postmark, { borderColor: world.palette.accent }]}>
-              <Text style={[styles.postmarkText, { color: world.palette.accent }]}>{world.id}</Text>
-            </View>
-          </View>
-          <Text style={styles.cheer} adjustsFontSizeToFit numberOfLines={1}>
-            {t(party.cheerKey)}
-          </Text>
-          <Text style={styles.meaning}>{t(party.meaningKey)}</Text>
-        </Animated.View>
+          </Animated.View>
 
-        <View style={styles.starRow} accessible accessibilityLabel={t('common.stars', { n: stars })}>
-          {[1, 2, 3].map(i => (
-            <Animated.Text
-              key={i}
-              entering={enter(ZoomIn.delay(350 + i * 220).springify().damping(9))}
-              style={[styles.star, i <= stars ? styles.starOn : styles.starOff, i === 2 && styles.starMiddle]}
-            >
-              ★
-            </Animated.Text>
-          ))}
+          {/* 3D title: dark base, coral sides, bright face */}
+          <Animated.View
+            entering={enter(ZoomIn.delay(150).springify().damping(9))}
+            style={[styles.title, { width: 366 * u, height: titleSize * 1.6 }]}
+            importantForAccessibility="no-hide-descendants"
+          >
+            {TITLE_DEPTH.map(d => (
+              <Text key={`d${d}`} style={[styles.titleText, styles.titleBase, { fontSize: titleSize, top: d }]} numberOfLines={1} adjustsFontSizeToFit>
+                {cheer}
+              </Text>
+            ))}
+            {TITLE_SIDE.map(d => (
+              <Text key={`s${d}`} style={[styles.titleText, styles.titleSide, { fontSize: titleSize, top: d }]} numberOfLines={1} adjustsFontSizeToFit>
+                {cheer}
+              </Text>
+            ))}
+            <Text style={[styles.titleText, styles.titleFace, { fontSize: titleSize }]} numberOfLines={1} adjustsFontSizeToFit>
+              {cheer}
+            </Text>
+          </Animated.View>
+          <Text style={[styles.meaning, { fontSize: 17 * u }]}>{t(party.meaningKey)}</Text>
         </View>
 
-        <Animated.View entering={enter(FadeInDown.delay(1000))} style={styles.lines}>
-          <Text style={styles.starsLine}>{t(party.starsLineKey)}</Text>
-          <Text style={styles.funLine}>{t(party.funLineKey, { world: worldName })}</Text>
+        <View
+          style={[styles.stars, { width: 390 * u, height: 140 * u }]}
+          accessible
+          accessibilityLabel={t('common.stars', { n: stars })}
+        >
+          {STARS.map((s, i) => (
+            <View key={s.left} style={[styles.star, { left: s.left * u, top: s.top * u }]}>
+              <Star3D on={i < stars} size={s.size * u} tilt={s.tilt} delayMs={s.delay} reduceMotion={reduceMotion} />
+            </View>
+          ))}
+        </View>
+        <Text style={[styles.starsLine, { fontSize: 18 * u }]}>{t(party.starsLineKey)}</Text>
+
+        <Animated.View entering={enter(FadeInDown.delay(600))} style={styles.postcard}>
+          <CelebrationPostcard
+            worldId={world.id}
+            width={312 * u}
+            reduceMotion={reduceMotion}
+            accessibilityLabel={worldName}
+          />
+        </Animated.View>
+
+        <Animated.View
+          entering={enter(FadeInDown.delay(2100))}
+          style={styles.coins}
+          accessible
+          accessibilityLabel={t('result.coinsA11y', { n: earnedCoins })}
+        >
+          <CoinIcon size={46 * u} />
+          <View importantForAccessibility="no-hide-descendants">
+            {COIN_DEPTH.map(([d, c]) => (
+              <Text key={d} style={[styles.coinText, styles.coinDepth, { fontSize: 46 * u, top: d, color: c }]}>
+                +{earnedCoins}
+              </Text>
+            ))}
+            <Text style={[styles.coinText, { fontSize: 46 * u }]}>+{earnedCoins}</Text>
+          </View>
         </Animated.View>
 
         {milestone && (
           <Animated.View
-            entering={enter(ZoomIn.delay(1250).springify().damping(10))}
+            entering={enter(ZoomIn.delay(2300).springify().damping(10))}
             style={[styles.ribbon, milestone.kind !== 'ten' && styles.ribbonBig]}
             accessible
             accessibilityLabel={`${t(milestone.titleKey, { n: milestone.n, world: worldName })}. ${t(milestone.lineKey)}`}
@@ -131,25 +185,32 @@ export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
           </Animated.View>
         )}
 
-        <Animated.View
-          entering={enter(FadeInDown.delay(1400))}
-          style={styles.coins}
-          accessible
-          accessibilityLabel={t('result.coinsA11y', { n: earnedCoins })}
-        >
-          <View style={styles.coinDot} />
-          <Text style={styles.coinText}>+{earnedCoins}</Text>
-        </Animated.View>
-
-        <View style={styles.buttons}>
+        <View style={[styles.buttons, { width: 300 * u }]}>
           {!doubled && earnedCoins > 0 && (
-            <>
-              <PrimaryButton label={t('result.double')} variant="ocean" onPress={handleDoubleCoins} />
-              <View style={styles.gap} />
-            </>
+            <Animated.View entering={enter(FadeInDown.delay(2500))}>
+              <Button3D
+                label={t('result.double')}
+                icon="▶"
+                height={56 * u}
+                fontSize={22 * u}
+                face="#F26A4C"
+                top="#FF8C6E"
+                base="#9E2C17"
+                onPress={handleDoubleCoins}
+              />
+            </Animated.View>
           )}
-          {/* The flow returns to the map after every level */}
-          <PrimaryButton label={t('common.continue')} variant="coral" onPress={handleContinue} />
+          <Animated.View entering={enter(FadeInDown.delay(2700))} style={styles.gap}>
+            <Button3D
+              label={t(toMap ? 'common.continue' : 'result.nextLevel')}
+              height={62 * u}
+              fontSize={27 * u}
+              face="#2AA84A"
+              top="#3CC45C"
+              base="#0F5F26"
+              onPress={handleNext}
+            />
+          </Animated.View>
         </View>
       </ScrollView>
 
@@ -162,6 +223,13 @@ export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
           buttonLabel={t('result.addToPassport')}
           onClose={() => setStampOpen(false)}
         >
+          {POSTCARD_ASSETS[stampWorld.id as WorldId] && (
+            <Image
+              source={POSTCARD_ASSETS[stampWorld.id as WorldId].color}
+              style={styles.worldPostcard}
+              accessibilityIgnoresInvertColors
+            />
+          )}
           <PassportStamp
             world={stampWorld}
             collected
@@ -198,151 +266,131 @@ export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
   );
 }
 
+type ButtonProps = {
+  label: string;
+  icon?: string;
+  height: number;
+  fontSize: number;
+  face: string;
+  top: string;
+  base: string;
+  onPress: () => void;
+};
+
+// Chunky 3D button: a darker base under a bright face that presses down
+function Button3D({ label, icon, height, fontSize, face, top, base, onPress }: ButtonProps) {
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress}>
+      {({ pressed }) => (
+        <View style={{ height: height + 6 }}>
+          <View style={[styles.btnBase, { height, backgroundColor: base }]} />
+          <View style={[styles.btnFace, { height, backgroundColor: face }, pressed && styles.btnPressed]}>
+            <View style={[styles.btnTop, { backgroundColor: top }]} />
+            <View style={styles.btnShine} />
+            <Text style={[styles.btnText, { fontSize }]} numberOfLines={1} adjustsFontSizeToFit>
+              {icon ? `${icon}  ${label}` : label}
+            </Text>
+          </View>
+        </View>
+      )}
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   root: {
     flex: 1,
     overflow: 'hidden',
-  },
-  sun: {
-    position: 'absolute',
-    top: -90,
-    right: -70,
-    width: 260,
-    height: 260,
-    borderRadius: 130,
-    opacity: 0.7,
-  },
-  hill: {
-    position: 'absolute',
-    width: '160%',
-    height: 260,
-    borderRadius: 400,
-  },
-  hillBack: {
-    bottom: -150,
-    left: '-50%',
-    opacity: 0.55,
-  },
-  hillFront: {
-    bottom: -190,
-    left: '-5%',
-    opacity: 0.45,
+    backgroundColor: '#0E6E8C',
   },
   content: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: sizes.gutter,
   },
-  postcard: {
-    width: '100%',
-    maxWidth: 400,
-    paddingTop: 30,
-    paddingBottom: 18,
-    paddingHorizontal: 18,
-    borderRadius: 22,
-    borderWidth: 3,
-    borderStyle: 'dashed',
-    backgroundColor: colors.bgCream,
+  header: {
     alignItems: 'center',
-    transform: [{ rotate: '-1.5deg' }],
-    elevation: 6,
   },
-  chip: {
-    position: 'absolute',
-    top: -16,
-    maxWidth: '90%',
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 18,
+  levelPill: {
+    paddingHorizontal: 18,
+    paddingVertical: 5,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.16)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.4)',
   },
-  chipText: {
-    fontSize: 17,
+  levelText: {
     fontFamily: fonts.uiBold,
     color: colors.white,
+    letterSpacing: 0.6,
   },
-  artBox: {
-    width: '100%',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderRadius: 16,
+  title: {
+    marginTop: 10,
   },
-  postmark: {
+  titleText: {
     position: 'absolute',
-    top: 8,
-    right: 8,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    borderWidth: 2,
-    borderStyle: 'dashed',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transform: [{ rotate: '12deg' }],
-  },
-  postmarkText: {
-    fontSize: 18,
-    fontFamily: fonts.uiBold,
-  },
-  cheer: {
-    marginTop: 12,
-    fontSize: 42,
-    fontFamily: fonts.uiBold,
-    color: colors.ink,
+    left: 0,
+    right: 0,
+    top: 0,
     textAlign: 'center',
+    fontFamily: fonts.uiBold,
+    includeFontPadding: false,
+  },
+  titleBase: {
+    color: '#5C1A0E',
+  },
+  titleSide: {
+    color: '#E0553A',
+  },
+  titleFace: {
+    color: '#FFE89A',
+    textShadowColor: '#5C1A0E',
+    textShadowRadius: 1.5,
   },
   meaning: {
-    fontSize: 17,
-    fontFamily: fonts.ui,
-    color: '#4B5563',
+    fontFamily: fonts.uiBold,
+    color: '#FFF3C4',
     textAlign: 'center',
   },
-  starRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    marginTop: 18,
+  stars: {
+    marginTop: 8,
   },
   star: {
-    marginHorizontal: 6,
-    fontSize: STAR_SIZE,
-    textShadowColor: 'rgba(31,42,55,0.25)',
-    textShadowOffset: { width: 0, height: 3 },
-    textShadowRadius: 3,
-  },
-  starMiddle: {
-    fontSize: STAR_SIZE * 1.25,
-    marginBottom: 8,
-  },
-  starOn: {
-    color: colors.coinGold,
-  },
-  starOff: {
-    color: '#D9D2C3',
-  },
-  lines: {
-    alignItems: 'center',
-    marginTop: 6,
+    position: 'absolute',
   },
   starsLine: {
-    fontSize: 22,
-    fontFamily: fonts.uiBold,
-    color: colors.ink,
-    textAlign: 'center',
-  },
-  funLine: {
     marginTop: 4,
-    fontSize: 18,
-    fontFamily: fonts.ui,
-    color: colors.ink,
+    fontFamily: fonts.uiBold,
+    color: colors.white,
     textAlign: 'center',
+    textShadowColor: 'rgba(0,30,45,0.5)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 0,
+  },
+  postcard: {
+    marginTop: 20,
+  },
+  coins: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 34,
+    gap: 10,
+  },
+  coinText: {
+    fontFamily: fonts.uiBold,
+    color: '#FFE27A',
+    includeFontPadding: false,
+  },
+  coinDepth: {
+    position: 'absolute',
+    left: 0,
   },
   ribbon: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'stretch',
+    width: '86%',
     maxWidth: 420,
     marginTop: 16,
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 18,
     backgroundColor: '#FFF1C2',
@@ -354,14 +402,14 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
   badge: {
-    fontSize: 40,
+    fontSize: 36,
     marginRight: 12,
   },
   ribbonTextCol: {
     flex: 1,
   },
   ribbonTitle: {
-    fontSize: 21,
+    fontSize: 20,
     fontFamily: fonts.uiBold,
     color: colors.ink,
   },
@@ -370,36 +418,61 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ui,
     color: colors.ink,
   },
-  coins: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 18,
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 28,
-    backgroundColor: colors.white,
-    elevation: 2,
-  },
-  coinDot: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    marginRight: 10,
-    backgroundColor: colors.coinGold,
-  },
-  coinText: {
-    fontSize: 30,
-    fontFamily: fonts.uiBold,
-    color: colors.ink,
-  },
   buttons: {
-    alignSelf: 'stretch',
     maxWidth: 420,
-    width: '100%',
-    marginTop: 20,
+    marginTop: 22,
   },
   gap: {
-    height: 12,
+    marginTop: 12,
+  },
+  btnBase: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 6,
+    borderRadius: 20,
+  },
+  btnFace: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    borderRadius: 20,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  btnPressed: {
+    top: 4,
+  },
+  btnTop: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: '50%',
+  },
+  btnShine: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: 3,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+  },
+  btnText: {
+    fontFamily: fonts.uiBold,
+    color: colors.white,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 0,
+  },
+  worldPostcard: {
+    width: '100%',
+    aspectRatio: 1080 / 489,
+    marginBottom: 12,
+    borderRadius: 14,
   },
   stampNote: {
     marginTop: 8,

@@ -1,4 +1,5 @@
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HINT_COST, HintKind } from '../game/engine/hints';
 import { colors, fonts, sizes } from './theme';
 import { TKey, useT } from '../i18n';
@@ -18,10 +19,11 @@ type Props = {
 
 export function HintSheet({ visible, coins, onPick, onClose }: Props) {
   const t = useT();
+  const insets = useSafeAreaInsets();
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose} accessibilityLabel={t('hints.closeA11y')}>
-        <Pressable style={styles.sheet} onPress={() => {}}>
+        <Pressable style={[styles.sheet, { paddingBottom: 32 + insets.bottom }]} onPress={() => {}}>
           <Text style={styles.title}>{t('hints.title')}</Text>
           <Text style={styles.balance}>{t('hints.balance', { n: coins })}</Text>
 

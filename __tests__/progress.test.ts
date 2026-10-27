@@ -1,5 +1,6 @@
 import { HINT_COST, pickHintWord, strongestMark } from '../src/game/engine/hints';
-import { levelReward, STARTING_COINS, WORLD_COMPLETE_COINS } from '../src/game/engine/rewards';
+import { levelReward, STARTING_COINS, WORLD_COMPLETE_COINS, worldUnlockCost } from '../src/game/engine/rewards';
+import { isLevelOpen } from '../src/map/worldProgress';
 import { PlacedWord } from '../src/game/types';
 import { useProgress } from '../src/store/progress';
 import { useWallet } from '../src/store/wallet';
@@ -80,5 +81,42 @@ describe('stores', () => {
     useProgress.setState({ currentLevel: 10 });
     useProgress.getState().completeLevel(3, 2);
     expect(useProgress.getState().currentLevel).toBe(10);
+  });
+});
+
+describe('buying a world with coins', () => {
+  beforeEach(() => {
+    useProgress.setState({ currentLevel: 5, stars: {}, inProgress: undefined, boughtWorlds: [] });
+    useWallet.setState({ coins: 50000 });
+  });
+
+  test('cost climbs with distance', () => {
+    expect(worldUnlockCost(2)).toBe(7500);
+    expect(worldUnlockCost(20)).toBe(7500 + 18 * 2250);
+  });
+
+  test('spends coins and opens only that world, one level at a time', () => {
+    expect(useProgress.getState().buyWorld(7)).toBe(true);
+    expect(useWallet.getState().coins).toBe(50000 - worldUnlockCost(7));
+    const { stars, boughtWorlds } = useProgress.getState();
+    expect(isLevelOpen(361, 5, stars, boughtWorlds)).toBe(true);
+    expect(isLevelOpen(362, 5, stars, boughtWorlds)).toBe(false);
+    expect(isLevelOpen(421, 5, stars, boughtWorlds)).toBe(false);
+  });
+
+  test('short on coins or already open: nothing spent', () => {
+    useWallet.setState({ coins: 10 });
+    expect(useProgress.getState().buyWorld(3)).toBe(false);
+    expect(useProgress.getState().buyWorld(1)).toBe(false);
+    expect(useWallet.getState().coins).toBe(10);
+  });
+
+  test('winning in a bought world keeps the main route, which later skips won levels', () => {
+    useProgress.getState().buyWorld(2);
+    useProgress.getState().completeLevel(61, 3);
+    expect(useProgress.getState().currentLevel).toBe(5);
+    useProgress.setState({ currentLevel: 60 });
+    useProgress.getState().completeLevel(60, 3);
+    expect(useProgress.getState().currentLevel).toBe(62);
   });
 });

@@ -1,4 +1,5 @@
 import { Modal, StyleSheet, Text, View } from 'react-native';
+import { ModalScroll } from './ModalScroll';
 import { useT } from '../i18n';
 import { PrimaryButton } from './PrimaryButton';
 import { colors, fonts, sizes } from './theme';
@@ -15,8 +16,8 @@ type Props = {
 export function PauseSheet({ visible, onResume, onRestart, onSettings, onMap }: Props) {
   const t = useT();
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onResume}>
-      <View style={styles.backdrop}>
+    <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onResume}>
+      <ModalScroll style={styles.backdrop}>
         <View style={styles.card} accessibilityViewIsModal>
           <Text style={styles.title} accessibilityRole="header">
             {t('pause.title')}
@@ -30,7 +31,7 @@ export function PauseSheet({ visible, onResume, onRestart, onSettings, onMap }: 
           <PrimaryButton label={t('pause.map')} onPress={onMap} />
           <Text style={styles.note}>{t('pause.saved')}</Text>
         </View>
-      </View>
+      </ModalScroll>
     </Modal>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ModalScroll } from './ModalScroll';
 import { Alert, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { AdsManager } from '../services/ads/AdsManager';
 import { getTodayKey } from '../store/daily';
@@ -50,8 +51,8 @@ export function ShopModal({ visible, onClose }: Props) {
   };
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <View style={styles.overlay}>
+    <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
+      <ModalScroll style={styles.overlay}>
         <View style={styles.card}>
           <View style={styles.header}>
             <Text style={styles.title}>{t('shop.title')}</Text>
@@ -121,7 +122,7 @@ export function ShopModal({ visible, onClose }: Props) {
             <PrimaryButton label={t('common.done')} variant="ocean" onPress={onClose} />
           </View>
         </View>
-      </View>
+      </ModalScroll>
     </Modal>
   );
 }

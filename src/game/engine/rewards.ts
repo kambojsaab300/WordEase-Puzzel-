@@ -5,6 +5,14 @@ export const STARTING_COINS = 200;
 export const BONUS_WORD_COINS = 1;
 export const WORLD_COMPLETE_COINS = 150;
 
+// Skipping ahead to a country costs about six worlds of earnings, and more the further away it is
+export const WORLD_UNLOCK_BASE = 7500;
+export const WORLD_UNLOCK_STEP = 2250;
+
+export function worldUnlockCost(world: number): number {
+  return WORLD_UNLOCK_BASE + Math.max(0, world - 2) * WORLD_UNLOCK_STEP;
+}
+
 export type LevelReward = {
   coins: number;
   newBest: Stars;

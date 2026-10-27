@@ -6,6 +6,7 @@ import { GlobeScreen } from '../screens/GlobeScreen';
 import { LevelScreen } from '../screens/LevelScreen';
 import { MapScreen } from '../screens/MapScreen';
 import { OnboardingScreen } from '../screens/OnboardingScreen';
+import { QuizScreen } from '../screens/QuizScreen';
 import { ResultScreen } from '../screens/ResultScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { SplashScreen } from '../screens/SplashScreen';
@@ -27,6 +28,7 @@ export type RootStackParamList = {
   };
   Settings: undefined;
   About: undefined;
+  Quiz: undefined;
 };
 
 export type ScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -56,6 +58,7 @@ export function RootNavigator() {
         <Stack.Screen name="Result" component={ResultScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="About" component={AboutScreen} />
+        <Stack.Screen name="Quiz" component={QuizScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

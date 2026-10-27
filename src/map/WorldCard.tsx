@@ -1,5 +1,6 @@
 import { memo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { POSTCARD_ASSETS, type WorldId } from '../assets/postcards';
 import type { WorldDef } from '../game/levels/worlds';
 import { LandmarkArt } from '../ui/LandmarkArt';
 import { colors, fonts } from '../ui/theme';
@@ -15,6 +16,9 @@ type Props = {
   /** Which of the world's 4 landmarks are reached */
   visited: boolean[];
   lockedHint: string;
+  /** Coins to open this locked world early; no button when undefined */
+  unlockCost?: number;
+  onUnlock?: () => void;
   onOpen: () => void;
 };
 
@@ -34,6 +38,8 @@ export const WorldCard = memo(function WorldCardView({
   stats,
   visited,
   lockedHint,
+  unlockCost,
+  onUnlock,
   onOpen,
 }: Props) {
   const t = useT();
@@ -43,6 +49,7 @@ export const WorldCard = memo(function WorldCardView({
   const current = status === 'current';
   const progress = stats.total ? stats.levelsDone / stats.total : 0;
   const landmarks = worldLandmarks(world.id);
+  const postcard = POSTCARD_ASSETS[world.id as WorldId];
 
   return (
     <Pressable
@@ -65,6 +72,13 @@ export const WorldCard = memo(function WorldCardView({
         pressed && styles.pressed,
       ]}
     >
+      {/* Paint the Postcard: the grey sketch fills with colour as levels are won */}
+      {postcard && (
+        <View style={styles.postcard} importantForAccessibility="no-hide-descendants">
+          <Image source={postcard.gray} style={styles.postcardFill} />
+          {!locked && <Image source={postcard.color} style={[styles.postcardFill, { opacity: progress }]} />}
+        </View>
+      )}
       <View style={styles.top}>
         <View style={[styles.artTile, locked && styles.artTileLocked]}>
           <LandmarkArt path={LANDMARK_PATHS[world.landmark]} color={locked ? LOCKED : world.palette.accent} size={64} />
@@ -101,7 +115,19 @@ export const WorldCard = memo(function WorldCardView({
       )}
 
       {locked ? (
-        <Text style={styles.lockedHint}>{lockedHint}</Text>
+        <>
+          <Text style={styles.lockedHint}>{lockedHint}</Text>
+          {unlockCost !== undefined && onUnlock && (
+            <Pressable
+              onPress={onUnlock}
+              accessibilityRole="button"
+              accessibilityLabel={t('card.unlockA11y', { world: name, cost: unlockCost })}
+              style={({ pressed }) => [styles.open, styles.unlock, pressed && styles.pressed]}
+            >
+              <Text style={styles.openText}>{t('card.unlock', { cost: unlockCost })}</Text>
+            </Pressable>
+          )}
+        </>
       ) : (
         <View style={[styles.open, current && styles.openCurrent]}>
           <Text style={styles.openText}>{t(current ? 'card.continue' : 'card.openMap')}</Text>
@@ -126,6 +152,21 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.85,
+  },
+  postcard: {
+    width: '100%',
+    aspectRatio: 1080 / 489,
+    marginBottom: 14,
+    borderRadius: 14,
+    overflow: 'hidden',
+    backgroundColor: '#E4DDCF',
+  },
+  postcardFill: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
   },
   top: {
     flexDirection: 'row',
@@ -215,6 +256,9 @@ const styles = StyleSheet.create({
   },
   openCurrent: {
     backgroundColor: colors.accentCoral,
+  },
+  unlock: {
+    backgroundColor: '#C9933B',
   },
   openText: {
     fontSize: 20,

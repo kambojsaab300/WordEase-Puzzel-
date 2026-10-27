@@ -20,6 +20,10 @@ jest.mock('@shopify/react-native-skia', () => {
 });
 // confetti is pure decoration; here we only check it is (or is not) mounted
 jest.mock('../src/ui/Confetti', () => ({ Confetti: () => null }));
+// the animated burst, 3D stars and painting postcard are decoration too
+jest.mock('../src/ui/celebration/Backdrop', () => ({ Backdrop: () => null }));
+jest.mock('../src/ui/celebration/Star3D', () => ({ Star3D: () => null, CoinIcon: () => null }));
+jest.mock('../src/ui/celebration/CelebrationPostcard', () => ({ CelebrationPostcard: () => null }));
 
 const { ResultScreen } = require('../src/screens/ResultScreen');
 const { Confetti } = require('../src/ui/Confetti');

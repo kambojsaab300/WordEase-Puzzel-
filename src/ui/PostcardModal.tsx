@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { ModalScroll } from './ModalScroll';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { PrimaryButton } from './PrimaryButton';
 import { colors, fonts, sizes } from './theme';
@@ -14,15 +15,15 @@ type Props = {
 // Paper-postcard style dialog
 export function PostcardModal({ visible, title, children, buttonLabel = 'OK', onClose }: Props) {
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <View style={styles.backdrop}>
+    <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
+      <ModalScroll style={styles.backdrop}>
         <View style={styles.card}>
           <View style={styles.stampLine} />
           <Text style={styles.title}>{title}</Text>
           <View style={styles.body}>{children}</View>
           <PrimaryButton label={buttonLabel} variant="coral" onPress={onClose} />
         </View>
-      </View>
+      </ModalScroll>
     </Modal>
   );
 }

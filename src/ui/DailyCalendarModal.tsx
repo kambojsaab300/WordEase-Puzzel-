@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { ModalScroll } from './ModalScroll';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { localeOf, useT } from '../i18n';
 import { getTodayKey, useDaily } from '../store/daily';
@@ -55,8 +56,8 @@ export function DailyCalendarModal({ visible, onClose, onPlayDaily }: Props) {
   const weekHeaders = t('daily.weekdays').split(',');
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <View style={styles.overlay}>
+    <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
+      <ModalScroll style={styles.overlay}>
         <View style={styles.card}>
           <View style={styles.header}>
             <Text style={styles.title}>{t('daily.title')}</Text>
@@ -142,7 +143,7 @@ export function DailyCalendarModal({ visible, onClose, onPlayDaily }: Props) {
             )}
           </View>
         </View>
-      </View>
+      </ModalScroll>
     </Modal>
   );
 }

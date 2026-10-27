@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FlatList, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Alert, FlatList, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import type { ScreenProps } from '../app/navigation';
+import { worldUnlockCost } from '../game/engine/rewards';
 import { WORLD_COUNT, WorldDef, WORLDS } from '../game/levels/worlds';
 import { worldLandmarks } from '../map/landmarkPlan';
 import { WorldCard } from '../map/WorldCard';
 import { unlockedWorldOf, worldStats, worldStatuses } from '../map/worldProgress';
 import { useProgress } from '../store/progress';
 import { useSettings } from '../store/settings';
+import { useWallet } from '../store/wallet';
 import { Screen } from '../ui/Screen';
 import { Toast } from '../ui/Toast';
 import { colors, fonts } from '../ui/theme';
@@ -23,9 +25,11 @@ export function GlobeScreen({ navigation }: ScreenProps<'Globe'>) {
   const stars = useProgress(s => s.stars);
   const lastSeenWorld = useProgress(s => s.lastSeenWorld);
   const markWorldSeen = useProgress(s => s.markWorldSeen);
+  const boughtWorlds = useProgress(s => s.boughtWorlds);
+  const buyWorld = useProgress(s => s.buyWorld);
   const reduceMotion = useSettings(s => s.reduceMotion);
 
-  const statuses = useMemo(() => worldStatuses(currentLevel, stars), [currentLevel, stars]);
+  const statuses = useMemo(() => worldStatuses(currentLevel, stars, boughtWorlds), [currentLevel, stars, boughtWorlds]);
   const unlockedWorld = unlockedWorldOf(currentLevel);
   const [toast, setToast] = useState<{ text: string } | null>(null);
   const listRef = useRef<FlatList<WorldDef>>(null);
@@ -50,6 +54,25 @@ export function GlobeScreen({ navigation }: ScreenProps<'Globe'>) {
     return () => clearTimeout(timer);
   }, [unlockedWorld, columns, reduceMotion]);
 
+  const unlockWorld = (world: number) => {
+    const cost = worldUnlockCost(world);
+    const name = t(worldKey(world));
+    const coins = useWallet.getState().coins;
+    if (coins < cost) {
+      setToast({ text: t('globe.needCoins', { n: cost - coins }) });
+      return;
+    }
+    Alert.alert(t('globe.unlockTitle', { world: name }), t('globe.unlockBody', { cost, coins }), [
+      { text: t('globe.unlockCancel'), style: 'cancel' },
+      {
+        text: t('globe.unlockConfirm'),
+        onPress: () => {
+          if (buyWorld(world)) setToast({ text: t('globe.unlocked', { world: name }) });
+        },
+      },
+    ]);
+  };
+
   const worldsDone = statuses.filter(s => s === 'done').length;
   const totalStars = Object.values(stars).reduce((sum, s) => sum + s, 0);
 
@@ -61,6 +84,8 @@ export function GlobeScreen({ navigation }: ScreenProps<'Globe'>) {
         stats={worldStats(item.id, stars)}
         visited={worldLandmarks(item.id).map(l => Boolean(stars[l.levelId]))}
         lockedHint={item.id > 1 ? t('globe.lockedHint', { world: t(worldKey(item.id - 1)) }) : ''}
+        unlockCost={worldUnlockCost(item.id)}
+        onUnlock={() => unlockWorld(item.id)}
         onOpen={() => navigation.popTo('Map', { focusWorld: item.id })}
       />
     </View>
