@@ -1,0 +1,156 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>WordEase Celebration Screen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap">
+<style>
+/* Layout: level-complete celebration. Ocean burst with golden rays, extruded 3D title, glossy 3D stars, tilted postcard that paints to colour, confetti + coin shower, two 3D buttons, banner ad slot */
+[hidden]{display:none!important}
+:root{--bg:#EDF1F3;--fg:#1F2A37}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11181E;--fg:#E7EDF1;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11181E;--fg:#E7EDF1;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:"Nunito",ui-rounded,system-ui,sans-serif;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.phone{width:min(390px,100%);margin:0 auto;background:#0B1116;border-radius:46px;padding:10px;box-sizing:border-box;box-shadow:0 24px 60px rgba(10,30,45,.28)}
+.screen{position:relative;aspect-ratio:390/844;border-radius:36px;overflow:hidden;container-type:inline-size;background:radial-gradient(circle at 50% 34%,#33B2D6 0%,#0E6E8C 40%,#07344B 100%);color:#FFFFFF;--u:calc(100cqw/390)}
+button{font-family:inherit}
+button:focus-visible{outline:3px solid #FFFFFF;outline-offset:3px}
+.defs{position:absolute;width:0;height:0}
+.rays{position:absolute;left:50%;top:calc(var(--u)*270);width:calc(var(--u)*980);height:calc(var(--u)*980);margin:calc(var(--u)*-490) 0 0 calc(var(--u)*-490);background:repeating-conic-gradient(rgba(255,228,120,.30) 0 7.5deg,rgba(255,228,120,0) 7.5deg 15deg);-webkit-mask:radial-gradient(circle,#000 8%,transparent 62%);mask:radial-gradient(circle,#000 8%,transparent 62%);animation:spin 50s linear infinite}
+.glow{position:absolute;left:50%;top:calc(var(--u)*270);width:calc(var(--u)*520);height:calc(var(--u)*520);margin:calc(var(--u)*-260) 0 0 calc(var(--u)*-260);border-radius:50%;background:radial-gradient(circle,rgba(255,240,170,.55),rgba(255,240,170,0) 68%)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sp{position:absolute;width:calc(var(--u)*22);height:calc(var(--u)*22);animation:tw 2.4s ease-in-out infinite}
+@keyframes tw{0%,100%{transform:scale(0) rotate(0);opacity:0}50%{transform:scale(1) rotate(45deg);opacity:1}}
+.lv{position:absolute;top:calc(var(--u)*22);left:50%;transform:translateX(-50%);height:calc(var(--u)*34);padding:0 calc(var(--u)*18);border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 calc(var(--u)*1.5) rgba(255,255,255,.4);font-weight:800;font-size:calc(var(--u)*17);letter-spacing:.04em;white-space:nowrap}
+.title{position:absolute;top:calc(var(--u)*66);left:calc(var(--u)*12);width:calc(var(--u)*366);height:auto;overflow:visible}
+.stars{position:absolute;top:calc(var(--u)*176);left:0;width:100%;height:calc(var(--u)*160);perspective:calc(var(--u)*700)}
+.st{position:absolute;display:block;transform:rotate(var(--r));filter:drop-shadow(0 calc(var(--u)*8) calc(var(--u)*7) rgba(0,30,45,.4))}
+.st svg{display:block;width:100%;height:auto}
+.st::before{content:"";position:absolute;left:10%;right:10%;top:6%;bottom:16%;border-radius:50%;border:calc(var(--u)*4) solid rgba(255,240,170,.95);opacity:0}
+.s0{width:calc(var(--u)*84);left:calc(var(--u)*62);top:calc(var(--u)*46);--r:-14deg}
+.s1{width:calc(var(--u)*118);left:calc(var(--u)*136);top:0;--r:0deg}
+.s2{width:calc(var(--u)*84);left:calc(var(--u)*244);top:calc(var(--u)*46);--r:14deg}
+.pc{position:absolute;top:calc(var(--u)*350);left:50%;width:calc(var(--u)*312);margin-left:calc(var(--u)*-156);perspective:calc(var(--u)*900)}
+.card{position:relative;padding:calc(var(--u)*8);border-radius:calc(var(--u)*10);background:#FFFDF6;overflow:hidden;transform:rotateX(9deg) rotateY(-11deg) rotateZ(-1.5deg);box-shadow:0 calc(var(--u)*1) 0 #DDD4BF,0 calc(var(--u)*2) 0 #D3C9B2,0 calc(var(--u)*3) 0 #C9BFA6,0 calc(var(--u)*4) 0 #BFB59B,0 calc(var(--u)*5) 0 #B5AB91,0 calc(var(--u)*22) calc(var(--u)*24) rgba(0,25,40,.5);animation:sway 4s ease-in-out 2.8s infinite alternate}
+.card img{display:block;width:100%;height:auto;border-radius:calc(var(--u)*4)}
+.card::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.75) 50%,transparent 62%);transform:translateX(-130%);pointer-events:none}
+@keyframes sway{from{transform:rotateX(9deg) rotateY(-11deg) rotateZ(-1.5deg)}to{transform:rotateX(7deg) rotateY(-4deg) rotateZ(-1deg)}}
+.coin{position:absolute;top:calc(var(--u)*534);left:0;right:0;display:flex;justify-content:center;align-items:center;gap:calc(var(--u)*10)}
+.coin svg{width:calc(var(--u)*46);height:auto;filter:drop-shadow(0 calc(var(--u)*4) calc(var(--u)*4) rgba(0,30,45,.35))}
+.num{font-weight:900;font-size:calc(var(--u)*46);line-height:1;color:#FFE27A;text-shadow:0 calc(var(--u)*1) 0 #C2631A,0 calc(var(--u)*2) 0 #C2631A,0 calc(var(--u)*3) 0 #B8561A,0 calc(var(--u)*4) 0 #B8561A,0 calc(var(--u)*5) 0 #A64B10,0 calc(var(--u)*6) 0 #A64B10,0 calc(var(--u)*14) calc(var(--u)*10) rgba(0,25,40,.4)}
+.btn{position:absolute;left:calc(var(--u)*45);width:calc(var(--u)*300);border:0;border-radius:calc(var(--u)*20);color:#FFFFFF;font-weight:900;display:flex;align-items:center;justify-content:center;gap:calc(var(--u)*10);cursor:pointer;text-shadow:0 calc(var(--u)*2) 0 rgba(0,0,0,.3);transition:transform .08s}
+.btn svg{width:calc(var(--u)*24);height:calc(var(--u)*24)}
+.btn.coral{top:calc(var(--u)*610);height:calc(var(--u)*56);font-size:calc(var(--u)*22);background:linear-gradient(#FF8C6E,#E5482C);box-shadow:0 calc(var(--u)*6) 0 #9E2C17,0 calc(var(--u)*12) calc(var(--u)*16) rgba(0,25,40,.35),inset 0 calc(var(--u)*3) 0 rgba(255,255,255,.5)}
+.btn.green{top:calc(var(--u)*682);height:calc(var(--u)*62);font-size:calc(var(--u)*27);background:linear-gradient(#3CC45C,#178A38);box-shadow:0 calc(var(--u)*6) 0 #0F5F26,0 calc(var(--u)*12) calc(var(--u)*16) rgba(0,25,40,.35),inset 0 calc(var(--u)*3) 0 rgba(255,255,255,.45)}
+.btn:active{transform:translateY(calc(var(--u)*4))}
+.ad{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(var(--u)*16);width:calc(var(--u)*320);height:calc(var(--u)*50);box-sizing:border-box;border:1px dashed rgba(255,255,255,.5);border-radius:calc(var(--u)*6);background:rgba(7,52,75,.55);color:rgba(255,255,255,.8);font-weight:800;font-size:calc(var(--u)*14);display:grid;place-items:center}
+.fall{position:absolute;top:0;left:0;right:0;height:0;pointer-events:none;perspective:calc(var(--u)*600)}
+.cf{position:absolute;top:calc(var(--u)*-30);width:calc(var(--u)*11);height:calc(var(--u)*17);border-radius:2px;animation:cf var(--t) cubic-bezier(.3,.5,.6,1) var(--d) both}
+@keyframes cf{to{transform:translate3d(var(--x),calc(var(--u)*900),0) rotateX(1080deg) rotateZ(540deg)}}
+.cn{position:absolute;top:calc(var(--u)*-40);width:calc(var(--u)*28);animation:cn var(--t) cubic-bezier(.3,.5,.6,1) var(--d) both}
+.cn svg{display:block;width:100%;height:auto}
+@keyframes cn{to{transform:translate3d(var(--x),calc(var(--u)*900),0) rotateY(1260deg)}}
+.adfull{position:absolute;inset:0;z-index:30;background:#1F2A37;display:grid;place-items:center}
+.adbox{width:calc(var(--u)*300);height:calc(var(--u)*440);box-sizing:border-box;border:2px dashed #6E7B8A;border-radius:calc(var(--u)*16);display:grid;place-items:center;color:#C4CCD4;font-weight:800;font-size:calc(var(--u)*22)}
+.adtag{position:absolute;top:calc(var(--u)*24);left:calc(var(--u)*20);background:#F5C842;color:#1F2A37;font-weight:800;font-size:calc(var(--u)*13);padding:calc(var(--u)*4) calc(var(--u)*10);border-radius:6px}
+.cd,.adx{position:absolute;top:calc(var(--u)*16);right:calc(var(--u)*18);width:calc(var(--u)*44);height:calc(var(--u)*44);box-sizing:border-box;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:calc(var(--u)*18)}
+.cd{border:2px solid #C4CCD4;color:#C4CCD4}
+.adx{border:0;padding:0;background:#FFFFFF;color:#1F2A37;cursor:pointer}
+.adx svg{width:50%;height:50%}
+.replay{display:block;margin:18px auto 0;padding:10px 22px;border-radius:999px;border:1.5px solid currentColor;background:transparent;color:var(--fg);font-weight:800;font-size:16px;cursor:pointer}
+
+/* Entrance timeline: only while .go is set, so the final state is the base style (also what reduced-motion sees) */
+.go .glow{animation:fade .8s ease both}
+.go .lv{animation:fade .5s ease .1s both}
+.go .title{animation:drop .8s cubic-bezier(.2,1.5,.4,1) .15s both}
+.go .st{animation:pop .75s cubic-bezier(.2,1.2,.4,1) var(--d) both}
+.go .st::before{animation:ring .7s ease-out calc(var(--d) + .3s) both}
+.go .s0{--d:.8s}.go .s1{--d:1.15s}.go .s2{--d:1.5s}
+.go .pc{animation:rise .8s cubic-bezier(.2,1.2,.4,1) .6s both}
+.go .card img{animation:paint 1.3s ease-in-out 1.7s both}
+.go .card::after{animation:shine 1s ease-in-out 3s both}
+.go .coin{animation:rise .6s ease 2.1s both}
+.go .btn.coral{animation:rise .6s ease 2.5s both}
+.go .btn.green{animation:rise .6s ease 2.7s both}
+@keyframes fade{from{opacity:0}}
+@keyframes drop{from{transform:translateY(calc(var(--u)*-40)) scale(1.6);opacity:0}}
+@keyframes pop{0%{transform:rotate(var(--r)) scale(0) rotateY(-220deg);opacity:0}55%{transform:rotate(var(--r)) scale(1.3) rotateY(20deg);opacity:1}100%{transform:rotate(var(--r)) scale(1) rotateY(0)}}
+@keyframes ring{0%{transform:scale(.4);opacity:0}20%{opacity:.95}100%{transform:scale(2);opacity:0}}
+@keyframes rise{from{transform:translateY(calc(var(--u)*30));opacity:0}}
+@keyframes paint{from{filter:grayscale(1) brightness(.92)}}
+@keyframes shine{from{transform:translateX(-130%)}to{transform:translateX(130%)}}
+@media (prefers-reduced-motion:reduce){.rays,.sp,.card,.go .glow,.go .lv,.go .title,.go .st,.go .st::before,.go .pc,.go .card img,.go .card::after,.go .coin,.go .btn{animation:none}.sp{opacity:.8;transform:none}.fall{display:none}}
+</style>
+
+<h1 class="sr">WordEase Celebration Screen</h1>
+<svg class="defs" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="gSF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE45E"/><stop offset="1" stop-color="#FFA800"/></linearGradient>
+  <linearGradient id="gSB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF7B8"/><stop offset="1" stop-color="#FFC21F"/></linearGradient>
+  <linearGradient id="gGF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9D3DB"/><stop offset="1" stop-color="#8E9CA8"/></linearGradient>
+  <linearGradient id="gGB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E4EAEF"/><stop offset="1" stop-color="#AAB6C0"/></linearGradient>
+  <linearGradient id="gCF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFEB82"/><stop offset="1" stop-color="#FFB627"/></linearGradient>
+  <linearGradient id="gT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".48" stop-color="#FFF3C4"/><stop offset=".5" stop-color="#FFDF7A"/><stop offset="1" stop-color="#FFC03A"/></linearGradient>
+  <filter id="fb" x="-10%" y="-30%" width="120%" height="180%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs></svg>
+<div class="phone">
+  <div class="screen go" id="scr" role="region" aria-label="Level complete">
+    <div class="rays" aria-hidden="true"></div><div class="glow" aria-hidden="true"></div>
+    <svg class="sp" style="left:calc(var(--u)*34);top:calc(var(--u)*196);animation-delay:.2s" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6Z" fill="#FFF6C2"/></svg>
+    <svg class="sp" style="left:calc(var(--u)*330);top:calc(var(--u)*170);animation-delay:1.1s" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6Z" fill="#FFF6C2"/></svg>
+    <svg class="sp" style="left:calc(var(--u)*300);top:calc(var(--u)*330);animation-delay:.6s" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6Z" fill="#FFF6C2"/></svg>
+    <svg class="sp" style="left:calc(var(--u)*40);top:calc(var(--u)*430);animation-delay:1.7s" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6Z" fill="#FFF6C2"/></svg>
+    <svg class="sp" style="left:calc(var(--u)*336);top:calc(var(--u)*500);animation-delay:.9s" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6Z" fill="#FFF6C2"/></svg>
+    <span class="lv" id="lvl">Level 382</span>
+    <svg class="title" viewBox="0 0 366 96" role="img" aria-label="Congratulations!">
+      <defs><text id="tt" x="183" y="58" text-anchor="middle" font-family="Nunito,ui-rounded,system-ui,sans-serif" font-weight="900" font-size="41" textLength="340" lengthAdjust="spacingAndGlyphs">Congratulations!</text></defs>
+      <use href="#tt" y="20" fill="#001E2D" stroke="#001E2D" stroke-width="10" stroke-linejoin="round" opacity=".45" filter="url(#fb)"/>
+      <g fill="#5C1A0E" stroke="#5C1A0E" stroke-width="11" stroke-linejoin="round" id="ext"></g>
+      <g fill="#E0553A" stroke="#E0553A" stroke-width="6" stroke-linejoin="round" id="ext2"></g>
+      <use href="#tt" fill="url(#gT)" stroke="#5C1A0E" stroke-width="1.4" stroke-linejoin="round"/>
+    </svg>
+    <div class="stars" id="stars" role="img" aria-label="3 of 3 stars"></div>
+    <div class="pc"><div class="card"><img src="data:image/webp;base64,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" alt="India postcard, now in colour"></div></div>
+    <div class="coin"><svg viewBox="0 0 40 46" aria-hidden="true"><circle cx="20" cy="26" r="18" fill="#B25F00"/><circle cx="20" cy="20" r="18" fill="url(#gCF)" stroke="#E8920A" stroke-width="2"/><circle cx="20" cy="20" r="11.5" fill="none" stroke="#D98A00" stroke-width="3"/><path d="M8.5 15a12.5 12.5 0 0 1 8.5-7" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" opacity=".85"/></svg><span class="num" id="cv">+20</span></div>
+    <button type="button" class="btn coral" id="dbl" aria-label="Watch an ad to double your coins"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Double coins</button>
+    <button type="button" class="btn green" id="next">Next level</button>
+    <div class="fall" id="fall" aria-hidden="true"></div>
+    <p class="sr" aria-live="polite" id="live"></p>
+    <div class="ad"><span>Ad banner</span></div>
+    <div class="adfull" id="adf" hidden>
+      <span class="adtag">Ad</span><div class="adbox">Test ad</div><span class="cd" id="cd" aria-live="polite"></span>
+      <button type="button" class="adx" id="adx" aria-label="Close ad" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </div>
+</div>
+<button type="button" class="replay" id="re">Replay</button>
+
+<script>
+const $=id=>document.getElementById(id),scr=$('scr');
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches,rnd=(a,b)=>a+Math.random()*(b-a);
+const U=()=>scr.getBoundingClientRect().width/390;
+/* 3D title: stacked copies give the extrusion depth */
+$('ext').innerHTML=Array.from({length:11},(_,i)=>`<use href="#tt" y="${i}"/>`).join('');
+$('ext2').innerHTML=Array.from({length:9},(_,i)=>`<use href="#tt" y="${i+1}"/>`).join('');
+const pts=(R,r)=>[...Array(10)].map((_,i)=>{const a=(-90+i*36)*Math.PI/180,k=i%2?r:R;return(50+k*Math.cos(a)).toFixed(1)+','+(52+k*Math.sin(a)).toFixed(1)}).join(' ');
+const star=on=>`<svg viewBox="0 0 100 112" aria-hidden="true"><polygon points="${pts(44,22)}" transform="translate(0,9)" fill="${on?'#B25F00':'#5E6B76'}" stroke="${on?'#B25F00':'#5E6B76'}" stroke-width="9" stroke-linejoin="round"/><polygon points="${pts(44,22)}" fill="url(#${on?'gSF':'gGF'})" stroke="${on?'#F0A000':'#8794A0'}" stroke-width="9" stroke-linejoin="round"/><polygon points="${pts(27,13.5)}" fill="url(#${on?'gSB':'gGB'})" stroke="${on?'#FFB000':'#9AA7B1'}" stroke-width="2" stroke-linejoin="round"/><ellipse cx="36" cy="33" rx="7" ry="3.6" transform="rotate(-38 36 33)" fill="#FFFFFF" opacity="${on?.8:.5}"/></svg>`;
+const coinSvg=`<svg viewBox="0 0 40 46" aria-hidden="true"><circle cx="20" cy="26" r="18" fill="#B25F00"/><circle cx="20" cy="20" r="18" fill="url(#gCF)" stroke="#E8920A" stroke-width="2"/><circle cx="20" cy="20" r="11.5" fill="none" stroke="#D98A00" stroke-width="3"/><path d="M8.5 15a12.5 12.5 0 0 1 8.5-7" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" opacity=".85"/></svg>`;
+let n=3,coins=20,onAd=null,sinceAd=0,timers=[];
+function setStars(k){n=k;$('stars').innerHTML=[0,1,2].map(i=>`<span class="st s${i}">${star(i<k)}</span>`).join('');$('stars').setAttribute('aria-label',`${k} of 3 stars`)}
+function count(to,from,ms){const el=$('cv');if(RM){el.textContent='+'+to;return}const t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/ms);el.textContent='+'+Math.round(from+(to-from)*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(t0)}
+function burst(count_,coinsN,delay){if(RM)return;const f=$('fall'),u=U(),cs=['#FF5A5F','#FFD23F','#3CC45C','#4DB6FF','#FF8FD0','#FFFFFF','#FF9A3C'];
+  for(let k=0;k<count_;k++){const s=document.createElement('span');s.className='cf';s.style.cssText=`left:${rnd(2,98)}%;background:${cs[k%cs.length]};--x:${rnd(-60,60)*u}px;--t:${rnd(2.2,3.6)}s;--d:${delay+rnd(0,.9)}s;rotate:${rnd(0,180)}deg`;f.append(s)}
+  for(let k=0;k<coinsN;k++){const s=document.createElement('span');s.className='cn';s.innerHTML=coinSvg;s.style.cssText=`left:${rnd(4,92)}%;--x:${rnd(-40,40)*u}px;--t:${rnd(2.4,3.4)}s;--d:${delay+rnd(0,1.1)}s`;f.append(s)}}
+function play(k){timers.forEach(clearTimeout);timers=[];$('fall').innerHTML='';coins=20;$('cv').textContent='+20';$('dbl').hidden=false;setStars(k);
+  scr.classList.remove('go');void scr.offsetWidth;scr.classList.add('go');
+  burst(46,10,.3);timers.push(setTimeout(()=>burst(30,6,0),1600));
+  if(!RM){$('cv').textContent='+0';timers.push(setTimeout(()=>count(20,0,800),2200))}
+  $('live').textContent=`Congratulations! Level complete. ${k} of 3 stars. 20 coins.`}
+function showAd(sec,done){$('adf').hidden=false;$('adx').hidden=true;$('cd').hidden=false;let t=sec;$('cd').textContent=t;onAd=done;
+  const iv=setInterval(()=>{t--;$('cd').textContent=t;if(t<=0){clearInterval(iv);$('cd').hidden=true;$('adx').hidden=false;$('adx').focus()}},1000)}
+$('adx').onclick=()=>{$('adf').hidden=true;const f=onAd;onAd=null;f&&f()};
+$('dbl').onclick=()=>showAd(5,()=>{$('dbl').hidden=true;count(40,20,700);$('live').textContent='Coins doubled to 40.';$('next').focus()});
+$('next').onclick=()=>{if(++sinceAd>=3){sinceAd=0;showAd(3,()=>play(3))}else play(3)};
+$('re').onclick=()=>play(3);
+play(3);
+</script>
+
+</body></html>

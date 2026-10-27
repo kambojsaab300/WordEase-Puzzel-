@@ -1,0 +1,222 @@
+[
+  {
+    "world": 1,
+    "id": "home-town",
+    "slug": "w01-home-town",
+    "country": "HOME TOWN",
+    "name": "Town Square",
+    "local": "Where every trip begins",
+    "fact": "The first word search was published in 1968 in a small newspaper in Norman, Oklahoma.",
+    "sky": "Day",
+    "alt": "Paper-cutout town square with a brick clock tower, a striped-awning bakery and cosy cottages"
+  },
+  {
+    "world": 2,
+    "id": "paris",
+    "slug": "w02-paris",
+    "country": "FRANCE",
+    "name": "Eiffel Tower",
+    "local": "La tour Eiffel · Paris",
+    "fact": "It was built for the 1889 World’s Fair in Paris and stands about 330 metres tall today.",
+    "sky": "Dawn",
+    "alt": "Paper-cutout Eiffel Tower in daylight above Paris rooftops and the river Seine"
+  },
+  {
+    "world": 3,
+    "id": "italy",
+    "slug": "w03-italy",
+    "country": "ITALY",
+    "name": "Venice Canal",
+    "local": "Venezia · Italia",
+    "fact": "Venice is built on more than 100 small islands in a lagoon, linked by around 400 bridges.",
+    "sky": "Dusk",
+    "alt": "Paper-cutout row of pastel Venetian houses over a turquoise canal with a gondola and striped poles"
+  },
+  {
+    "world": 4,
+    "id": "greece",
+    "slug": "w04-greece",
+    "country": "GREECE",
+    "name": "Cyclades Village",
+    "local": "Κυκλάδες · Kykládes",
+    "fact": "The Cyclades are about 220 islands in the Aegean Sea. Their name comes from the circle they form around Delos.",
+    "sky": "Day",
+    "alt": "Paper-cutout white cube houses with blue domes on a cliff above the deep blue Aegean and a sailboat"
+  },
+  {
+    "world": 5,
+    "id": "egypt",
+    "slug": "w05-egypt",
+    "country": "EGYPT",
+    "name": "River Nile",
+    "local": "النيل · An-Nīl",
+    "fact": "At about 6,650 km, the Nile is one of the longest rivers on Earth. Wooden feluccas have sailed it for centuries.",
+    "sky": "Dusk",
+    "alt": "Paper-cutout felucca with a tall white sail on the Nile at sunset, palms, a mud-brick village and camels on the dunes"
+  },
+  {
+    "world": 6,
+    "id": "kenya",
+    "slug": "w06-kenya",
+    "country": "KENYA",
+    "name": "Amboseli Savanna",
+    "local": "Hifadhi ya Amboseli · Kenya",
+    "fact": "From Amboseli you can see Mount Kilimanjaro, Africa’s highest peak at 5,895 metres, just across the border in Tanzania.",
+    "sky": "Dawn",
+    "alt": "Paper-cutout snow-capped Mount Kilimanjaro above golden savanna with acacia trees, giraffes and elephants"
+  },
+  {
+    "world": 7,
+    "id": "india",
+    "slug": "w07-india",
+    "country": "INDIA",
+    "name": "Taj Mahal",
+    "local": "ताज महल · Agra",
+    "fact": "Emperor Shah Jahan built it in memory of Mumtaz Mahal. It became a UNESCO World Heritage Site in 1983.",
+    "sky": "Dawn",
+    "alt": "Paper-cutout Taj Mahal with its minarets, reflecting pool and cypress-lined garden"
+  },
+  {
+    "world": 8,
+    "id": "thailand",
+    "slug": "w08-thailand",
+    "country": "THAILAND",
+    "name": "Floating Market",
+    "local": "ตลาดน้ำ · Talat Nam",
+    "fact": "Damnoen Saduak, one of Thailand’s best-known floating markets, grew along a canal dug in the 1860s.",
+    "sky": "Day",
+    "alt": "Paper-cutout floating market with wooden boats full of fruit and flowers, sellers in straw hats, stilt houses and palms"
+  },
+  {
+    "world": 9,
+    "id": "japan",
+    "slug": "w09-japan",
+    "country": "JAPAN",
+    "name": "Mount Fuji",
+    "local": "富士山 · Fujisan",
+    "fact": "At 3,776 metres it is Japan’s highest mountain. It joined the UNESCO World Heritage list in 2013.",
+    "sky": "Dawn",
+    "alt": "Paper-cutout Mount Fuji with a snow cap, a calm lake, a red bridge and cherry blossoms"
+  },
+  {
+    "world": 10,
+    "id": "china",
+    "slug": "w10-china",
+    "country": "CHINA",
+    "name": "Great Wall",
+    "local": "长城 · Chángchéng",
+    "fact": "Built and rebuilt over many centuries, it became a UNESCO World Heritage Site in 1987.",
+    "sky": "Day",
+    "alt": "Paper-cutout Great Wall winding over green mountain ridges with watchtowers and autumn trees"
+  },
+  {
+    "world": 11,
+    "id": "australia",
+    "slug": "w11-australia",
+    "country": "AUSTRALIA",
+    "name": "Twelve Apostles",
+    "local": "Great Ocean Road · Victoria",
+    "fact": "Waves from the Southern Ocean carved these limestone stacks out of the cliffs. Despite the name, there were never twelve.",
+    "sky": "Dusk",
+    "alt": "Paper-cutout limestone sea stacks standing off ochre cliffs in the Southern Ocean at dusk"
+  },
+  {
+    "world": 12,
+    "id": "hawaii",
+    "slug": "w12-hawaii",
+    "country": "HAWAII",
+    "name": "Diamond Head",
+    "local": "Lēʻahi · Oʻahu",
+    "fact": "Sailors in the 1800s mistook shiny calcite crystals on this old volcanic crater for diamonds, which gave it its English name.",
+    "sky": "Dusk",
+    "alt": "Paper-cutout Diamond Head crater above a curving beach with palms, surfboards and an outrigger canoe"
+  },
+  {
+    "world": 13,
+    "id": "mexico",
+    "slug": "w13-mexico",
+    "country": "MEXICO",
+    "name": "Fiesta Plaza",
+    "local": "Papel picado · México",
+    "fact": "Papel picado means “pierced paper”. Artisans cut lacy patterns into tissue paper to decorate streets for fiestas.",
+    "sky": "Day",
+    "alt": "Paper-cutout sunny plaza with pink, yellow and turquoise adobe houses, papel picado banners, cacti and marigolds"
+  },
+  {
+    "world": 14,
+    "id": "peru",
+    "slug": "w14-peru",
+    "country": "PERU",
+    "name": "Rainbow Mountain",
+    "local": "Vinicunca · Cusco",
+    "fact": "Vinicunca rises more than 5,000 metres high in the Andes. Its colourful stripes are layers of different minerals.",
+    "sky": "Dawn",
+    "alt": "Paper-cutout striped Rainbow Mountain in red, ochre, turquoise and lavender with snowy Andes peaks and llamas"
+  },
+  {
+    "world": 15,
+    "id": "brazil",
+    "slug": "w15-brazil",
+    "country": "BRAZIL",
+    "name": "Sugarloaf Mountain",
+    "local": "Pão de Açúcar · Rio de Janeiro",
+    "fact": "Sugarloaf rises about 396 metres above Guanabara Bay. Its cable car first opened in 1912.",
+    "sky": "Day",
+    "alt": "Paper-cutout Sugarloaf Mountain rising from Guanabara Bay with a cable car, sailboats, a beach and palms"
+  },
+  {
+    "world": 16,
+    "id": "canada",
+    "slug": "w16-canada",
+    "country": "CANADA",
+    "name": "Horseshoe Falls",
+    "local": "Chutes du Niagara · Ontario",
+    "fact": "The Horseshoe Falls is the largest of Niagara’s three waterfalls, and most of it lies on the Canadian side.",
+    "sky": "Dawn",
+    "alt": "Paper-cutout curved Horseshoe Falls with mist, a rainbow, a small tour boat and red and orange maple trees"
+  },
+  {
+    "world": 17,
+    "id": "new-york",
+    "slug": "w17-new-york",
+    "country": "USA",
+    "name": "Statue of Liberty",
+    "local": "Liberty Island · New York",
+    "fact": "A gift from the people of France, it was dedicated in New York Harbor in 1886.",
+    "sky": "Dusk",
+    "alt": "Paper-cutout Statue of Liberty on its island in the harbor with a ferry and a distant skyline"
+  },
+  {
+    "world": 18,
+    "id": "iceland",
+    "slug": "w18-iceland",
+    "country": "ICELAND",
+    "name": "Northern Lights",
+    "local": "Norðurljós · Ísland",
+    "fact": "Iceland’s best season for the northern lights runs from about September to April, when the nights are long and dark.",
+    "sky": "Night",
+    "alt": "Paper-cutout green and violet northern lights over snowy mountains, a black sand beach and a red-roofed cabin"
+  },
+  {
+    "world": 19,
+    "id": "scotland",
+    "slug": "w19-scotland",
+    "country": "SCOTLAND",
+    "name": "Edinburgh Castle",
+    "local": "Dùn Èideann · Alba",
+    "fact": "The castle sits on Castle Rock, the plug of a volcano that erupted about 350 million years ago.",
+    "sky": "Day",
+    "alt": "Paper-cutout grey stone castle on a high volcanic rock above old town rooftops and purple heather"
+  },
+  {
+    "world": 20,
+    "id": "antarctica",
+    "slug": "w20-antarctica",
+    "country": "ANTARCTICA",
+    "name": "Emperor Penguins",
+    "local": "Antarctica",
+    "fact": "Emperor penguins are the tallest penguins, up to about 1.2 metres. They raise their chicks through the dark Antarctic winter.",
+    "sky": "Dawn",
+    "alt": "Paper-cutout emperor penguins and a chick on an ice shelf beside tall blue-white icebergs and a low polar sun"
+  }
+]

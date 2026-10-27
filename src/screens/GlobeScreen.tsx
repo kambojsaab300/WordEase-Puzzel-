@@ -39,6 +39,7 @@ export function GlobeScreen({ navigation }: ScreenProps<'Globe'>) {
   // A newly unlocked world is announced once
   useEffect(() => {
     if (unlockedWorld <= lastSeenWorld) return;
+    AudioManager.playUnlock();
     setToast({ text: t('globe.unlocked', { world: t(worldKey(unlockedWorld)) }) });
     markWorldSeen(unlockedWorld);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- run once when the screen opens

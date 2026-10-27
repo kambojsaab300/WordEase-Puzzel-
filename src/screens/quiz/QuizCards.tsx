@@ -7,6 +7,8 @@ import { useTextSize } from '../../ui/a11y';
 import { LandmarkArt } from '../../ui/LandmarkArt';
 import { colors, fonts, fontSizes, sizes } from '../../ui/theme';
 import { Translate, useT, worldKey } from '../../i18n';
+import { AudioManager } from '../../services/audio/AudioManager';
+import { withTap } from '../../ui/withTap';
 
 const GAP_COLOR = '#FFE7B3';
 const FADED = 0.45;
@@ -144,7 +146,7 @@ export function JumbleCard({ q, checked, correct, onCheck }: JumbleProps) {
             <Pressable
               key={slot}
               disabled={done || placed[slot] === undefined}
-              onPress={() => setPlaced(p => p.filter((__, k) => k !== slot))}
+              onPress={withTap(() => setPlaced(p => p.filter((__, k) => k !== slot)))}
               accessibilityRole="button"
               accessibilityLabel={t('quiz.slotA11y', { n: slot + 1, letter: letter || '-' })}
               style={[
@@ -172,7 +174,10 @@ export function JumbleCard({ q, checked, correct, onCheck }: JumbleProps) {
                 <Pressable
                   key={i}
                   disabled={used}
-                  onPress={() => setPlaced(p => [...p, i])}
+                  onPress={() => {
+                    AudioManager.playLetterTouch();
+                    setPlaced(p => [...p, i]);
+                  }}
                   accessibilityRole="button"
                   accessibilityState={{ disabled: used }}
                   accessibilityLabel={t('quiz.tileA11y', { letter: ch })}
@@ -190,7 +195,7 @@ export function JumbleCard({ q, checked, correct, onCheck }: JumbleProps) {
           </View>
           <View style={styles.jumbleActions}>
             <Pressable
-              onPress={() => setPlaced([])}
+              onPress={withTap(() => setPlaced([]))}
               disabled={placed.length === 0}
               accessibilityRole="button"
               accessibilityLabel={t('quiz.clear')}

@@ -8,6 +8,7 @@ import { landmarkKey, worldLandmarks } from './landmarkPlan';
 import { LANDMARK_PATHS } from './landmarks';
 import type { WorldStats, WorldStatus } from './worldProgress';
 import { TKey, useT, worldKey } from '../i18n';
+import { withTap } from '../ui/withTap';
 
 type Props = {
   world: WorldDef;
@@ -53,7 +54,7 @@ export const WorldCard = memo(function WorldCardView({
 
   return (
     <Pressable
-      onPress={locked ? undefined : onOpen}
+      onPress={locked ? undefined : withTap(onOpen)}
       disabled={locked}
       accessibilityRole="button"
       accessibilityState={{ disabled: locked }}
@@ -119,7 +120,7 @@ export const WorldCard = memo(function WorldCardView({
           <Text style={styles.lockedHint}>{lockedHint}</Text>
           {unlockCost !== undefined && onUnlock && (
             <Pressable
-              onPress={onUnlock}
+              onPress={withTap(onUnlock)}
               accessibilityRole="button"
               accessibilityLabel={t('card.unlockA11y', { world: name, cost: unlockCost })}
               style={({ pressed }) => [styles.open, styles.unlock, pressed && styles.pressed]}

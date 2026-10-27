@@ -85,6 +85,7 @@ export function MapScreen({ navigation, route }: ScreenProps<'Map'>) {
         setToast({ text: t('map.finishFirst', { n: inBought ? levelId - 1 : reached }) });
         return;
       }
+      AudioManager.playButtonTap();
       navigation.navigate('Level', { levelId });
     },
     [navigation, t],

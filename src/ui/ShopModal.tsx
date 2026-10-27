@@ -48,6 +48,7 @@ export function ShopModal({ visible, onClose }: Props) {
 
     await AdsManager.showRewardedAd(() => {
       addCoins(50);
+      AudioManager.playCoinGain();
       AdsManager.recordFreeCoinsClaimed(todayKey);
       setCanClaimFree(AdsManager.canClaimFreeCoins(todayKey));
       Alert.alert(t('shop.reward'), t('shop.rewardMsg'));

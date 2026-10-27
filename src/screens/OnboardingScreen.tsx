@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { ScreenProps } from '../app/navigation';
 import { InputMode, useSettings } from '../store/settings';
@@ -6,6 +6,8 @@ import { PrimaryButton } from '../ui/PrimaryButton';
 import { Screen } from '../ui/Screen';
 import { colors, fonts } from '../ui/theme';
 import { SUPPORTED_LANGUAGES, useT } from '../i18n';
+import { AudioManager } from '../services/audio/AudioManager';
+import { withTap } from '../ui/withTap';
 
 const SIZE_LABELS = { 1: 'textSize.normal', 1.25: 'textSize.large', 1.5: 'textSize.huge' } as const;
 
@@ -17,6 +19,9 @@ export function OnboardingScreen({ navigation }: ScreenProps<'Onboarding'>) {
 
   const [textScale, setTextScale] = useState<1 | 1.25 | 1.5>(currentSettings.textScale);
   const [inputMode, setInputMode] = useState<InputMode>(currentSettings.inputMode);
+
+  // A first-time player hears the calm map music from the welcome screen on
+  useEffect(() => AudioManager.startMusic('map'), []);
 
   const handleStart = () => {
     update({ textScale, inputMode, onboarded: true });
@@ -34,7 +39,7 @@ export function OnboardingScreen({ navigation }: ScreenProps<'Onboarding'>) {
         <TouchableOpacity
           accessibilityRole="button"
           accessibilityLabel={t('onboarding.skipA11y')}
-          onPress={handleSkip}
+          onPress={withTap(handleSkip)}
           style={styles.skipBtn}
         >
           <Text style={styles.skipText}>{t('common.skip')}</Text>
@@ -47,7 +52,7 @@ export function OnboardingScreen({ navigation }: ScreenProps<'Onboarding'>) {
           {SUPPORTED_LANGUAGES.map(l => (
             <TouchableOpacity
               key={l.code}
-              onPress={() => update({ lang: l.code })}
+              onPress={withTap(() => update({ lang: l.code }))}
               accessibilityRole="radio"
               accessibilityState={{ selected: lang === l.code }}
               style={[styles.langChip, lang === l.code && styles.segmentBtnActive]}
@@ -70,7 +75,7 @@ export function OnboardingScreen({ navigation }: ScreenProps<'Onboarding'>) {
               return (
                 <TouchableOpacity
                   key={scale}
-                  onPress={() => setTextScale(scale)}
+                  onPress={withTap(() => setTextScale(scale))}
                   accessibilityRole="radio"
                   accessibilityState={{ selected: active }}
                   accessibilityLabel={t('textSize.a11y', { size: label })}
@@ -93,7 +98,7 @@ export function OnboardingScreen({ navigation }: ScreenProps<'Onboarding'>) {
           <Text style={styles.stepTitle}>{t('onboarding.step2')}</Text>
           <View style={styles.modeRow}>
             <TouchableOpacity
-              onPress={() => setInputMode('drag')}
+              onPress={withTap(() => setInputMode('drag'))}
               style={[styles.modeCard, inputMode === 'drag' && styles.modeCardActive]}
             >
               <Text style={[styles.modeTitle, inputMode === 'drag' && styles.modeTitleActive]}>
@@ -103,7 +108,7 @@ export function OnboardingScreen({ navigation }: ScreenProps<'Onboarding'>) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => setInputMode('tap')}
+              onPress={withTap(() => setInputMode('tap'))}
               style={[styles.modeCard, inputMode === 'tap' && styles.modeCardActive]}
             >
               <Text style={[styles.modeTitle, inputMode === 'tap' && styles.modeTitleActive]}>

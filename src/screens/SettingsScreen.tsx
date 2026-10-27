@@ -5,6 +5,7 @@ import { InputMode, useSettings } from '../store/settings';
 import { resetAllProgress } from '../store/reset';
 import { Screen } from '../ui/Screen';
 import { colors, fonts } from '../ui/theme';
+import { withTap } from '../ui/withTap';
 
 const SFX_ON_VOLUME = 0.8;
 const MUSIC_ON_VOLUME = 0.5;
@@ -50,7 +51,7 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
                   accessibilityRole="radio"
                   accessibilityState={{ selected: active }}
                   accessibilityLabel={t('textSize.a11y', { size: label })}
-                  onPress={() => update({ textScale: scale })}
+                  onPress={withTap(() => update({ textScale: scale }))}
                   style={[styles.segmentBtn, active && styles.segmentBtnActive]}
                 >
                   <Text style={[styles.segmentText, active && styles.segmentTextActive]}>
@@ -81,7 +82,7 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
               return (
                 <TouchableOpacity
                   key={opt.mode}
-                  onPress={() => update({ inputMode: opt.mode as InputMode })}
+                  onPress={withTap(() => update({ inputMode: opt.mode as InputMode }))}
                   accessibilityRole="radio"
                   accessibilityState={{ selected: active }}
                   style={[styles.modeCard, active && styles.modeCardActive]}
@@ -158,7 +159,7 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
               return (
                 <TouchableOpacity
                   key={item.code}
-                  onPress={() => update({ lang: item.code })}
+                  onPress={withTap(() => update({ lang: item.code }))}
                   accessibilityRole="radio"
                   accessibilityState={{ selected: active }}
                   style={[styles.langChip, active && styles.langChipActive]}
@@ -176,7 +177,7 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
         <View style={styles.section}>
           <TouchableOpacity
             style={styles.actionRow}
-            onPress={() => navigation.navigate('About')}
+            onPress={withTap(() => navigation.navigate('About'))}
           >
             <Text style={styles.actionText}>ℹ️ {t('settings.about')}</Text>
             <Text style={styles.chevron}>›</Text>
@@ -184,7 +185,7 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
         </View>
 
         <View style={styles.dangerSection}>
-          <TouchableOpacity style={styles.resetBtn} onPress={confirmReset}>
+          <TouchableOpacity style={styles.resetBtn} onPress={withTap(confirmReset)}>
             <Text style={styles.resetText}>{t('settings.reset')}</Text>
           </TouchableOpacity>
         </View>
@@ -212,7 +213,7 @@ function SettingRow({
       </View>
       <Switch
         value={value}
-        onValueChange={onToggle}
+        onValueChange={withTap(onToggle)}
         accessibilityLabel={title}
         accessibilityHint={desc}
         trackColor={{ false: '#D1D5DB', true: '#A0D8C5' }}

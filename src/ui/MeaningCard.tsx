@@ -4,6 +4,7 @@ import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { useTextSize } from './a11y';
 import { colors, fonts } from './theme';
 import { useT } from '../i18n';
+import { withTap } from './withTap';
 
 const AUTO_CLOSE_MS = 3000;
 
@@ -29,7 +30,7 @@ export function MeaningCard({ word, meaning, onClose }: Props) {
   return (
     <Animated.View entering={FadeInDown} exiting={FadeOutDown} style={styles.wrap}>
       <Pressable
-        onPress={onClose}
+        onPress={withTap(onClose)}
         style={styles.card}
         accessibilityRole="button"
         accessibilityLabel={t('meaning.a11y', { word, meaning })}

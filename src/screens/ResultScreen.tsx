@@ -21,6 +21,7 @@ import { LandmarkArt } from '../ui/LandmarkArt';
 import { PassportStamp } from '../ui/PassportStamp';
 import { PostcardModal } from '../ui/PostcardModal';
 import { colors, fonts } from '../ui/theme';
+import { withTap } from '../ui/withTap';
 import { useT, worldKey } from '../i18n';
 
 // Positions of the three stars on the 390-wide design artboard
@@ -295,7 +296,7 @@ type ButtonProps = {
 // Chunky 3D button: a darker base under a bright face that presses down
 function Button3D({ label, icon, height, fontSize, face, top, base, onPress }: ButtonProps) {
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress}>
+    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={withTap(onPress)}>
       {({ pressed }) => (
         <View style={{ height: height + 6 }}>
           <View style={[styles.btnBase, { height, backgroundColor: base }]} />

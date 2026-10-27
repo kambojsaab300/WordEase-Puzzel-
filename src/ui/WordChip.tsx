@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 import { TextSizeIndex } from './a11y';
 import { colors, fonts, fontSizes } from './theme';
 import { useT } from '../i18n';
+import { withTap } from './withTap';
 
 type Props = {
   word: string;
@@ -26,7 +27,7 @@ export function WordChip({
   const fontSize = fontSizes.wordChip[textSize];
   return (
     <Pressable
-      onPress={onPress}
+      onPress={onPress && withTap(onPress)}
       disabled={!onPress}
       style={[
         styles.chip,

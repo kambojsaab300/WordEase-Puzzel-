@@ -1,0 +1,108 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>WordEase Splash Screen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap">
+<style>
+/* Layout: phone mockup with the animated splash on the left, build spec on the right; stacks on phones */
+:root{--bg:#EDF1F3;--fg:#1F2A37;--muted:#556372;--panel:#FFFFFF;--line:#D5DDE2;--accent:#0E6E8C;--btn:#0E6E8C;--btn-fg:#FFFFFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11181E;--fg:#E7EDF1;--muted:#9AA9B5;--panel:#19232B;--line:#2A3843;--accent:#63B9D4;--btn:#63B9D4;--btn-fg:#0B1116;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11181E;--fg:#E7EDF1;--muted:#9AA9B5;--panel:#19232B;--line:#2A3843;--accent:#63B9D4;--btn:#63B9D4;--btn-fg:#0B1116;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:"Nunito",ui-rounded,system-ui,sans-serif;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px}
+.wrap{max-width:1000px;margin:0 auto;display:flex;flex-wrap:wrap;gap:32px;justify-content:center;align-items:flex-start}
+.phone{flex:0 1 390px;width:min(390px,100%);background:#0B1116;border-radius:46px;padding:10px;box-sizing:border-box;box-shadow:0 24px 60px rgba(10,30,45,.28)}
+.screen{position:relative;aspect-ratio:390/844;border-radius:36px;overflow:hidden;container-type:inline-size;background:#0E6E8C}
+.screen svg{position:absolute;inset:0;width:100%;height:100%}
+.over p,.over div{position:absolute;left:0;right:0;margin:0;text-align:center;color:#FFF8EC}
+.name{font-weight:800;font-size:12.3cqw;line-height:1;letter-spacing:-.01em}
+.name span{background:#F2785C;color:#1F2A37;border-radius:999px;padding:0 .28em;margin-left:.06em}
+.tag{font-weight:800;font-size:4.1cqw;letter-spacing:.2em}
+.feat{font-weight:700;font-size:4.4cqw;opacity:.92}
+.load{display:flex;justify-content:center;align-items:center;gap:2cqw;font-weight:700;font-size:3.9cqw}
+.dot{width:2.4cqw;height:2.4cqw;border-radius:50%;background:#F5C842}
+/* animation */
+.l,.ink{transform-box:fill-box;transform-origin:center}
+.l{opacity:0;animation:pop .45s cubic-bezier(.2,.9,.3,1.3) forwards;animation-delay:var(--d)}
+.ink{opacity:0;animation:fade .18s forwards;animation-delay:var(--d)}
+.pill{transform-box:fill-box;transform-origin:left center;transform:scaleX(0);animation:sweep .5s cubic-bezier(.3,.7,.3,1) forwards}
+.p1{animation-delay:.85s}.p2{animation-delay:1.4s}
+.sun{transform:translateY(96px);animation:rise 1.3s cubic-bezier(.2,.8,.2,1) 1.4s forwards}
+.cloud{animation:drift 9s ease-in-out infinite alternate}
+.up{opacity:0;transform:translateY(14px);animation:up .6s ease-out forwards}
+.load{opacity:0;animation:fade .4s 2.4s forwards}
+.dot{animation:blink 1.2s ease-in-out infinite}.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+@keyframes fade{to{opacity:1}}
+@keyframes sweep{to{transform:scaleX(1)}}
+@keyframes rise{to{transform:none}}
+@keyframes up{to{opacity:1;transform:none}}
+@keyframes drift{to{transform:translateX(16px)}}
+@keyframes blink{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.screen *{animation-delay:0s!important;animation-duration:1ms!important;animation-iteration-count:1!important}}
+/* spec */
+.spec{flex:1 1 320px;min-width:0;max-width:540px;display:flex;flex-direction:column;gap:18px}
+h1{font-weight:800;font-size:clamp(28px,4vw,36px);margin:0;text-wrap:balance}
+.lead{margin:0;color:var(--muted);font-size:17px;line-height:1.5}
+.replay{align-self:flex-start;font:800 16px "Nunito",system-ui,sans-serif;background:var(--btn);color:var(--btn-fg);border:0;border-radius:999px;padding:12px 22px;min-height:48px;cursor:pointer}
+.replay:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+dl{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:6px 20px}
+dl div{display:grid;grid-template-columns:minmax(96px,30%) 1fr;gap:12px;padding:14px 0;border-top:1px solid var(--line)}
+dl div:first-child{border-top:0}
+dt{font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);padding-top:2px}
+dd{margin:0;font-size:16px;line-height:1.5;min-width:0}
+code{overflow-wrap:anywhere;font-size:14px;background:var(--bg);border-radius:6px;padding:1px 6px}
+.sw{display:flex;flex-wrap:wrap;gap:8px 14px}
+.sw span{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-variant-numeric:tabular-nums}
+.sw i{width:18px;height:18px;border-radius:6px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+@media (max-width:420px){dl div{grid-template-columns:1fr;gap:4px}}
+</style>
+
+<div class="wrap">
+  <div class="phone">
+    <div class="screen" id="screen" role="img" aria-label="Animated WordEase splash: letters appear, the words WORD and EASE get highlighted, a coral sun rises over calm water, then the name and a loading indicator appear">
+      <svg viewBox="0 0 390 844" aria-hidden="true">
+        <defs><filter id="p" x="-10%" y="-20%" width="120%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#06303D" flood-opacity=".28"/></filter></defs>
+        <g class="cloud" fill="#FFF8EC" opacity=".9" filter="url(#p)"><rect x="34" y="96" width="112" height="22" rx="11"/><circle cx="66" cy="98" r="18"/><circle cx="100" cy="88" r="24"/><circle cx="130" cy="100" r="15"/></g>
+        <g class="cloud" fill="#FFF8EC" opacity=".75" filter="url(#p)" style="animation-delay:-4s"><rect x="262" y="140" width="86" height="18" rx="9"/><circle cx="286" cy="142" r="14"/><circle cx="312" cy="134" r="18"/><circle cx="336" cy="144" r="11"/></g>
+        <g class="sun"><circle cx="292" cy="716" r="66" fill="#F2785C"/><circle cx="292" cy="716" r="48" fill="#FFFFFF" opacity=".2"/></g>
+        <path d="M0 716Q98 690 195 708T390 702V844H0Z" fill="#2A8CA8" filter="url(#p)"/>
+        <path d="M0 772Q98 748 195 766T390 760V844H0Z" fill="#4FA7BF" filter="url(#p)"/>
+        <rect class="pill p1" x="61" y="232" width="268" height="56" rx="28" fill="#F5C842"/>
+        <rect class="pill p2" x="61" y="296" width="268" height="56" rx="28" fill="#F2785C"/>
+        <g font-family="Nunito, sans-serif" font-weight="800" font-size="44" text-anchor="middle">
+          <g fill="#FFF8EC" fill-opacity=".42">
+            <text class="l" x="99" y="211" style="--d:0s">P</text><text class="l" x="163" y="211" style="--d:.05s">N</text><text class="l" x="227" y="211" style="--d:.1s">T</text><text class="l" x="291" y="211" style="--d:.15s">H</text>
+            <text class="l" x="99" y="403" style="--d:.45s">U</text><text class="l" x="163" y="403" style="--d:.5s">Y</text><text class="l" x="227" y="403" style="--d:.55s">C</text><text class="l" x="291" y="403" style="--d:.6s">M</text>
+          </g>
+          <g fill="#FFF8EC">
+            <text class="l" x="99" y="275" style="--d:.15s">W</text><text class="l" x="163" y="275" style="--d:.2s">O</text><text class="l" x="227" y="275" style="--d:.25s">R</text><text class="l" x="291" y="275" style="--d:.3s">D</text>
+            <text class="l" x="99" y="339" style="--d:.3s">E</text><text class="l" x="163" y="339" style="--d:.35s">A</text><text class="l" x="227" y="339" style="--d:.4s">S</text><text class="l" x="291" y="339" style="--d:.45s">E</text>
+          </g>
+          <g fill="#1F2A37">
+            <text class="ink" x="99" y="275" style="--d:.92s">W</text><text class="ink" x="163" y="275" style="--d:1.02s">O</text><text class="ink" x="227" y="275" style="--d:1.12s">R</text><text class="ink" x="291" y="275" style="--d:1.22s">D</text>
+            <text class="ink" x="99" y="339" style="--d:1.47s">E</text><text class="ink" x="163" y="339" style="--d:1.57s">A</text><text class="ink" x="227" y="339" style="--d:1.67s">S</text><text class="ink" x="291" y="339" style="--d:1.77s">E</text>
+          </g>
+        </g>
+      </svg>
+      <div class="over" aria-hidden="true">
+        <p class="name up" style="top:56%;animation-delay:2s">Word<span>Ease</span></p>
+        <div class="load" style="top:66%"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <section class="spec">
+    <h1>WordEase Splash Screen</h1>
+    <button type="button" class="replay" id="replay">Replay animation</button>
+    <dl>
+      <div><dt>Timing</dt><dd>Letters 0.8 s · WORD 0.85 s · EASE 1.4 s · Name 2 s · Tap to skip</dd></div>
+      <div><dt>Colours</dt><dd class="sw"><span><i style="background:#0E6E8C"></i>#0E6E8C</span><span><i style="background:#2A8CA8"></i>#2A8CA8</span><span><i style="background:#4FA7BF"></i>#4FA7BF</span><span><i style="background:#F5C842"></i>#F5C842</span><span><i style="background:#F2785C"></i>#F2785C</span><span><i style="background:#FFF8EC"></i>#FFF8EC</span><span><i style="background:#1F2A37"></i>#1F2A37</span></dd></div>
+      <div><dt>Font</dt><dd>Nunito 800 for the letters and name, Nunito 700 for details.</dd></div>
+    </dl>
+  </section>
+</div>
+
+<script>
+document.getElementById('replay').addEventListener('click',()=>{const s=document.getElementById('screen');s.replaceWith(s.cloneNode(true));});
+</script>
+
+</body></html>

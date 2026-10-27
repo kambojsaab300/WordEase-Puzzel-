@@ -17,6 +17,7 @@ import { Confetti } from '../../ui/Confetti';
 import { PrimaryButton } from '../../ui/PrimaryButton';
 import { colors, fonts, sizes } from '../../ui/theme';
 import { TKey, useT } from '../../i18n';
+import { withTap } from '../../ui/withTap';
 
 const PARTY = [colors.coinGold, colors.accentCoral, colors.okGreen, '#56B4E9'];
 
@@ -146,7 +147,7 @@ export function QuizSummary({ day, quizNumber, streak, best, reduceMotion, onOpe
 
         <View style={styles.actions}>
           <Pressable
-            onPress={share}
+            onPress={withTap(share)}
             accessibilityRole="button"
             style={({ pressed }) => [styles.shareButton, pressed && styles.pressed]}
           >
