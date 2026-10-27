@@ -54,6 +54,8 @@ function jumbleRight(word: string, guess: string): boolean {
 export function QuizScreen({ navigation }: ScreenProps<'Quiz'>) {
   const t = useT();
   const reduceMotion = useSettings(s => s.reduceMotion);
+  // Thinking music: the softer level mood
+  useEffect(() => AudioManager.startMusic('level'), []);
   // The quiz started stays the quiz finished, even across midnight
   const [dayKey] = useState(getTodayKey);
   const quiz = useMemo(() => getDailyQuiz(dayKey), [dayKey]);
@@ -102,6 +104,7 @@ export function QuizScreen({ navigation }: ScreenProps<'Quiz'>) {
         );
       }
     }
+    if (correct && result.combo >= 3) setTimeout(() => AudioManager.playStar(2), 350);
     setReveal({ picked, guess, correct, ...result });
   };
 
@@ -110,6 +113,7 @@ export function QuizScreen({ navigation }: ScreenProps<'Quiz'>) {
     setHidden([]);
     if (index + 1 >= QUIZ_LENGTH) {
       useQuiz.getState().finish(dayKey, quiz.bigDay);
+      AudioManager.stopMusic();
       AudioManager.playLevelComplete();
       HapticsManager.levelComplete();
       return;

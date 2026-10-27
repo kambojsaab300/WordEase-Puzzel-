@@ -73,7 +73,7 @@ APK: `android/app/build/outputs/apk/release/app-release.apk`
 
 ## Phase 7 — Settings, audio, accessibility
 - [x] **T23. Settings screen** — Text Size ab grid letters (28/34/42), cells, chips, meaning card aur buttons par lagta hai; Huge mode mein grid max 10x10 (bade levels ka 10x10 version). **Baaki:** baaki screens ka text scale.
-- [~] **T24. Audio + Haptics** — Haptics kaam karta hai (VIBRATE permission audit mein jodi, pehle crash hota). **Baaki:** `AudioManager` stub hai — react-native-audio-api aur sound files nahi, koi aawaz nahi bajti.
+- [~] **T24. Audio + Haptics** — Haptics kaam karta hai. Sound effects + background music khud synthesize kiye (`tools/generate-sfx.py`), Android SoundPool/MediaPlayer se bajte hain; kahan kaun si aawaz: [docs/SOUND-FLOW.md](docs/SOUND-FLOW.md). **Baaki:** phone par sun ke test.
 - [~] **T25. Accessibility pass** — High contrast (safed board, kaale letters, grid lines, gehre outlines) aur colour-blind patterns + chip symbols game screen par. **Baaki:** TalkBack aur font scale "Largest" asli phone par test; high contrast baaki screens par.
 
 ## Phase 8 — Kamai (ads + IAP)

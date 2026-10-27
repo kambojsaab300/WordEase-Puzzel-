@@ -3,6 +3,7 @@ import { ModalScroll } from './ModalScroll';
 import { useT } from '../i18n';
 import { PrimaryButton } from './PrimaryButton';
 import { colors, fonts, sizes } from './theme';
+import { usePopupSound } from './usePopupSound';
 
 type Props = {
   visible: boolean;
@@ -15,6 +16,7 @@ type Props = {
 // Pause menu from the flow: Resume, Restart, Settings, Map
 export function PauseSheet({ visible, onResume, onRestart, onSettings, onMap }: Props) {
   const t = useT();
+  usePopupSound(visible);
   return (
     <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onResume}>
       <ModalScroll style={styles.backdrop}>

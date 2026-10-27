@@ -4,6 +4,13 @@
     <!-- Haptics (Vibration API); without it every vibrate call throws SecurityException -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- Lets the app find the phone's text-to-speech engine (Android 11+) -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"

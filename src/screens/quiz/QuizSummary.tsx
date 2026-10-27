@@ -87,7 +87,7 @@ export function QuizSummary({ day, quizNumber, streak, best, reduceMotion, onOpe
   const [burst, setBurst] = useState(0);
 
   const openChest = () => {
-    AudioManager.playCoinGain();
+    AudioManager.playChest();
     HapticsManager.levelComplete();
     onOpenChest();
     setBurst(b => b + 1);

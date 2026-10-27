@@ -70,6 +70,13 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
     return () => sub.remove();
   }, []);
 
+  // Calm music, a little softer than on the map
+  useFocusEffect(
+    useCallback(() => {
+      AudioManager.startMusic('level');
+    }, []),
+  );
+
   // Android Back opens the pause menu (or closes it) instead of leaving mid-puzzle
   useFocusEffect(
     useCallback(() => {
@@ -115,6 +122,7 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
   const handleHint = (kind: HintKind) => {
     const result = game.buyHint(kind);
     setHintsOpen(false);
+    if (result === 'ok') AudioManager.playHint();
     if (result === 'no-coins') setToast({ text: t('level.noCoins') });
     if (result === 'none-left') setToast({ text: t('level.allFound') });
   };
@@ -134,16 +142,21 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
     if (!allFound) return;
     const timer = setTimeout(() => {
       markCompleted();
-      AudioManager.playLevelComplete();
+      AudioManager.stopMusic();
       HapticsManager.levelComplete();
       const stars = starsFor(hints.length);
       if (isDaily) {
         // Credit the day the puzzle belongs to, even if midnight passed while playing
         const reward = useDaily.getState().completeDaily(dayKey);
+        AudioManager.playLevelComplete();
         navigation.replace('Result', { levelId, stars, coins: reward.coins, worldCompleted: null });
         return;
       }
       const reward = useProgress.getState().completeLevel(levelId, stars);
+      // A finished world gets the grand fanfare, a new landmark its bell tune, any other level the jingle
+      if (reward.worldCompleted) AudioManager.playWorldComplete();
+      else if (reward.landmarkVisited) AudioManager.playLandmark();
+      else AudioManager.playLevelComplete();
       navigation.replace('Result', {
         levelId,
         stars,

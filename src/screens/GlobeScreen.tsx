@@ -13,6 +13,7 @@ import { Screen } from '../ui/Screen';
 import { Toast } from '../ui/Toast';
 import { colors, fonts } from '../ui/theme';
 import { useT, worldKey } from '../i18n';
+import { AudioManager } from '../services/audio/AudioManager';
 
 const CARD_GAP = 14;
 const TWO_COLUMNS_FROM = 700;
@@ -67,7 +68,10 @@ export function GlobeScreen({ navigation }: ScreenProps<'Globe'>) {
       {
         text: t('globe.unlockConfirm'),
         onPress: () => {
-          if (buyWorld(world)) setToast({ text: t('globe.unlocked', { world: name }) });
+          if (buyWorld(world)) {
+            AudioManager.playUnlock();
+            setToast({ text: t('globe.unlocked', { world: name }) });
+          }
         },
       },
     ]);

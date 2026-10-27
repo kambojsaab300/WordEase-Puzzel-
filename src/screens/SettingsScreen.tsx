@@ -6,7 +6,9 @@ import { resetAllProgress } from '../store/reset';
 import { Screen } from '../ui/Screen';
 import { colors, fonts } from '../ui/theme';
 
-const SIZE_LABELS = { 1: 'textSize.normal', 1.25: 'textSize.large', 1.5: 'textSize.huge' } as const;
+const SFX_ON_VOLUME = 0.8;
+const MUSIC_ON_VOLUME = 0.5;
+const SIZE_LABELS ={ 1: 'textSize.normal', 1.25: 'textSize.large', 1.5: 'textSize.huge' } as const;
 
 export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
   const t = useT();
@@ -97,7 +99,19 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
         {/* Audio & Haptics */}
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>{t('settings.audio')}</Text>
-          {/* Sound and music switches return with real audio (T24); today they would do nothing */}
+          {/* Effects and the calm music loop play through SoundModule (docs/SOUND-FLOW.md) */}
+          <SettingRow
+            title={t('settings.music')}
+            desc={t('settings.musicDesc')}
+            value={settings.music > 0}
+            onToggle={val => update({ music: val ? MUSIC_ON_VOLUME : 0 })}
+          />
+          <SettingRow
+            title={t('settings.sfx')}
+            desc={t('settings.sfxDesc')}
+            value={settings.sfx > 0}
+            onToggle={val => update({ sfx: val ? SFX_ON_VOLUME : 0 })}
+          />
           <SettingRow
             title={t('settings.haptics')}
             desc={t('settings.hapticsDesc')}

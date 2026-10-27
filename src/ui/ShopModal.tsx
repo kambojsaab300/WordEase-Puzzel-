@@ -9,6 +9,8 @@ import { IconButton } from './IconButton';
 import { PrimaryButton } from './PrimaryButton';
 import { colors, fonts } from './theme';
 import { useT } from '../i18n';
+import { usePopupSound } from './usePopupSound';
+import { AudioManager } from '../services/audio/AudioManager';
 
 type Props = {
   visible: boolean;
@@ -17,6 +19,7 @@ type Props = {
 
 export function ShopModal({ visible, onClose }: Props) {
   const t = useT();
+  usePopupSound(visible);
   const coins = useWallet(s => s.coins);
   const adFree = useWallet(s => s.adFree);
   const addCoins = useWallet(s => s.add);
@@ -33,6 +36,7 @@ export function ShopModal({ visible, onClose }: Props) {
 
   const handleBuyCoins = (amount: number, price: string) => {
     addCoins(amount);
+    AudioManager.playCoinGain();
     Alert.alert(t('shop.testPurchase'), t('shop.coinsAdded', { n: amount, price }));
   };
 

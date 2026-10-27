@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HINT_COST, HintKind } from '../game/engine/hints';
 import { colors, fonts, sizes } from './theme';
 import { TKey, useT } from '../i18n';
+import { usePopupSound } from './usePopupSound';
 
 const OPTIONS: { kind: HintKind; title: TKey; detail: TKey }[] = [
   { kind: 'spotlight', title: 'hints.spotlight.title', detail: 'hints.spotlight.desc' },
@@ -19,6 +20,7 @@ type Props = {
 
 export function HintSheet({ visible, coins, onPick, onClose }: Props) {
   const t = useT();
+  usePopupSound(visible);
   const insets = useSafeAreaInsets();
   return (
     <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>

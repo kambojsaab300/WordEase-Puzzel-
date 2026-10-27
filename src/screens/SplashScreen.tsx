@@ -27,6 +27,7 @@ import { InAppUpdateManager } from '../services/update/InAppUpdateManager';
 import { useSettings } from '../store/settings';
 import { colors, fonts } from '../ui/theme';
 import { useT } from '../i18n';
+import { AudioManager } from '../services/audio/AudioManager';
 
 const LOGO_FONT = require('../../assets/fonts/Nunito-Bold.ttf');
 
@@ -81,6 +82,8 @@ export function SplashScreen({ navigation }: ScreenProps<'Splash'>) {
   useEffect(() => {
     // Check Google Play Store for in-app updates on startup
     InAppUpdateManager.checkAndPrompt(false).catch(() => {});
+    AudioManager.stopMusic();
+    AudioManager.playSplash();
 
     if (!reduceMotion) {
       time.value = withTiming(INTRO_MS, { duration: INTRO_MS, easing: Easing.linear });

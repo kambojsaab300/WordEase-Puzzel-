@@ -23,6 +23,7 @@ import { ShopModal } from '../ui/ShopModal';
 import { Toast } from '../ui/Toast';
 import { colors, fonts, fontSizes, sizes } from '../ui/theme';
 import { useT, worldKey } from '../i18n';
+import { AudioManager } from '../services/audio/AudioManager';
 
 export function MapScreen({ navigation, route }: ScreenProps<'Map'>) {
   const t = useT();
@@ -70,6 +71,7 @@ export function MapScreen({ navigation, route }: ScreenProps<'Map'>) {
 
   useFocusEffect(
     useCallback(() => {
+      AudioManager.startMusic('map');
       if (!focusWorldRef.current) setFocus(f => ({ level: mapLevel, seq: f.seq + 1 }));
     }, [mapLevel]),
   );
@@ -78,6 +80,7 @@ export function MapScreen({ navigation, route }: ScreenProps<'Map'>) {
     (levelId: number) => {
       const { currentLevel: reached, stars: won, boughtWorlds } = useProgress.getState();
       if (!isLevelOpen(levelId, reached, won, boughtWorlds)) {
+        AudioManager.playLocked();
         const inBought = boughtWorlds.includes(Math.ceil(levelId / LEVELS_PER_WORLD));
         setToast({ text: t('map.finishFirst', { n: inBought ? levelId - 1 : reached }) });
         return;

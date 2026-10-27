@@ -7,6 +7,7 @@ import { useSettings } from '../store/settings';
 import { IconButton } from './IconButton';
 import { PrimaryButton } from './PrimaryButton';
 import { colors, fonts } from './theme';
+import { usePopupSound } from './usePopupSound';
 
 type Props = {
   visible: boolean;
@@ -25,6 +26,7 @@ function monthNameOf(date: Date, locale: string): string {
 
 export function DailyCalendarModal({ visible, onClose, onPlayDaily }: Props) {
   const t = useT();
+  usePopupSound(visible);
   const lang = useSettings(s => s.lang);
   const streak = useDaily(s => s.streak);
   const freezes = useDaily(s => s.freezes);

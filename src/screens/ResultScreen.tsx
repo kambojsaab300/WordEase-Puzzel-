@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Animated, { FadeInDown, ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,6 +9,7 @@ import { DAILY_LEVEL_ID } from '../game/levels/levelRepo';
 import { WORLDS } from '../game/levels/worlds';
 import { landmarkAt, landmarkKey, LANDMARKS_PER_WORLD, worldLandmarks } from '../map/landmarkPlan';
 import { AdsManager } from '../services/ads/AdsManager';
+import { AudioManager } from '../services/audio/AudioManager';
 import { useProgress } from '../store/progress';
 import { useSettings } from '../store/settings';
 import { useWallet } from '../store/wallet';
@@ -54,6 +55,19 @@ export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
   const { world, milestone } = party;
 
   const [stampOpen, setStampOpen] = useState(worldCompleted !== null);
+
+  // No background music over the celebration. Each earned star dings as it pops (at its peak),
+  // coins chime as their row rises in (2.1 s), and a world finale stamps the passport first.
+  useEffect(() => {
+    AudioManager.stopMusic();
+    if (worldCompleted !== null) AudioManager.playStampThump();
+    const timers = STARS.slice(0, stars).map((s, i) =>
+      setTimeout(() => AudioManager.playStar(i), reduceMotion ? 150 * i : s.delay + 400),
+    );
+    timers.push(setTimeout(() => AudioManager.playCoinGain(), reduceMotion ? 500 : 2200));
+    return () => timers.forEach(clearTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, when the screen opens
+  }, []);
   // A world finale already shows the world stamp, so the landmark postcard is for levels 15, 30 and 45
   const landmark = newLandmark && !worldCompleted ? landmarkAt(levelId) : null;
   const [landmarkOpen, setLandmarkOpen] = useState(landmark !== null);
@@ -77,6 +91,7 @@ export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
   const handleDoubleCoins = async () => {
     await AdsManager.showRewardedAd(() => {
       useWallet.getState().add(earnedCoins);
+      AudioManager.playCoinGain();
       setEarnedCoins(prev => prev * 2);
       setDoubled(true);
     });
