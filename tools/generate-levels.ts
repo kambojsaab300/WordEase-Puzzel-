@@ -43,7 +43,13 @@ function buildLevel(levelId: number): LevelDef {
     } catch {
       continue; // words did not fit with this seed
     }
-    const problems = checkLevel(level, { allowedDirs: spec.dirs, blocklist, meanings });
+    const problems = checkLevel(level, {
+      allowedDirs: spec.dirs,
+      minReversedShare: spec.reversedShare,
+      featuredDirs: spec.featuredDirs,
+      blocklist,
+      meanings,
+    });
     if (problems.length > 0) continue;
 
     const found = wordsInGrid(level.grid, bonusDictionary, BONUS_MIN, BONUS_MAX);

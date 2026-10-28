@@ -1,4 +1,5 @@
-import { ALL_DIRS, DIR_VECTORS, LevelDef, wordCells } from '../types';
+import { ALL_DIRS, Dir, DIR_VECTORS, isReversed, LevelDef, wordCells } from '../types';
+import { reversedQuota } from './placeWords';
 
 // Counts distinct placements of a word in any of the 8 directions.
 // A palindrome read both ways over the same cells counts once.
@@ -103,9 +104,11 @@ export function diagonalShare(level: LevelDef): number {
 }
 
 export type CheckContext = {
-  allowedDirs: string[];
+  allowedDirs: Dir[];
   blocklist: ReadonlySet<string>;
   meanings: Record<string, string>;
+  minReversedShare?: number;
+  featuredDirs?: Dir[];
 };
 
 /** All automatic checks from the flow. Returns a list of problems (empty = OK). */
@@ -128,6 +131,14 @@ export function checkLevel(level: LevelDef, ctx: CheckContext): string[] {
   const allowsDiagonal = ctx.allowedDirs.some(d => DIAGONALS.has(d));
   if (allowsDiagonal && diagonalShare(level) < MIN_DIAGONAL_SHARE) {
     problems.push('too few diagonal words');
+  }
+  const reversed = level.words.filter(w => isReversed(w.dir)).length;
+  if (reversed < reversedQuota(level.words.length, ctx.minReversedShare)) {
+    problems.push(`too few backwards words (${reversed})`);
+  }
+  const featured = ctx.featuredDirs ?? [];
+  if (featured.length > 0 && !level.words.some(w => featured.includes(w.dir))) {
+    problems.push(`no word uses the new direction ${featured.join('/')}`);
   }
   const bad = blocklistHits(level, ctx.blocklist);
   if (bad.length > 0) problems.push(`blocklisted word in grid (${bad.length})`);

@@ -1,4 +1,4 @@
-import { Cell, Dir, DIR_VECTORS, PlacedWord } from '../types';
+import { Cell, Dir, DIR_VECTORS, isReversed, PlacedWord } from '../types';
 import { Rng, shuffle } from './prng';
 
 export type Board = (string | null)[][];
@@ -9,7 +9,46 @@ type Options = {
   dirs: Dir[];
   allowOverlap?: boolean;
   maxTries?: number;
+  /** About this share of the words runs backwards (see isReversed), the rest forwards */
+  reversedShare?: number;
+  /** Directions the level is teaching: at least one word uses them */
+  featuredDirs?: Dir[];
 };
+
+export function reversedQuota(wordCount: number, share = 0): number {
+  return share > 0 ? Math.min(wordCount, Math.max(1, Math.round(wordCount * share))) : 0;
+}
+
+/**
+ * Gives each word the directions it may use. With all 8 open, 5 of them read backwards,
+ * so a free choice would make most words backwards from the first hard level on and the
+ * curve would go flat. A set share per stage lets it climb slowly instead.
+ */
+function directionPlan(
+  words: string[],
+  rng: Rng,
+  { dirs, reversedShare, featuredDirs = [] }: Options,
+): Map<string, Dir[]> {
+  const plan = new Map<string, Dir[]>();
+  if (!reversedShare && featuredDirs.length === 0) return plan; // keeps old seeds stable
+
+  const order = shuffle(rng, words);
+  let reversed = 0;
+  if (featuredDirs.length > 0 && order.length > 0) {
+    plan.set(order[0], featuredDirs);
+    if (featuredDirs.every(isReversed)) reversed++;
+  }
+  const backwards = dirs.filter(isReversed);
+  const forwards = dirs.filter(d => !isReversed(d));
+  const quota = reversedQuota(words.length, reversedShare);
+  for (const w of order) {
+    if (plan.has(w)) continue;
+    const goesBack = reversed < quota && backwards.length > 0;
+    plan.set(w, goesBack ? backwards : forwards);
+    if (goesBack) reversed++;
+  }
+  return plan;
+}
 
 type Candidate = { start: Cell; dir: Dir };
 
@@ -63,9 +102,11 @@ function write(board: Board, word: string, { start, dir }: Candidate): Cell[] {
 export function placeWords(
   words: string[],
   rng: Rng,
-  { rows, cols, dirs, allowOverlap = false, maxTries = 200 }: Options,
+  options: Options,
 ): { board: Board; placed: PlacedWord[] } | null {
+  const { rows, cols, dirs, allowOverlap = false, maxTries = 200 } = options;
   const board: Board = Array.from({ length: rows }, () => Array(cols).fill(null));
+  const plan = directionPlan(words, rng, options);
   const ordered = [...words].sort((a, b) => b.length - a.length);
   const placed: PlacedWord[] = [];
   let tries = 0;
@@ -73,7 +114,7 @@ export function placeWords(
   const placeFrom = (index: number): boolean => {
     if (index === ordered.length) return true;
     const word = ordered[index];
-    for (const cand of shuffle(rng, candidatesFor(word, rows, cols, dirs))) {
+    for (const cand of shuffle(rng, candidatesFor(word, rows, cols, plan.get(word) ?? dirs))) {
       if (!fits(board, word, cand, allowOverlap)) continue;
       if (++tries > maxTries) return false;
 

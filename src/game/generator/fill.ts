@@ -1,5 +1,6 @@
+import { Dir, DIR_VECTORS } from '../types';
 import type { Board } from './placeWords';
-import { Rng } from './prng';
+import { randInt, Rng } from './prng';
 
 // Approximate English letter frequency (percent)
 const EN_FREQUENCY: Record<string, number> = {
@@ -21,7 +22,42 @@ export function randomLetter(rng: Rng): string {
   return LETTERS[i === -1 ? LETTERS.length - 1 : i];
 }
 
-// Fills empty cells and returns the grid as one string per row
-export function fillBoard(board: Board, rng: Rng): string[] {
-  return board.map(row => row.map(cell => cell ?? randomLetter(rng)).join(''));
+/** `share` of the filler comes from `letters` (the theme words) instead of plain English. */
+export type DecoyFill = { letters: string; share: number };
+
+/**
+ * Fills empty cells and returns the grid as one string per row.
+ * With a decoy, the filler looks like the theme words, so every glance finds a false lead.
+ */
+export function fillBoard(board: Board, rng: Rng, decoy?: DecoyFill): string[] {
+  const filler = () =>
+    decoy && rng() < decoy.share ? decoy.letters[randInt(rng, decoy.letters.length)] : randomLetter(rng);
+  return board.map(row => row.map(cell => cell ?? filler()).join(''));
+}
+
+const SPOT_TRIES = 30;
+
+/**
+ * Near-miss trick from hard printed word searches: writes the start of a theme word
+ * (TIG for TIGER) on empty cells. It catches the eye but stops two letters short.
+ */
+export function plantFalseStarts(board: Board, words: string[], count: number, dirs: Dir[], rng: Rng): void {
+  const rows = board.length;
+  const cols = board[0]?.length ?? 0;
+  const long = words.filter(w => w.length >= 5);
+  if (long.length === 0) return;
+
+  for (let n = 0; n < count; n++) {
+    const stub = long[randInt(rng, long.length)].slice(0, -2);
+    for (let attempt = 0; attempt < SPOT_TRIES; attempt++) {
+      const [dr, dc] = DIR_VECTORS[dirs[randInt(rng, dirs.length)]];
+      const r = randInt(rng, rows);
+      const c = randInt(rng, cols);
+      const cells = Array.from(stub, (_, i) => [r + dr * i, c + dc * i]);
+      const free = cells.every(([rr, cc]) => rr >= 0 && rr < rows && cc >= 0 && cc < cols && board[rr][cc] === null);
+      if (!free) continue;
+      cells.forEach(([rr, cc], i) => (board[rr][cc] = stub[i]));
+      break;
+    }
+  }
 }

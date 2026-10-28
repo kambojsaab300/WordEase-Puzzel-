@@ -12,12 +12,13 @@ import type { ScreenProps } from '../app/navigation';
 import { HintKind, strongestMark } from '../game/engine/hints';
 import { starsFor } from '../game/engine/scoring';
 import { DAILY_LEVEL_ID, meaningOf } from '../game/levels/levelRepo';
+import { newDirectionsAt } from '../game/levels/levelSpec';
 import { AudioManager } from '../services/audio/AudioManager';
 import { HapticsManager } from '../services/haptics/HapticsManager';
 import { useDaily } from '../store/daily';
 import { GridCanvas, HintOverlay } from '../game/render/GridCanvas';
 import { maxZoomFor, MIN_CELL } from '../game/render/zoom';
-import { Cell, wordCells } from '../game/types';
+import { Cell, Dir, wordCells } from '../game/types';
 import { useProgress } from '../store/progress';
 import { useSettings } from '../store/settings';
 import { useWallet } from '../store/wallet';
@@ -38,6 +39,14 @@ import { TKey, useT } from '../i18n';
 
 const FINISH_DELAY_MS = 900;
 const PRAISE: TKey[] = ['level.praise.1', 'level.praise.2', 'level.praise.3', 'level.praise.4', 'level.praise.5'];
+// Keyed by the first direction a stage adds (NW comes with SW: all 8 are open then)
+const NEW_DIR_TIP: Partial<Record<Dir, TKey>> = {
+  W: 'level.newDir.W',
+  SE: 'level.newDir.SE',
+  N: 'level.newDir.N',
+  NE: 'level.newDir.NE',
+  NW: 'level.newDir.NW',
+};
 
 export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
   const { levelId } = route.params;
@@ -56,6 +65,11 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
   const cellSize = Math.min(MAX_CELL[textSize], Math.floor((width - sizes.gutter * 2) / level.cols));
   // Too small for the chosen text size: let the player zoom (tablets never need it)
   const maxZoom = maxZoomFor(cellSize, MIN_CELL[textSize]);
+
+  // The first level with a new direction says so, until a word in that direction is found
+  const newDirs = useMemo(() => newDirectionsAt(levelId), [levelId]);
+  const newDirTip = newDirs.length > 0 ? NEW_DIR_TIP[newDirs[0]] : undefined;
+  const newDirLearned = game.foundWords.some(f => newDirs.includes(f.word.dir));
 
   const [toast, setToast] = useState<{ text: string } | null>(null);
   const [meaningWord, setMeaningWord] = useState<string | null>(null);
@@ -202,6 +216,11 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
                 ? t('level.tutorial.tap')
                 : t('level.tutorial.drag')}
             </Text>
+          </View>
+        )}
+        {newDirTip && !newDirLearned && (
+          <View style={styles.tutorialPill}>
+            <Text style={styles.tutorialText}>{t(newDirTip)}</Text>
           </View>
         )}
 

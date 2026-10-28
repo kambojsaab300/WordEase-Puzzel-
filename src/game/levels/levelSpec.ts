@@ -8,33 +8,70 @@ type Band = {
   size: [number, number];
   words: [number, number];
   dirs: Dir[];
+  /** Minimum share of words read backwards */
+  reversed?: number;
+  /** Share of filler letters taken from the theme words */
+  decoy?: number;
+  falseStarts?: number;
   overlap?: boolean;
 };
 
-// Difficulty table from the design flow
+/**
+ * Difficulty ladder. Graded word searches go: easy = across and down only, medium adds
+ * diagonals, hard adds backwards words in all 8 directions. Each stage here adds ONE new
+ * direction and opens gently, so it is learned before it gets mixed with the rest.
+ * Past level 300 the board itself gets harder: filler made of theme letters, crossing
+ * words, and near-miss word starts.
+ */
 const BANDS: Band[] = [
-  { upTo: 30, size: [6, 7], words: [4, 6], dirs: ['E', 'S'] },
-  { upTo: 120, size: [7, 8], words: [6, 8], dirs: ['E', 'S', 'SE'] },
-  { upTo: 300, size: [8, 9], words: [8, 10], dirs: ['E', 'S', 'SE', 'W', 'N'] },
-  { upTo: 700, size: [9, 10], words: [10, 12], dirs: ALL_DIRS },
-  { upTo: Infinity, size: [10, 12], words: [12, 14], dirs: ALL_DIRS, overlap: true },
+  { upTo: 10, size: [6, 7], words: [4, 5], dirs: ['E', 'S'] },
+  // First backwards words: RAC in the grid is CAR
+  { upTo: 25, size: [6, 7], words: [4, 6], dirs: ['E', 'S', 'W'], reversed: 0.25 },
+  { upTo: 45, size: [7, 8], words: [5, 7], dirs: ['E', 'S', 'W', 'SE'], reversed: 0.3 },
+  { upTo: 60, size: [7, 8], words: [6, 8], dirs: ['E', 'S', 'W', 'SE', 'N'], reversed: 0.35 },
+  { upTo: 120, size: [8, 9], words: [7, 9], dirs: ['E', 'S', 'W', 'SE', 'N', 'NE'], reversed: 0.4 },
+  { upTo: 300, size: [8, 9], words: [8, 10], dirs: ALL_DIRS, reversed: 0.45 },
+  { upTo: 500, size: [9, 10], words: [9, 11], dirs: ALL_DIRS, reversed: 0.5, decoy: 0.3 },
+  { upTo: 800, size: [10, 11], words: [10, 12], dirs: ALL_DIRS, reversed: 0.55, decoy: 0.45, overlap: true },
+  {
+    upTo: Infinity,
+    size: [10, 12],
+    words: [12, 14],
+    dirs: ALL_DIRS,
+    reversed: 0.6,
+    decoy: 0.6,
+    falseStarts: 2,
+    overlap: true,
+  },
 ];
 
 export const LEVELS_PER_WORLD = 60;
 export const LANDMARK_EVERY = 15;
+// A new direction opens on easier boards, a small dip before it gets mixed in
+const INTRO_LEVELS = 2;
 
 export const isLandmark = (levelId: number) => levelId % LANDMARK_EVERY === 0;
 
-function bandFor(levelId: number): { band: Band; t: number } {
+function bandFor(levelId: number): { index: number; from: number; t: number } {
   let from = 1;
-  for (const band of BANDS) {
+  for (let index = 0; index < BANDS.length; index++) {
+    const band = BANDS[index];
     if (levelId <= band.upTo) {
       const span = band.upTo === Infinity ? 300 : band.upTo - from + 1;
-      return { band, t: Math.min(1, (levelId - from) / Math.max(1, span - 1)) };
+      return { index, from, t: Math.min(1, (levelId - from) / Math.max(1, span - 1)) };
     }
     from = band.upTo + 1;
   }
-  return { band: BANDS[BANDS.length - 1], t: 1 };
+  return { index: BANDS.length - 1, from, t: 1 };
+}
+
+const addedDirs = (index: number): Dir[] =>
+  index === 0 ? [] : BANDS[index].dirs.filter(d => !BANDS[index - 1].dirs.includes(d));
+
+/** Directions that appear for the first time on this level (for the "New!" tip). */
+export function newDirectionsAt(levelId: number): Dir[] {
+  const { index, from } = bandFor(levelId);
+  return levelId === from ? addedDirs(index) : [];
 }
 
 /**
@@ -76,10 +113,13 @@ function pickWords(shuffled: string[], count: number, letterBudget: number): str
 
 /** `salt` lets the level tool ask for a different puzzle when a check fails. */
 export function levelSpec(levelId: number, salt = 0): LevelSpec {
-  const { band, t } = bandFor(levelId);
+  const { index, from, t } = bandFor(levelId);
+  const band = BANDS[index];
   const world = Math.ceil(levelId / LEVELS_PER_WORLD);
   const levelInWorld = levelId - (world - 1) * LEVELS_PER_WORLD;
-  const delta = rhythmDelta(levelInWorld);
+  const featuredDirs = addedDirs(index);
+  const intro = featuredDirs.length > 0 && levelId - from < INTRO_LEVELS;
+  const delta = intro ? -1 : rhythmDelta(levelInWorld);
 
   const size = clamp(lerp(band.size, t) + (delta > 0 ? 1 : 0), band.size);
   const seed = levelId * 1000003 + salt * 104729;
@@ -101,7 +141,11 @@ export function levelSpec(levelId: number, salt = 0): LevelSpec {
     cols: size,
     dirs: band.dirs,
     seed,
-    difficulty: size + words.length + band.dirs.length + (band.overlap ? 2 : 0),
+    difficulty: size + words.length + band.dirs.length + (band.decoy ? 2 : 0) + (band.overlap ? 2 : 0),
     allowOverlap: band.overlap,
+    reversedShare: band.reversed,
+    featuredDirs,
+    decoyShare: band.decoy,
+    falseStarts: band.falseStarts,
   };
 }

@@ -3,6 +3,7 @@ import { getLevel, meaningOf, SHIPPED_LEVELS } from '../src/game/levels/levelRep
 import { levelSpec, rhythmDelta } from '../src/game/levels/levelSpec';
 import { THEMES_BY_WORLD } from '../src/game/levels/themes';
 import { WORLDS } from '../src/game/levels/worlds';
+import { isReversed } from '../src/game/types';
 
 describe('shipped level packs', () => {
   // Flow: re-validate all shipped levels; one failure fails the build
@@ -29,6 +30,23 @@ describe('shipped level packs', () => {
     for (const w of new Set(THEMES_BY_WORLD.flat().flatMap(t => t.words))) {
       expect(meaningOf(w)).toBeTruthy();
     }
+  });
+
+  test('backwards words start at level 11 and get more common', () => {
+    const backShare = (from: number, to: number) => {
+      let back = 0;
+      let all = 0;
+      for (let id = from; id <= to; id++) {
+        const words = getLevel(id).words;
+        if (id >= 11) expect(words.some(w => isReversed(w.dir))).toBe(true);
+        back += words.filter(w => isReversed(w.dir)).length;
+        all += words.length;
+      }
+      return back / all;
+    };
+    expect(backShare(1, 10)).toBe(0);
+    const stages = [backShare(11, 25), backShare(61, 120), backShare(301, 500), backShare(801, 1200)];
+    for (let i = 1; i < stages.length; i++) expect(stages[i]).toBeGreaterThan(stages[i - 1]);
   });
 
   test('bonus words never repeat theme words', () => {

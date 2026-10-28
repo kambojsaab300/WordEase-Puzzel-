@@ -17,6 +17,12 @@ export const DIR_VECTORS: Record<Dir, Cell> = {
 
 export const ALL_DIRS: Dir[] = ['E', 'S', 'SE', 'W', 'N', 'NW', 'NE', 'SW'];
 
+/** Read right-to-left or bottom-to-top: RAC in the grid is CAR. The hardest words to spot. */
+export function isReversed(dir: Dir): boolean {
+  const [dr, dc] = DIR_VECTORS[dir];
+  return dr < 0 || dc < 0;
+}
+
 export type PlacedWord = { w: string; start: Cell; dir: Dir };
 
 export type LevelDef = {

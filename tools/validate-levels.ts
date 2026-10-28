@@ -20,8 +20,15 @@ export function validateShippedLevels(): string[] {
   for (const file of fs.readdirSync(dir).filter(f => f.endsWith('.json')).sort()) {
     const levels: LevelDef[] = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
     for (const level of levels) {
-      const allowedDirs = levelSpec(level.id).dirs;
-      for (const problem of checkLevel(level, { allowedDirs, blocklist, meanings })) {
+      const spec = levelSpec(level.id);
+      const ctx = {
+        allowedDirs: spec.dirs,
+        minReversedShare: spec.reversedShare,
+        featuredDirs: spec.featuredDirs,
+        blocklist,
+        meanings,
+      };
+      for (const problem of checkLevel(level, ctx)) {
         failures.push(`level ${level.id}: ${problem}`);
       }
     }

@@ -1,6 +1,6 @@
 import { Dir, LevelDef } from '../types';
 import { eachWordExactlyOnce } from './checks';
-import { fillBoard } from './fill';
+import { fillBoard, plantFalseStarts } from './fill';
 import { placeWords } from './placeWords';
 import { mulberry32 } from './prng';
 
@@ -15,6 +15,14 @@ export type LevelSpec = {
   seed: number;
   difficulty: number;
   allowOverlap?: boolean;
+  /** Minimum share of words read backwards (RAC = CAR) */
+  reversedShare?: number;
+  /** Newly taught directions: at least one word uses them */
+  featuredDirs?: Dir[];
+  /** Share of filler letters taken from the theme words */
+  decoyShare?: number;
+  /** How many near-miss word starts to hide in the filler */
+  falseStarts?: number;
 };
 
 const MAX_RESTARTS = 50;
@@ -27,10 +35,14 @@ export function generateLevel(spec: LevelSpec): LevelDef {
       cols: spec.cols,
       dirs: spec.dirs,
       allowOverlap: spec.allowOverlap,
+      reversedShare: spec.reversedShare,
+      featuredDirs: spec.featuredDirs,
     });
     if (!result) continue;
 
-    const grid = fillBoard(result.board, rng);
+    if (spec.falseStarts) plantFalseStarts(result.board, spec.words, spec.falseStarts, spec.dirs, rng);
+    const decoy = spec.decoyShare ? { letters: spec.words.join(''), share: spec.decoyShare } : undefined;
+    const grid = fillBoard(result.board, rng, decoy);
     // Random fill can create a second copy of a theme word; try again if so
     if (!eachWordExactlyOnce(grid, spec.words)) continue;
 
