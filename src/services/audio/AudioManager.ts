@@ -2,11 +2,12 @@ import { AppState, NativeModules } from 'react-native';
 import { useSettings } from '../../store/settings';
 
 // Native player (android/app/src/main/java/com/wordease/SoundModule.kt): effects through SoundPool,
-// one looping music track through MediaPlayer. Missing in tests, so every call is optional.
+// music through MediaPlayer. Missing in tests, so every call is optional.
 // Where each sound plays in the game: docs/SOUND-FLOW.md
 type SoundPlayer = {
   play: (name: string, volume: number, rate: number) => void;
-  playMusic: (name: string, volume: number) => void;
+  /** Pieces play in turn, each carrying on where it last stopped, with fades between screens */
+  playMusic: (names: string[], volume: number) => void;
   setMusicVolume: (volume: number) => void;
   pauseMusic: () => void;
   stopMusic: () => void;
@@ -56,8 +57,12 @@ const MAX_TICK_STEP = 12;
 // Stars 1, 2, 3 ring a little higher each time
 const STAR_RATES = [1, 1.12, 1.26];
 
-/** 'map' plays at full music volume; 'level' a little softer so it never distracts from the grid */
+/**
+ * 'map' plays warm, tuneful pieces; 'level' slower ones without a running tune, a little softer,
+ * so they never compete with reading the grid (tools/generate-music.py composes all four)
+ */
 export type MusicMood = 'map' | 'level';
+const PLAYLIST: Record<MusicMood, string[]> = { map: ['sunny', 'garden'], level: ['pages', 'drift'] };
 const MOOD_VOLUME: Record<MusicMood, number> = { map: 1, level: 0.6 };
 
 function safely(call: () => void) {
@@ -186,13 +191,13 @@ class AudioManagerService {
     this.play('chest');
   }
 
-  /** Calm background loop for the screen in front; call again on every focus */
+  /** Background music for the screen in front; call again on every focus */
   public startMusic(mood: MusicMood) {
     this.mood = mood;
     this.applyMusic();
   }
 
-  /** Silence the background loop, e.g. while a celebration jingle plays */
+  /** Fade the music out, e.g. while a celebration jingle plays */
   public stopMusic() {
     this.mood = null;
     safely(() => player?.stopMusic());
@@ -204,7 +209,8 @@ class AudioManagerService {
       return;
     }
     const volume = this.getMusicVolume() * MOOD_VOLUME[this.mood];
-    safely(() => player?.playMusic('calm', volume));
+    const playlist = PLAYLIST[this.mood];
+    safely(() => player?.playMusic(playlist, volume));
   }
 }
 

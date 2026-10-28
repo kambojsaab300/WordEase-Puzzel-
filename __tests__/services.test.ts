@@ -32,6 +32,36 @@ describe('Services & Localization', () => {
       useSettings.setState({ sfx: 0 });
       expect(() => AudioManager.playWordFound()).not.toThrow();
     });
+
+    // The native player skips names it does not know, so a typo here would mean silent screens
+    it('gives Map and Level their own playlists, and every piece exists in the Android player', () => {
+      const playMusic = jest.fn();
+      jest.isolateModules(() => {
+        require('react-native').NativeModules.WordEaseSound = {
+          play: jest.fn(),
+          playMusic,
+          setMusicVolume: jest.fn(),
+          pauseMusic: jest.fn(),
+          stopMusic: jest.fn(),
+        };
+        const fresh = require('../src/services/audio/AudioManager').AudioManager;
+        fresh.startMusic('map');
+        fresh.startMusic('level');
+      });
+      const [[mapList, mapVolume], [levelList, levelVolume]] = playMusic.mock.calls;
+      expect(mapList).toEqual(['sunny', 'garden']);
+      expect(levelList).toEqual(['pages', 'drift']);
+      expect(levelVolume).toBeLessThan(mapVolume);
+
+      const fs = require('node:fs');
+      const path = require('node:path');
+      const android = path.join(__dirname, '..', 'android', 'app', 'src', 'main');
+      const player = fs.readFileSync(path.join(android, 'java', 'com', 'wordease', 'SoundModule.kt'), 'utf8');
+      for (const name of [...mapList, ...levelList]) {
+        expect(player).toContain(`"${name}" to R.raw.music_${name}`);
+        expect(fs.existsSync(path.join(android, 'res', 'raw', `music_${name}.ogg`))).toBe(true);
+      }
+    });
   });
 
   describe('HapticsManager', () => {

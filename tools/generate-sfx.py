@@ -2,6 +2,7 @@
 
 Every sound is generated here from sine waves and noise, so there are no third-party
 recordings or licences. Soft, rounded tones to match the calm, large-print game.
+The background music has its own generator: tools/generate-music.py.
 
 Run: python tools/generate-sfx.py
 """
@@ -215,9 +216,8 @@ write('sfx_coin', coin, peak=0.5)
 write('sfx_stamp', thump(), peak=0.7)
 
 A6, D6 = note(24), note(17)
-F2, A2 = note(-28), note(-24)
+F2 = note(-28)
 F4, A4, B4, D5 = note(-4), note(0), note(2), note(5)
-F3, G3, A3, B3, D4, F5 = note(-16), note(-14), note(-12), note(-10), note(-7), note(8)
 
 # Splash logo jingle, timed to the splash animation:
 # letters pop in (0-0.8 s), WORD highlights (0.85 s), EASE highlights (1.4 s), name appears (2 s)
@@ -296,40 +296,5 @@ for k in range(4):
     mix(chest, bell((B5 if k % 2 else E6) * 2, 0.3, decay=10, partials=((1, 1.0), (3, 0.2))), at=0.18 + 0.08 * k, gain=0.35)
 write('sfx_chest', chest, peak=0.6)
 
-
-def music_loop():
-    """Calm background loop: C - Am - F - G, 80 bpm, 8 bars (24 s). The tail wraps to the start so it loops cleanly."""
-    beat = 0.75
-    length = 32 * beat
-    out = silence(length + 4.0)
-    chords = [
-        ((C4, E4, G4b), C3, (C5, E5, G5, A5, C6)),
-        ((A3, C4, E4), A2, (A4, C5, E5, G5, A5)),
-        ((F3, A3, C4), F2, (F4, A4, C5, D5, F5)),
-        ((G3, B3, D4), G2, (G4b, B4, D5, G5, A5)),
-    ]
-    rng = random.Random(2026)
-    for c, (pad_notes, bass, scale) in enumerate(chords):
-        start = c * 8 * beat
-        mix(out, pad(list(pad_notes), 8 * beat + 1.0, attack=1.2, release=1.8), at=start, gain=0.3)
-        for b in (0, 4):
-            mix(out, pluck(bass, 2.5, brightness=0.3, seed=c * 10 + b), at=start + b * beat, gain=0.35)
-        # a few gentle mallet notes per chord, on the eighth-note grid
-        for slot in sorted(rng.sample(range(16), 6)):
-            f = rng.choice(scale)
-            mix(out, mallet(f, 1.4), at=start + slot * beat / 2, gain=0.16)
-        # a high, far-away bell now and then
-        if c % 2 == 1:
-            mix(out, bell(rng.choice(scale) * 2, 1.5, decay=2.5), at=start + 6 * beat, gain=0.05)
-    # fold the tail back over the start so the loop has no seam
-    n = int(RATE * length)
-    loop = out[:n]
-    for i, v in enumerate(out[n:]):
-        loop[i] += v
-    return loop
-
-
-RATE = 22050  # music is long, so a lower rate keeps the file small
-write('music_calm', music_loop(), peak=0.45, fade_out=False)
 
 print('Wrote sounds to', os.path.abspath(OUT))

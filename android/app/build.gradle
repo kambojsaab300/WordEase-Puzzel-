@@ -105,6 +105,13 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
+    // Phone-test APKs shared by link: `-PsmallApk` compresses the native libraries so the download
+    // is about half the size. Play Store builds leave this off (Play compresses downloads itself).
+    packaging {
+        jniLibs {
+            useLegacyPackaging = project.hasProperty('smallApk')
+        }
+    }
 }
 
 dependencies {
