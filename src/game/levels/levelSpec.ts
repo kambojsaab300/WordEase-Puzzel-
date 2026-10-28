@@ -8,7 +8,7 @@ type Band = {
   size: [number, number];
   words: [number, number];
   dirs: Dir[];
-  /** Minimum share of words read backwards */
+  /** Share of words read backwards; the rest read forwards */
   reversed?: number;
   /** Share of filler letters taken from the theme words */
   decoy?: number;

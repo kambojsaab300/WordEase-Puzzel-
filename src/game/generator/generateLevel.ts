@@ -15,7 +15,7 @@ export type LevelSpec = {
   seed: number;
   difficulty: number;
   allowOverlap?: boolean;
-  /** Minimum share of words read backwards (RAC = CAR) */
+  /** Share of words read backwards (RAC = CAR); the rest read forwards */
   reversedShare?: number;
   /** Newly taught directions: at least one word uses them */
   featuredDirs?: Dir[];
