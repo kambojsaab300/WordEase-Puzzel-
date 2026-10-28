@@ -1,18 +1,19 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { StyleSheet, Text as RNText, View } from 'react-native';
 import {
   Canvas,
   Circle,
   DashPathEffect,
+  Glyphs,
   Group,
   Line,
   RoundedRect,
-  Text,
   useFont,
   vec,
 } from '@shopify/react-native-skia';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import {
+  runOnJS,
   useDerivedValue,
   useSharedValue,
   withRepeat,
@@ -126,7 +127,7 @@ function Capsule({
   );
 }
 
-export function GridCanvas({
+export const GridCanvas = memo(function GridCanvasView({
   grid,
   cellSize,
   found,
@@ -150,9 +151,11 @@ export function GridCanvas({
   const letterColor = highContrast ? HIGH_CONTRAST.letter : colors.ink;
   const t = useT();
 
-  const [selection, setSelection] = useState<Cell[]>([]);
-  const startRef = useRef<Cell>([0, 0]);
-  const selectionRef = useRef<Cell[]>([]);
+  // The live selection lives in shared values: dragging redraws only the Skia capsule
+  // on the UI thread and never re-renders React (the main source of drag lag)
+  const selStart = useSharedValue<Cell>([0, 0]);
+  const selEnd = useSharedValue<Cell>([0, 0]);
+  const selLen = useSharedValue(0);
   const tapStartRef = useRef<Cell | null>(null);
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
@@ -160,9 +163,8 @@ export function GridCanvas({
   // Leaving Tap-Tap mode mid-selection should not leave a stray highlight
   useEffect(() => {
     tapStartRef.current = null;
-    selectionRef.current = [];
-    setSelection([]);
-  }, [inputMode]);
+    selLen.value = 0;
+  }, [inputMode, selLen]);
 
   // Zoom lives inside Skia, so letters stay sharp at any scale
   const zScale = useSharedValue(1);
@@ -193,10 +195,24 @@ export function GridCanvas({
   });
 
   const gesture = useMemo(() => {
-    const update = (cells: Cell[]) => {
-      selectionRef.current = cells;
-      setSelection(cells);
+    const show = (cells: Cell[]) => {
+      'worklet';
+      if (cells.length > 0) {
+        selStart.value = cells[0];
+        selEnd.value = cells[cells.length - 1];
+      }
+      selLen.value = cells.length;
     };
+    const update = (cells: Cell[]) => show(cells);
+    const touched = () => AudioManager.playLetterTouch();
+    const grew = (len: number) => {
+      HapticsManager.selectionTick();
+      AudioManager.playDragTick(len);
+    };
+    const finish = (start: Cell, end: Cell, len: number) =>
+      onSelectRef.current(
+        len > 1 ? lineBetween(start, end) ?? [start] : [start],
+      );
 
     if (inputMode === 'tap') {
       return Gesture.Tap()
@@ -219,39 +235,42 @@ export function GridCanvas({
         });
     }
 
+    // Runs on the UI thread; JS is only told when the length changes and when the finger lifts
     return Gesture.Pan()
-      .runOnJS(true)
       .minDistance(0)
       .maxPointers(1) // a second finger means pinch, not a word
       .onBegin(e => {
-        const p = toContent(e.x, e.y, currentZoom());
-        startRef.current = pointToCell(p.x, p.y, cellSize, rows, cols);
-        AudioManager.playLetterTouch();
-        update([startRef.current]);
+        const z = { scale: zScale.value, tx: zTx.value, ty: zTy.value };
+        const p = toContent(e.x, e.y, z);
+        show([pointToCell(p.x, p.y, cellSize, rows, cols)]);
+        runOnJS(touched)();
       })
       .onUpdate(e => {
-        const [r, c] = startRef.current;
-        const p = toContent(e.x, e.y, currentZoom());
-        const dx = p.x - (c * cellSize + cellSize / 2);
-        const dy = p.y - (r * cellSize + cellSize / 2);
-        const next = selectionFromDrag(
-          startRef.current,
-          dx,
-          dy,
-          cellSize,
-          rows,
-          cols,
-        );
-        if (next.length !== selectionRef.current.length) {
-          HapticsManager.selectionTick();
-          AudioManager.playDragTick(next.length);
+        const start = selStart.value;
+        const z = { scale: zScale.value, tx: zTx.value, ty: zTy.value };
+        const p = toContent(e.x, e.y, z);
+        const dx = p.x - (start[1] * cellSize + cellSize / 2);
+        const dy = p.y - (start[0] * cellSize + cellSize / 2);
+        const next = selectionFromDrag(start, dx, dy, cellSize, rows, cols);
+        const end = next[next.length - 1];
+        const prevEnd = selEnd.value;
+        if (next.length !== selLen.value) runOnJS(grew)(next.length);
+        if (
+          next.length !== selLen.value ||
+          end[0] !== prevEnd[0] ||
+          end[1] !== prevEnd[1]
+        ) {
+          show(next);
         }
-        update(next);
       })
       .onEnd((_e, success) => {
-        if (success) onSelectRef.current(selectionRef.current);
+        if (success && selLen.value > 0) {
+          runOnJS(finish)(selStart.value, selEnd.value, selLen.value);
+        }
       })
-      .onFinalize(() => update([]));
+      .onFinalize(() => {
+        selLen.value = 0;
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- zoom shared values are stable
   }, [cellSize, rows, cols, inputMode]);
 
@@ -293,18 +312,54 @@ export function GridCanvas({
       : withRepeat(withTiming(0.35, { duration: 700 }), -1, true);
   }, [pulse, reduceMotion]);
 
-  const letters = useMemo(() => {
+  const capsuleWidth = cellSize * CAPSULE_RATIO;
+  const selP1 = useDerivedValue(() =>
+    vec(
+      selStart.value[1] * cellSize + cellSize / 2,
+      selStart.value[0] * cellSize + cellSize / 2,
+    ),
+  );
+  const selP2 = useDerivedValue(() =>
+    vec(
+      selEnd.value[1] * cellSize + cellSize / 2,
+      selEnd.value[0] * cellSize + cellSize / 2,
+    ),
+  );
+  const selOpacity = highContrast ? HIGH_CONTRAST.capsuleOpacity : 0.6;
+  const selAlpha = useDerivedValue(() => (selLen.value > 0 ? selOpacity : 0));
+
+  // All letters go out as one Glyphs node instead of 100+ Text nodes: faster first draw and zoom
+  const letterGlyphs = useMemo(() => {
     if (!font) return [];
     const baseline = cellSize / 2 + font.getSize() * 0.36;
     return grid.flatMap((row, r) =>
       Array.from(row, (ch, c) => ({
-        key: `${r}-${c}`,
-        ch,
-        x: c * cellSize + (cellSize - font.measureText(ch).width) / 2,
-        y: r * cellSize + baseline,
+        id: font.getGlyphIDs(ch)[0],
+        pos: vec(
+          c * cellSize + (cellSize - font.measureText(ch).width) / 2,
+          r * cellSize + baseline,
+        ),
       })),
     );
   }, [font, grid, cellSize]);
+
+  const foundNodes = useMemo(
+    () =>
+      found.map((f, i) => (
+        <Capsule
+          key={f.word.w}
+          cells={wordCells(f.word)}
+          cellSize={cellSize}
+          color={f.color}
+          opacity={0.55}
+          pattern={
+            colorBlind ? FOUND_PATTERNS[i % FOUND_PATTERNS.length] : undefined
+          }
+          outline={highContrast ? HIGH_CONTRAST.outline : undefined}
+        />
+      )),
+    [found, cellSize, colorBlind, highContrast],
+  );
 
   const hintGeometry = useMemo(() => {
     if (!hint) return null;
@@ -375,21 +430,7 @@ export function GridCanvas({
                 />
               </Group>
             )}
-            {found.map((f, i) => (
-              <Capsule
-                key={f.word.w}
-                cells={wordCells(f.word)}
-                cellSize={cellSize}
-                color={f.color}
-                opacity={0.55}
-                pattern={
-                  colorBlind
-                    ? FOUND_PATTERNS[i % FOUND_PATTERNS.length]
-                    : undefined
-                }
-                outline={highContrast ? HIGH_CONTRAST.outline : undefined}
-              />
-            ))}
+            {foundNodes}
             {hintGeometry && (
               <>
                 <Circle
@@ -419,27 +460,21 @@ export function GridCanvas({
                 )}
               </>
             )}
-            {selection.length > 0 && (
-              <Capsule
-                cells={selection}
-                cellSize={cellSize}
-                color={
-                  highContrast ? HIGH_CONTRAST.selection : colors.accentCoral
-                }
-                opacity={highContrast ? HIGH_CONTRAST.capsuleOpacity : 0.6}
-              />
+            {/* a zero-length round-capped line is a dot, so one cell shows as a circle */}
+            <Line
+              p1={selP1}
+              p2={selP2}
+              color={
+                highContrast ? HIGH_CONTRAST.selection : colors.accentCoral
+              }
+              opacity={selAlpha}
+              style="stroke"
+              strokeWidth={capsuleWidth}
+              strokeCap="round"
+            />
+            {font && (
+              <Glyphs font={font} glyphs={letterGlyphs} color={letterColor} />
             )}
-            {font &&
-              letters.map(l => (
-                <Text
-                  key={l.key}
-                  x={l.x}
-                  y={l.y}
-                  text={l.ch}
-                  font={font}
-                  color={letterColor}
-                />
-              ))}
           </Group>
         </Canvas>
       </GestureDetector>
@@ -460,7 +495,7 @@ export function GridCanvas({
       )}
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   wrap: {

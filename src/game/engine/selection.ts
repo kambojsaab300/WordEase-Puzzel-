@@ -1,9 +1,12 @@
 import { Cell, Dir, DIR_VECTORS } from '../types';
 
+// These run on the UI thread while the finger drags ('worklet'), so the highlight never waits for JS
+
 // Index 0 = east, going clockwise in screen space (y grows downward)
 const SECTOR_DIRS: Dir[] = ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE'];
 
 export function pointToCell(x: number, y: number, cellSize: number, rows: number, cols: number): Cell {
+  'worklet';
   const r = Math.min(rows - 1, Math.max(0, Math.floor(y / cellSize)));
   const c = Math.min(cols - 1, Math.max(0, Math.floor(x / cellSize)));
   return [r, c];
@@ -11,12 +14,14 @@ export function pointToCell(x: number, y: number, cellSize: number, rows: number
 
 // Nearest of the 8 directions; each covers +/- 22.5 degrees
 export function snapDirection(dx: number, dy: number): Dir {
+  'worklet';
   const angle = Math.atan2(dy, dx);
   const sector = ((Math.round(angle / (Math.PI / 4)) % 8) + 8) % 8;
   return SECTOR_DIRS[sector];
 }
 
 function lineCells(start: Cell, dir: Dir, length: number, rows: number, cols: number): Cell[] {
+  'worklet';
   const [dr, dc] = DIR_VECTORS[dir];
   const cells: Cell[] = [start];
   for (let i = 1; i < length; i++) {
@@ -40,6 +45,7 @@ export function selectionFromDrag(
   rows: number,
   cols: number,
 ): Cell[] {
+  'worklet';
   if (Math.hypot(dx, dy) < cellSize / 2) return [start];
   const dir = snapDirection(dx, dy);
   const [dr, dc] = DIR_VECTORS[dir];

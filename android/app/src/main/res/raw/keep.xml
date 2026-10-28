@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- shrinkResources cannot see names used from the JS bundle: images from require() are looked up
+     by name at runtime, so keep every drawable and raw file. Only unused library resources go. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/*,@raw/*" />

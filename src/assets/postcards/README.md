@@ -20,14 +20,8 @@ WebP works on Android and on iOS 14+.
 `worlds.json` has the text for each world: name, local name, "Did you know?" fact, default sky and an accessibility label.
 
 ## Paint the Postcard
-`PaintPostcard.tsx` stacks the grey image under the colour image and fades the colour in.
-```tsx
-const paint = useSharedValue(0);
-paint.value = withTiming(levelsDone / levelsInWorld, { duration: 900 });
-<PaintPostcard world={7} paint={paint} />
-```
-Needs `react-native-reanimated` (already in the WordEase stack).
-If you use Skia instead, load `art/<slug>.webp` and lerp a grayscale ColorMatrix with the same `paint` value.
+The World Trip card stacks the grey image under the colour image and fades the colour in as levels are won.
+With Skia, load `art/<slug>.webp` and lerp a grayscale ColorMatrix by the share of levels won.
 
 ## Notes
 - Text is not baked into the art, so Hindi and other languages only need new strings in `worlds.json`.

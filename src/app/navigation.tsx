@@ -48,7 +48,12 @@ const theme = {
 export function RootNavigator() {
   return (
     <NavigationContainer theme={theme}>
-      <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
+      {/* freezeOnBlur: screens under the top one (the map behind a level) skip re-renders until shown
+          again, so finishing a level never redraws the map while the result animation plays */}
+      <Stack.Navigator
+        initialRouteName="Splash"
+        screenOptions={{ headerShown: false, freezeOnBlur: true }}
+      >
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Onboarding" component={OnboardingScreen} />
         <Stack.Screen name="Map" component={MapScreen} />

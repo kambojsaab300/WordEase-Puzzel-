@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Same as colors.primaryOcean in src/ui/theme.ts: the splash screen's background -->
+    <color name="bg_ocean">#0E6E8C</color>
+</resources>

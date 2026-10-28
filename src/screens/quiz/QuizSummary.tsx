@@ -44,6 +44,13 @@ function useTimeToMidnight(): string {
   return `${Math.floor(left / 3600)}:${pad(Math.floor(left / 60) % 60)}:${pad(left % 60)}`;
 }
 
+// Ticks on its own, so the rest of the summary is not re-rendered every second
+function Countdown() {
+  const t = useT();
+  const countdown = useTimeToMidnight();
+  return <Text style={styles.countdown}>{t('quiz.nextIn', { time: countdown })}</Text>;
+}
+
 function Chest({ reduceMotion, onOpen }: { reduceMotion: boolean; onOpen: () => void }) {
   const t = useT();
   const wobble = useSharedValue(0);
@@ -82,7 +89,6 @@ type Props = {
 
 export function QuizSummary({ day, quizNumber, streak, best, reduceMotion, onOpenChest, onDone }: Props) {
   const t = useT();
-  const countdown = useTimeToMidnight();
   const score = day.results.filter(Boolean).length;
   const answerCoins = day.coins - day.perfectBonus - day.streakGift - (day.chestOpened ? day.chest : 0);
   const [burst, setBurst] = useState(0);
@@ -143,7 +149,7 @@ export function QuizSummary({ day, quizNumber, streak, best, reduceMotion, onOpe
           </Text>
         </View>
 
-        <Text style={styles.countdown}>{t('quiz.nextIn', { time: countdown })}</Text>
+        <Countdown />
 
         <View style={styles.actions}>
           <Pressable

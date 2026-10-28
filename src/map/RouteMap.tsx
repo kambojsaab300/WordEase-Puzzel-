@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { NativeScrollEvent, NativeSyntheticEvent, useWindowDimensions } from 'react-native';
 import { FlashList, FlashListRef } from '@shopify/flash-list';
 import type { SharedValue } from 'react-native-reanimated';
-import { scrollOffsetFor, Segment, SEGMENTS } from './layout';
+import { scrollOffsetFor, Segment, SEGMENT_HEIGHT, SEGMENTS } from './layout';
 import { WorldChunk } from './WorldChunk';
 
 type Props = {
@@ -15,7 +15,15 @@ type Props = {
   onPressLevel: (levelId: number) => void;
 };
 
-export function RouteMap({ currentLevel, stars, reduceMotion, focus, scrollY, onPressLevel }: Props) {
+// memo: the world chip and jump button re-render the map screen while scrolling; the list itself need not
+export const RouteMap = memo(function RouteMapView({
+  currentLevel,
+  stars,
+  reduceMotion,
+  focus,
+  scrollY,
+  onPressLevel,
+}: Props) {
   const { width, height } = useWindowDimensions();
   const listRef = useRef<FlashListRef<Segment>>(null);
   const [loaded, setLoaded] = useState(false);
@@ -63,10 +71,12 @@ export function RouteMap({ currentLevel, stars, reduceMotion, focus, scrollY, on
       )}
       extraData={{ currentLevel, stars, reduceMotion, width }}
       onLoad={handleLoad}
+      // One whole segment ahead, so a fast fling finds the next stretch of map already drawn
+      drawDistance={SEGMENT_HEIGHT}
       onScroll={handleScroll}
       scrollEventThrottle={32}
       showsVerticalScrollIndicator={false}
       maintainVisibleContentPosition={{ disabled: true }}
     />
   );
-}
+});

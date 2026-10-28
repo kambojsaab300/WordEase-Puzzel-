@@ -243,7 +243,7 @@ export function LevelScreen({ navigation, route }: ScreenProps<'Level'>) {
                 textSize={textSize}
                 highContrast={highContrast}
                 mark={colorBlind && f ? FOUND_MARKS[foundIndex % FOUND_MARKS.length] : undefined}
-                onPress={f && meaningOf(pw.w) ? () => setMeaningWord(pw.w) : undefined}
+                onPress={f && meaningOf(pw.w) ? setMeaningWord : undefined}
               />
             );
           })}

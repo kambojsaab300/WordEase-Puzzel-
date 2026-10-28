@@ -4,6 +4,9 @@
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+        <!-- Shown from the tap on the icon until JS draws the splash: the splash's own ocean blue,
+             so there is no white or black flash -->
+        <item name="android:windowBackground">@color/bg_ocean</item>
     </style>
 
 </resources>

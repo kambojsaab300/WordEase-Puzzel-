@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 import { TextSizeIndex } from './a11y';
 import { colors, fonts, fontSizes } from './theme';
@@ -11,10 +12,12 @@ type Props = {
   textSize?: TextSizeIndex;
   highContrast?: boolean;
   mark?: string; // colour-blind mode: symbol matching the word's pattern on the grid
-  onPress?: () => void; // found chips open the meaning card again
+  // found chips open the meaning card again; gets the word so the screen can pass one stable callback
+  onPress?: (word: string) => void;
 };
 
-export function WordChip({
+// memo: a toast or coin change on the level screen should not redraw every chip
+export const WordChip = memo(function WordChipView({
   word,
   found,
   color = colors.okGreen,
@@ -27,7 +30,7 @@ export function WordChip({
   const fontSize = fontSizes.wordChip[textSize];
   return (
     <Pressable
-      onPress={onPress && withTap(onPress)}
+      onPress={onPress && withTap(() => onPress(word))}
       disabled={!onPress}
       style={[
         styles.chip,
@@ -44,7 +47,7 @@ export function WordChip({
       </Text>
     </Pressable>
   );
-}
+});
 
 const styles = StyleSheet.create({
   chipContrast: {
