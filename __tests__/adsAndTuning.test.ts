@@ -1,6 +1,7 @@
 import { getApps } from '@react-native-firebase/app';
 import { logEvent } from '@react-native-firebase/analytics';
-import { InterstitialAd, RewardedAd } from 'react-native-google-mobile-ads';
+import { AdsConsent, InterstitialAd, RewardedAd } from 'react-native-google-mobile-ads';
+import { privacyOptionsRequired, showPrivacyOptions } from '../src/services/ads/admob';
 import { targetSeconds } from '../src/game/difficulty/target';
 import { AdsManager } from '../src/services/ads/AdsManager';
 import { AnalyticsManager } from '../src/services/analytics/AnalyticsManager';
@@ -30,6 +31,21 @@ describe('AdMob', () => {
   test('Remove Ads buyers never get an interstitial', () => {
     useWallet.setState({ adFree: true });
     expect(AdsManager.showInterstitial()).toBe(false);
+  });
+});
+
+describe('Privacy choices', () => {
+  test('the Settings button shows only where Google requires it', async () => {
+    expect(await privacyOptionsRequired()).toBe(false);
+    (AdsConsent.getConsentInfo as jest.Mock).mockResolvedValueOnce({ privacyOptionsRequirementStatus: 'REQUIRED' });
+    expect(await privacyOptionsRequired()).toBe(true);
+  });
+
+  test('a failing consent call hides the button instead of crashing (negative)', async () => {
+    (AdsConsent.getConsentInfo as jest.Mock).mockRejectedValueOnce(new Error('offline'));
+    expect(await privacyOptionsRequired()).toBe(false);
+    (AdsConsent.showPrivacyOptionsForm as jest.Mock).mockRejectedValueOnce(new Error('offline'));
+    await expect(showPrivacyOptions()).resolves.toBeUndefined();
   });
 });
 

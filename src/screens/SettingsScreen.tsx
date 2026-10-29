@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import type { ScreenProps } from '../app/navigation';
 import { SUPPORTED_LANGUAGES, useT } from '../i18n';
 import { InputMode, useSettings } from '../store/settings';
+import { privacyOptionsRequired, showPrivacyOptions } from '../services/ads/admob';
 import { resetAllProgress } from '../store/reset';
 import { paperCard } from '../ui/PostcardFrame';
 import { Screen } from '../ui/Screen';
@@ -16,6 +18,11 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
   const t = useT();
   const settings = useSettings();
   const update = useSettings(s => s.update);
+  // Ads consent: Google asks for a way back to the form wherever it was shown
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  useEffect(() => {
+    privacyOptionsRequired().then(setShowPrivacy);
+  }, []);
 
   const confirmReset = () => {
     Alert.alert(
@@ -183,6 +190,12 @@ export function SettingsScreen({ navigation }: ScreenProps<'Settings'>) {
             <Text style={styles.actionText}>ℹ️ {t('settings.about')}</Text>
             <Text style={styles.chevron}>›</Text>
           </TouchableOpacity>
+          {showPrivacy && (
+            <TouchableOpacity style={styles.actionRow} onPress={withTap(showPrivacyOptions)}>
+              <Text style={styles.actionText}>🔒 {t('settings.privacy')}</Text>
+              <Text style={styles.chevron}>›</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         <View style={styles.dangerSection}>

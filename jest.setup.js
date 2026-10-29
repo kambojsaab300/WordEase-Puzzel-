@@ -60,7 +60,9 @@ jest.mock('react-native-google-mobile-ads', () => {
     AdsConsent: {
       gatherConsent: jest.fn(() => Promise.resolve({ canRequestAds: true })),
       showPrivacyOptionsForm: jest.fn(() => Promise.resolve()),
+      getConsentInfo: jest.fn(() => Promise.resolve({ privacyOptionsRequirementStatus: 'NOT_REQUIRED' })),
     },
+    AdsConsentPrivacyOptionsRequirementStatus: { REQUIRED: 'REQUIRED', NOT_REQUIRED: 'NOT_REQUIRED' },
     InterstitialAd: { createForAdRequest: jest.fn(fakeAd) },
     RewardedAd: { createForAdRequest: jest.fn(fakeAd) },
     AdEventType: { LOADED: 'loaded', ERROR: 'error', CLOSED: 'closed' },

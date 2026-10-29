@@ -1,6 +1,7 @@
 import mobileAds, {
   AdEventType,
   AdsConsent,
+  AdsConsentPrivacyOptionsRequirementStatus,
   InterstitialAd,
   MaxAdContentRating,
   RewardedAd,
@@ -119,6 +120,16 @@ export function showRewardedAd(): Promise<RewardedResult> {
       resolve('unavailable');
     });
   });
+}
+
+/** True where Google requires a "Privacy choices" entry (e.g. EEA/UK); Settings shows the button then. */
+export async function privacyOptionsRequired(): Promise<boolean> {
+  try {
+    const info = await AdsConsent.getConsentInfo();
+    return info.privacyOptionsRequirementStatus === AdsConsentPrivacyOptionsRequirementStatus.REQUIRED;
+  } catch {
+    return false;
+  }
 }
 
 /** Settings "Privacy choices": Google requires a way to change consent where the form applied. */

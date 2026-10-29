@@ -33,12 +33,12 @@ ads: AdMob can ban the account for it.
   nothing shows and nothing is counted.
 - **Rewarded** (double coins on Result, free coins in the Shop): the reward is given only when the ad is watched to
   the end. If no ad is loaded yet, the player sees "No ad is ready yet. Please try again in a moment." (6 languages).
+- **Privacy choices**: Settings shows "🔒 Privacy choices (ads)" only where Google says it is required
+  (`privacyOptionsRequired()`). It reopens the consent form. 6 languages.
 - `admob.ts` talks to the SDK; `AdsManager.ts` keeps the rules; `adKeys.ts` holds the IDs.
 
 ### Still to do before release (T26)
 
-- A **"Privacy choices"** button in Settings that calls `showPrivacyOptions()` (in `admob.ts`). Google requires it
-  wherever the consent form appeared.
 - Test the consent form with an EEA debug geography (`AdsConsent.requestInfoUpdate({ debugGeography: … })`).
 - `app-ads.txt` on your developer website, as AdMob asks.
 
