@@ -1,6 +1,7 @@
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HINT_COST, HintKind } from '../game/engine/hints';
+import { AirmailStripes } from './PostcardFrame';
 import { colors, fonts, sizes } from './theme';
 import { TKey, useT } from '../i18n';
 import { usePopupSound } from './usePopupSound';
@@ -26,6 +27,9 @@ export function HintSheet({ visible, coins, onPick, onClose }: Props) {
     <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose} accessibilityLabel={t('hints.closeA11y')}>
         <Pressable style={[styles.sheet, { paddingBottom: 32 + insets.bottom }]} onPress={() => {}}>
+          <View style={styles.airmail} pointerEvents="none">
+            <AirmailStripes />
+          </View>
           <Text style={styles.title}>{t('hints.title')}</Text>
           <Text style={styles.balance}>{t('hints.balance', { n: coins })}</Text>
 
@@ -75,10 +79,20 @@ const styles = StyleSheet.create({
   },
   sheet: {
     padding: 20,
+    paddingTop: 26,
     paddingBottom: 32,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    backgroundColor: colors.bgCream,
+    // keeps the airmail band inside the rounded corners
+    overflow: 'hidden',
+    backgroundColor: colors.paper,
+  },
+  airmail: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: 6,
   },
   title: {
     fontSize: 26,

@@ -1,6 +1,7 @@
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { ModalScroll } from './ModalScroll';
 import { useT } from '../i18n';
+import { PostcardFrame } from './PostcardFrame';
 import { PrimaryButton } from './PrimaryButton';
 import { colors, fonts, sizes } from './theme';
 import { usePopupSound } from './usePopupSound';
@@ -20,19 +21,21 @@ export function PauseSheet({ visible, onResume, onRestart, onSettings, onMap }: 
   return (
     <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onResume}>
       <ModalScroll style={styles.backdrop}>
-        <View style={styles.card} accessibilityViewIsModal>
-          <Text style={styles.title} accessibilityRole="header">
-            {t('pause.title')}
-          </Text>
-          <PrimaryButton label={t('pause.resume')} variant="coral" onPress={onResume} />
-          <View style={styles.gap} />
-          <PrimaryButton label={t('pause.restart')} onPress={onRestart} />
-          <View style={styles.gap} />
-          <PrimaryButton label={t('map.settings')} onPress={onSettings} />
-          <View style={styles.gap} />
-          <PrimaryButton label={t('pause.map')} onPress={onMap} />
-          <Text style={styles.note}>{t('pause.saved')}</Text>
-        </View>
+        <PostcardFrame style={styles.card} paperStyle={styles.paper}>
+          <View accessibilityViewIsModal>
+            <Text style={styles.title} accessibilityRole="header">
+              {t('pause.title')}
+            </Text>
+            <PrimaryButton label={t('pause.resume')} variant="coral" onPress={onResume} />
+            <View style={styles.gap} />
+            <PrimaryButton label={t('pause.restart')} onPress={onRestart} />
+            <View style={styles.gap} />
+            <PrimaryButton label={t('map.settings')} onPress={onSettings} />
+            <View style={styles.gap} />
+            <PrimaryButton label={t('pause.map')} onPress={onMap} />
+            <Text style={styles.note}>{t('pause.saved')}</Text>
+          </View>
+        </PostcardFrame>
       </ModalScroll>
     </Modal>
   );
@@ -49,13 +52,9 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     maxWidth: 420,
-    alignItems: 'stretch',
-    padding: 24,
-    borderRadius: 20,
-    backgroundColor: colors.bgCream,
-    borderWidth: 3,
-    borderStyle: 'dashed',
-    borderColor: colors.primaryOcean,
+  },
+  paper: {
+    padding: 22,
   },
   title: {
     marginBottom: 20,

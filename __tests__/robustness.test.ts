@@ -224,7 +224,7 @@ describe('Comprehensive Positive & Negative Edge Testing', () => {
     it('detects world completion on 60th level and awards +150 bonus coins', () => {
       const r = levelReward(60, 3, undefined);
       expect(r.worldCompleted).toBe(1);
-      expect(r.coins).toBe(20 + 150); // 170 coins
+      expect(r.coins).toBe(20 + 150 + 30); // stars + world bonus + Super hard first win
     });
   });
 

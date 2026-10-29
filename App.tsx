@@ -4,12 +4,19 @@
  * @format
  */
 
+import { useEffect } from 'react';
 import { StatusBar, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/app/navigation';
+import { AdsManager } from './src/services/ads/AdsManager';
 
 function App() {
+  // Consent form (where required), then ads load in the background
+  useEffect(() => {
+    AdsManager.start();
+  }, []);
+
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>

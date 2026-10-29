@@ -13,7 +13,7 @@ type Props = {
   children: ReactNode;
 };
 
-// Common screen shell: cream background, safe area, optional top bar
+// Common screen shell: warm table background, safe area, optional top bar
 export function Screen({ title, onBack, left, right, children }: Props) {
   const t = useT();
   const insets = useSafeAreaInsets();
@@ -40,7 +40,7 @@ export function Screen({ title, onBack, left, right, children }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.bgCream,
+    backgroundColor: colors.bgTable,
     paddingHorizontal: sizes.gutter,
   },
   topBar: {

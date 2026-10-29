@@ -68,8 +68,9 @@ describe('translate', () => {
 describe('no hard-coded UI text left in screens', () => {
   const dirs = ['src/screens', 'src/ui', 'src/map'].map(d => path.join(__dirname, '..', d));
   const files = dirs.flatMap(d => fs.readdirSync(d).filter(f => f.endsWith('.tsx')).map(f => path.join(d, f)));
-  // License texts stay in English on purpose; the app name is a brand
-  const allowedFiles = ['AboutScreen.tsx'];
+  // License texts stay in English on purpose; the app name is a brand.
+  // Play data is a hidden developer screen (long-press on About), never shown to players.
+  const allowedFiles = ['AboutScreen.tsx', 'PlayStatsScreen.tsx'];
   const allowedText = /^(WordEase|\?|✓|★)$/;
 
   test('JSX text and text props are all translated', () => {

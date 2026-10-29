@@ -40,6 +40,8 @@
   "map.node.current": "Nivel {n}, jugar ahora",
   "map.node.done": "Nivel {n}, {stars} estrellas",
   "map.node.landmark": "{label}, monumento: {name}",
+  "tag.hard": "Nivel difícil",
+  "tag.superHard": "Nivel superdifícil",
   "level.dailyTitle": "Postal Diaria",
   "level.praise.1": "¡Genial!",
   "level.praise.2": "¡Muy bien!",
@@ -58,6 +60,9 @@
   "level.newDir.N": "⬆️ ¡Nuevo! Algunas palabras ahora van hacia arriba",
   "level.newDir.NE": "↗️ ¡Nuevo! Ahora las palabras pueden subir en diagonal",
   "level.newDir.NW": "✨ ¡Nuevo! Ahora las palabras se esconden en las 8 direcciones",
+  "level.tagBonus": "{tag} · +{n} monedas extra en tu primera victoria",
+  "level.nudge": "¿Atascado? Toca para una pista gratis",
+  "level.nudgeTaken": "Una pista gratis, sin perder estrellas",
   "level.gridA11y.drag": "Tablero de letras. Arrastra sobre las letras para elegir una palabra.",
   "level.gridA11y.tap": "Tablero de letras. Toca la primera y luego la última letra de una palabra.",
   "pause.a11y": "Pausa",
@@ -86,6 +91,8 @@
   "result.levelDone": "¡Nivel {n} completado!",
   "result.dailyDone": "¡Postal Diaria completada!",
   "result.coinsA11y": "{n} monedas ganadas",
+  "result.bonus.hard": "Bonus de nivel difícil +{n}",
+  "result.bonus.superHard": "Bonus de nivel superdifícil +{n}",
   "result.double": "Duplicar monedas (x2)",
   "result.nextLevel": "Siguiente nivel",
   "result.worldDone": "¡{world} completado!",
@@ -96,6 +103,7 @@
   "result.starsLine.3": "¡Perfecto! Ni una sola pista.",
   "result.starsLine.2": "¡Gran trabajo con una sola pista!",
   "result.starsLine.1": "¡Bien hecho, encontraste todas!",
+  "result.starsLine.free": "¡Tres estrellas! La pista gratis no cuenta.",
   "result.funLine.1": "¡{world} te aplaude!",
   "result.funLine.2": "Otra parada feliz en {world}.",
   "result.funLine.3": "¡Hoy tienes la vista muy aguda!",
@@ -397,5 +405,6 @@
   "quiz.nextIn": "Próximo quiz en {time}",
   "quiz.share": "Compartir",
   "quiz.shareText": "WordEase Quiz diario n.º {n}: {score}/{total}\n{row}\n🔥 Racha de {streak} días",
-  "quiz.backToMap": "Volver al mapa"
+  "quiz.backToMap": "Volver al mapa",
+  "ads.notReady": "Aún no hay ningún anuncio listo. Inténtalo de nuevo en un momento."
 }

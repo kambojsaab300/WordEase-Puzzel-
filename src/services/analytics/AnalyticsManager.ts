@@ -1,12 +1,14 @@
+import { sendToFirebase } from './firebaseSink';
+
 export type AnalyticsEvent =
   | { name: 'app_open'; params: { type: 'cold' | 'warm' } }
   | { name: 'consent_result'; params: { status: string } }
   | { name: 'tutorial_step'; params: { step: number } }
   | { name: 'level_start'; params: { level_id: number; world: number } }
   | { name: 'word_found'; params: { level_id: number; word_length: number; direction?: string } }
-  | { name: 'hint_used'; params: { type: string; source: 'coins' | 'ad' } }
+  | { name: 'hint_used'; params: { type: string; source: 'coins' | 'ad' | 'free' } }
   | { name: 'level_complete'; params: { level_id: number; stars: number; hints: number; seconds?: number } }
-  | { name: 'level_quit'; params: { level_id: number; words_found: number } }
+  | { name: 'level_quit'; params: { level_id: number; words_found: number; seconds: number } }
   | { name: 'ad_impression'; params: { format: string; placement: string; value?: number } }
   | { name: 'rewarded_complete'; params: { placement: string } }
   | { name: 'iap_purchase'; params: { product_id: string } }
@@ -23,6 +25,7 @@ class AnalyticsManagerService {
    */
   public logEvent(event: AnalyticsEvent) {
     this.eventLog.push({ event, timestamp: Date.now() });
+    sendToFirebase(event.name, event.params);
 
     // Truncate memory buffer if exceeding 200 events
     if (this.eventLog.length > 200) {
@@ -46,12 +49,17 @@ class AnalyticsManagerService {
     this.logEvent({ name: 'word_found', params: { level_id: levelId, word_length: wordLength, direction } });
   }
 
-  public logHintUsed(type: string, source: 'coins' | 'ad') {
+  public logHintUsed(type: string, source: 'coins' | 'ad' | 'free') {
     this.logEvent({ name: 'hint_used', params: { type, source } });
   }
 
-  public logLevelComplete(levelId: number, stars: number, hints: number) {
-    this.logEvent({ name: 'level_complete', params: { level_id: levelId, stars, hints } });
+  /** `seconds` is active play time only (pauses and the background are not counted) */
+  public logLevelComplete(levelId: number, stars: number, hints: number, seconds?: number) {
+    this.logEvent({ name: 'level_complete', params: { level_id: levelId, stars, hints, seconds } });
+  }
+
+  public logLevelQuit(levelId: number, wordsFound: number, seconds: number) {
+    this.logEvent({ name: 'level_quit', params: { level_id: levelId, words_found: wordsFound, seconds } });
   }
 
   public logDailyComplete(streak: number) {

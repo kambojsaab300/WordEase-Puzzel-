@@ -6,6 +6,7 @@ import { GlobeScreen } from '../screens/GlobeScreen';
 import { LevelScreen } from '../screens/LevelScreen';
 import { MapScreen } from '../screens/MapScreen';
 import { OnboardingScreen } from '../screens/OnboardingScreen';
+import { PlayStatsScreen } from '../screens/PlayStatsScreen';
 import { QuizScreen } from '../screens/QuizScreen';
 import { ResultScreen } from '../screens/ResultScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
@@ -25,10 +26,16 @@ export type RootStackParamList = {
     coins: number;
     worldCompleted: number | null;
     newLandmark?: boolean;
+    /** Hard / Super hard first-win coins, already counted in `coins` */
+    tagBonus?: number;
+    /** The free stuck-player hint was taken (it costs no star, but "not a single hint" would be untrue) */
+    freeNudge?: boolean;
   };
   Settings: undefined;
   About: undefined;
   Quiz: undefined;
+  /** Developer-only: long-press the version on About */
+  PlayStats: undefined;
 };
 
 export type ScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -42,7 +49,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const theme = {
   ...DefaultTheme,
-  colors: { ...DefaultTheme.colors, background: colors.bgCream },
+  colors: { ...DefaultTheme.colors, background: colors.bgTable },
 };
 
 export function RootNavigator() {
@@ -64,6 +71,7 @@ export function RootNavigator() {
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="About" component={AboutScreen} />
         <Stack.Screen name="Quiz" component={QuizScreen} />
+        <Stack.Screen name="PlayStats" component={PlayStatsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

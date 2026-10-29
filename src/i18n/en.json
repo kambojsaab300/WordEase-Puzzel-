@@ -40,6 +40,8 @@
   "map.node.current": "Level {n}, play now",
   "map.node.done": "Level {n}, {stars} stars",
   "map.node.landmark": "{label}, landmark: {name}",
+  "tag.hard": "Hard level",
+  "tag.superHard": "Super hard level",
   "level.dailyTitle": "Daily Postcard",
   "level.praise.1": "Great!",
   "level.praise.2": "Well done!",
@@ -58,6 +60,9 @@
   "level.newDir.N": "⬆️ New! Some words now run upwards",
   "level.newDir.NE": "↗️ New! Words can now run diagonally upwards",
   "level.newDir.NW": "✨ New! Words now hide in all 8 directions",
+  "level.tagBonus": "{tag} · +{n} bonus coins on your first win",
+  "level.nudge": "Stuck? Tap for a free hint",
+  "level.nudgeTaken": "A free hint, and no star lost",
   "level.gridA11y.drag": "Letter grid. Drag across letters to select a word.",
   "level.gridA11y.tap": "Letter grid. Tap the first letter, then the last letter of a word.",
   "pause.a11y": "Pause",
@@ -86,6 +91,8 @@
   "result.levelDone": "Level {n} complete!",
   "result.dailyDone": "Daily Postcard complete!",
   "result.coinsA11y": "{n} coins earned",
+  "result.bonus.hard": "Hard level bonus +{n}",
+  "result.bonus.superHard": "Super hard level bonus +{n}",
   "result.double": "Double coins (x2)",
   "result.nextLevel": "Next level",
   "result.worldDone": "{world} complete!",
@@ -96,6 +103,7 @@
   "result.starsLine.3": "Perfect! Not a single hint.",
   "result.starsLine.2": "Great job with just one hint!",
   "result.starsLine.1": "Well done, every word found!",
+  "result.starsLine.free": "Three stars! The free hint does not count.",
   "result.funLine.1": "{world} is cheering for you!",
   "result.funLine.2": "Another happy stop in {world}.",
   "result.funLine.3": "Your eyes are sharp today!",
@@ -397,5 +405,6 @@
   "quiz.nextIn": "Next quiz in {time}",
   "quiz.share": "Share",
   "quiz.shareText": "WordEase Daily Quiz #{n}: {score}/{total}\n{row}\n🔥 {streak} day streak",
-  "quiz.backToMap": "Back to map"
+  "quiz.backToMap": "Back to map",
+  "ads.notReady": "No ad is ready yet. Please try again in a moment."
 }

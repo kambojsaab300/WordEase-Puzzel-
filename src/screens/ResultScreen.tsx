@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Animated, { FadeInDown, ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { ScreenProps } from '../app/navigation';
 import { POSTCARD_ASSETS, type WorldId } from '../assets/postcards';
 import { celebrationFor } from '../game/engine/celebration';
 import { DAILY_LEVEL_ID } from '../game/levels/levelRepo';
+import { levelTag } from '../game/levels/levelSpec';
 import { WORLDS } from '../game/levels/worlds';
 import { landmarkAt, landmarkKey, LANDMARKS_PER_WORLD, worldLandmarks } from '../map/landmarkPlan';
 import { AdsManager } from '../services/ads/AdsManager';
@@ -18,6 +19,7 @@ import { CelebrationPostcard } from '../ui/celebration/CelebrationPostcard';
 import { CoinIcon, Star3D } from '../ui/celebration/Star3D';
 import { Confetti } from '../ui/Confetti';
 import { LandmarkArt } from '../ui/LandmarkArt';
+import { TAG_BONUS_LABEL, TAG_COLOR } from '../ui/levelTag';
 import { PassportStamp } from '../ui/PassportStamp';
 import { PostcardModal } from '../ui/PostcardModal';
 import { colors, fonts } from '../ui/theme';
@@ -47,8 +49,9 @@ export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
   const { width, height } = useWindowDimensions();
   const u = Math.min(width, 480) / 390;
   const reduceMotion = useSettings(s => s.reduceMotion);
-  const { levelId, stars, coins, worldCompleted, newLandmark } = route.params;
+  const { levelId, stars, coins, worldCompleted, newLandmark, tagBonus = 0, freeNudge = false } = route.params;
   const daily = levelId === DAILY_LEVEL_ID;
+  const tag = daily || tagBonus === 0 ? null : levelTag(levelId);
   const party = useMemo(
     () => celebrationFor(levelId, stars, { daily, currentLevel: useProgress.getState().currentLevel }),
     [levelId, stars, daily],
@@ -82,20 +85,19 @@ export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
   const toMap = daily || worldCompleted !== null;
 
   const handleNext = () => {
-    if (AdsManager.shouldShowInterstitial(levelId)) {
-      AdsManager.recordInterstitialShown();
-    }
+    if (AdsManager.shouldShowInterstitial(levelId)) AdsManager.showInterstitial();
     if (toMap) navigation.popTo('Map');
     else navigation.replace('Level', { levelId: levelId + 1 });
   };
 
   const handleDoubleCoins = async () => {
-    await AdsManager.showRewardedAd(() => {
+    const result = await AdsManager.showRewardedAd(() => {
       useWallet.getState().add(earnedCoins);
       AudioManager.playCoinGain();
       setEarnedCoins(prev => prev * 2);
       setDoubled(true);
     });
+    if (result === 'unavailable') Alert.alert(t('ads.notReady'));
   };
 
   const enter = <T,>(anim: T) => (reduceMotion ? undefined : anim);
@@ -158,7 +160,9 @@ export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
             </View>
           ))}
         </View>
-        <Text style={[styles.starsLine, { fontSize: 18 * u }]}>{t(party.starsLineKey)}</Text>
+        <Text style={[styles.starsLine, { fontSize: 18 * u }]}>
+          {t(freeNudge && stars === 3 ? 'result.starsLine.free' : party.starsLineKey)}
+        </Text>
 
         <Animated.View entering={enter(FadeInDown.delay(600))} style={styles.postcard}>
           <CelebrationPostcard
@@ -185,6 +189,16 @@ export function ResultScreen({ navigation, route }: ScreenProps<'Result'>) {
             <Text style={[styles.coinText, { fontSize: 46 * u }]}>+{earnedCoins}</Text>
           </View>
         </Animated.View>
+        {tag && (
+          <Animated.View
+            entering={enter(FadeInDown.delay(2200))}
+            style={[styles.tagBonus, { backgroundColor: TAG_COLOR[tag] }]}
+          >
+            <Text style={[styles.tagBonusText, { fontSize: 16 * u }]}>
+              🔥 {t(TAG_BONUS_LABEL[tag], { n: tagBonus })}
+            </Text>
+          </Animated.View>
+        )}
 
         {milestone && (
           <Animated.View
@@ -399,6 +413,19 @@ const styles = StyleSheet.create({
   coinDepth: {
     position: 'absolute',
     left: 0,
+  },
+  tagBonus: {
+    marginTop: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: '#FFFDF7',
+  },
+  tagBonusText: {
+    fontFamily: fonts.uiBold,
+    color: colors.white,
+    textAlign: 'center',
   },
   ribbon: {
     flexDirection: 'row',

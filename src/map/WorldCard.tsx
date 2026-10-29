@@ -3,6 +3,7 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { POSTCARD_ASSETS, type WorldId } from '../assets/postcards';
 import type { WorldDef } from '../game/levels/worlds';
 import { LandmarkArt } from '../ui/LandmarkArt';
+import { AirmailStripes } from '../ui/PostcardFrame';
 import { colors, fonts } from '../ui/theme';
 import { landmarkKey, worldLandmarks } from './landmarkPlan';
 import { LANDMARK_PATHS } from './landmarks';
@@ -75,9 +76,14 @@ export const WorldCard = memo(function WorldCardView({
     >
       {/* Paint the Postcard: the grey sketch fills with colour as levels are won */}
       {postcard && (
-        <View style={styles.postcard} importantForAccessibility="no-hide-descendants">
-          <Image source={postcard.gray} style={styles.postcardFill} />
-          {!locked && <Image source={postcard.color} style={[styles.postcardFill, { opacity: progress }]} />}
+        <View style={[styles.postcardEdge, locked && styles.faded]} importantForAccessibility="no-hide-descendants">
+          <AirmailStripes />
+          <View style={styles.postcardPaper}>
+            <View style={styles.postcard}>
+              <Image source={postcard.gray} style={styles.postcardFill} />
+              {!locked && <Image source={postcard.color} style={[styles.postcardFill, { opacity: progress }]} />}
+            </View>
+          </View>
         </View>
       )}
       <View style={styles.top}>
@@ -145,8 +151,9 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: 'transparent',
   },
+  // lighter than the table background, so a locked card still reads as a card
   cardLocked: {
-    backgroundColor: '#EFE8DA',
+    backgroundColor: '#F8F2E6',
   },
   cardCurrent: {
     borderColor: colors.accentCoral,
@@ -154,11 +161,26 @@ const styles = StyleSheet.create({
   pressed: {
     opacity: 0.85,
   },
+  // the world's postcard with an airmail edge, like every postcard in the app
+  postcardEdge: {
+    marginBottom: 14,
+    padding: 5,
+    borderRadius: 10,
+    overflow: 'hidden',
+    backgroundColor: colors.paper,
+  },
+  faded: {
+    opacity: 0.55,
+  },
+  postcardPaper: {
+    padding: 3,
+    borderRadius: 4,
+    backgroundColor: colors.paper,
+  },
   postcard: {
     width: '100%',
     aspectRatio: 1080 / 489,
-    marginBottom: 14,
-    borderRadius: 14,
+    borderRadius: 4,
     overflow: 'hidden',
     backgroundColor: '#E4DDCF',
   },

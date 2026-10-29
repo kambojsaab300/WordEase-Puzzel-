@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
   },
   empty: {
-    backgroundColor: '#EFE8DA',
+    backgroundColor: '#F8F2E6',
     borderColor: '#CFC8BA',
   },
   question: {

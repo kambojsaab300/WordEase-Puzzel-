@@ -2,7 +2,8 @@ import { PlacedWord } from '../types';
 
 export type HintKind = 'spotlight' | 'compass' | 'reveal';
 
-export type HintMark = { word: string; kind: HintKind };
+/** `free`: the stuck-player nudge (engine/nudge.ts), which costs no coins and no star */
+export type HintMark = { word: string; kind: HintKind; free?: boolean };
 
 export const HINT_COST: Record<HintKind, number> = {
   spotlight: 25,

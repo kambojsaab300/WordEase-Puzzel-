@@ -9,6 +9,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { POSTCARD_ASSETS, type WorldId } from '../../assets/postcards';
+import { AirmailStripes } from '../PostcardFrame';
 
 const EDGE = ['#DDD4BF', '#D3C9B2', '#C9BFA6', '#BFB59B', '#B5AB91'];
 
@@ -58,9 +59,15 @@ export function CelebrationPostcard({ worldId, width, reduceMotion, accessibilit
       ))}
       <View style={styles.shadow} />
       <View style={styles.card}>
-        <View style={styles.photo}>
-          {art && <Image source={art.gray} style={styles.fill} />}
-          {art && <Animated.Image source={art.color} style={[styles.fill, colour]} />}
+        {/* airmail edge, like every postcard in the app */}
+        <View style={styles.fill} pointerEvents="none">
+          <AirmailStripes />
+        </View>
+        <View style={styles.paper}>
+          <View style={styles.photo}>
+            {art && <Image source={art.gray} style={styles.fill} />}
+            {art && <Animated.Image source={art.color} style={[styles.fill, colour]} />}
+          </View>
         </View>
         <Animated.View pointerEvents="none" style={[styles.shine, shineStyle]} />
       </View>
@@ -85,10 +92,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,25,40,0.35)',
   },
   card: {
-    padding: 8,
+    padding: 5,
     borderRadius: 10,
     backgroundColor: '#FFFDF6',
     overflow: 'hidden',
+  },
+  paper: {
+    padding: 4,
+    borderRadius: 4,
+    backgroundColor: '#FFFDF6',
   },
   photo: {
     width: '100%',

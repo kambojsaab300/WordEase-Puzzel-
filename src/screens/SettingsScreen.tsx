@@ -3,6 +3,7 @@ import type { ScreenProps } from '../app/navigation';
 import { SUPPORTED_LANGUAGES, useT } from '../i18n';
 import { InputMode, useSettings } from '../store/settings';
 import { resetAllProgress } from '../store/reset';
+import { paperCard } from '../ui/PostcardFrame';
 import { Screen } from '../ui/Screen';
 import { colors, fonts } from '../ui/theme';
 import { withTap } from '../ui/withTap';
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   section: {
-    backgroundColor: colors.white,
+    ...paperCard,
     borderRadius: 20,
     padding: 18,
     marginBottom: 16,
@@ -251,7 +252,7 @@ const styles = StyleSheet.create({
   },
   segmentRow: {
     flexDirection: 'row',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#F3EBDD',
     borderRadius: 14,
     padding: 4,
     marginBottom: 12,
@@ -291,7 +292,7 @@ const styles = StyleSheet.create({
   modeCard: {
     flex: 1,
     borderWidth: 2,
-    borderColor: '#E5E7EB',
+    borderColor: colors.tagBorder,
     borderRadius: 16,
     padding: 14,
   },
@@ -374,9 +375,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 12,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#F6EFE2',
     borderWidth: 1.5,
-    borderColor: '#E5E7EB',
+    borderColor: colors.tagBorder,
   },
   langChipActive: {
     backgroundColor: '#F0F9FB',

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { ScreenProps } from '../app/navigation';
 import { InputMode, useSettings } from '../store/settings';
+import { paperCard } from '../ui/PostcardFrame';
 import { PrimaryButton } from '../ui/PrimaryButton';
 import { Screen } from '../ui/Screen';
 import { colors, fonts } from '../ui/theme';
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   card: {
-    backgroundColor: colors.white,
+    ...paperCard,
     borderRadius: 20,
     padding: 18,
     marginBottom: 16,
@@ -197,7 +198,7 @@ const styles = StyleSheet.create({
   },
   segmentRow: {
     flexDirection: 'row',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#F3EBDD',
     borderRadius: 14,
     padding: 4,
     marginBottom: 10,
@@ -237,7 +238,7 @@ const styles = StyleSheet.create({
   modeCard: {
     flex: 1,
     borderWidth: 2,
-    borderColor: '#E5E7EB',
+    borderColor: colors.tagBorder,
     borderRadius: 16,
     padding: 12,
   },

@@ -11,6 +11,7 @@ import { HapticsManager } from '../services/haptics/HapticsManager';
 import { getTodayKey } from '../store/daily';
 import { streakStatus, useQuiz } from '../store/quiz';
 import { useSettings } from '../store/settings';
+import { paperCard } from '../ui/PostcardFrame';
 import { PrimaryButton } from '../ui/PrimaryButton';
 import { Screen } from '../ui/Screen';
 import { colors, fonts, sizes } from '../ui/theme';
@@ -295,12 +296,10 @@ const styles = StyleSheet.create({
     color: colors.ink,
   },
   card: {
+    ...paperCard,
     alignSelf: 'stretch',
     padding: 16,
     borderRadius: sizes.radius,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: 'rgba(31,42,55,0.12)',
     gap: 6,
   },
   cardTitle: {
@@ -346,7 +345,7 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     borderRadius: 9,
-    backgroundColor: '#E8DFD0',
+    backgroundColor: colors.tagBorder,
   },
   dotNow: {
     borderWidth: 3,
@@ -387,12 +386,10 @@ const styles = StyleSheet.create({
     color: colors.ink,
   },
   feedback: {
+    ...paperCard,
     marginTop: 20,
     padding: 16,
     borderRadius: sizes.radius,
-    backgroundColor: colors.white,
-    borderWidth: 2,
-    borderColor: 'rgba(31,42,55,0.12)',
     alignItems: 'center',
     gap: 10,
   },

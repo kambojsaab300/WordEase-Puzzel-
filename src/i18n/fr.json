@@ -40,6 +40,8 @@
   "map.node.current": "Niveau {n}, jouer maintenant",
   "map.node.done": "Niveau {n}, {stars} étoiles",
   "map.node.landmark": "{label}, monument : {name}",
+  "tag.hard": "Niveau difficile",
+  "tag.superHard": "Niveau super difficile",
   "level.dailyTitle": "Carte Postale du Jour",
   "level.praise.1": "Bravo !",
   "level.praise.2": "Bien joué !",
@@ -58,6 +60,9 @@
   "level.newDir.N": "⬆️ Nouveau ! Certains mots vont maintenant de bas en haut",
   "level.newDir.NE": "↗️ Nouveau ! Les mots peuvent maintenant monter en diagonale",
   "level.newDir.NW": "✨ Nouveau ! Les mots se cachent maintenant dans les 8 directions",
+  "level.tagBonus": "{tag} · +{n} pièces bonus pour votre première victoire",
+  "level.nudge": "Bloqué ? Touchez pour un indice gratuit",
+  "level.nudgeTaken": "Un indice gratuit, sans perdre d’étoile",
   "level.gridA11y.drag": "Grille de lettres. Glissez sur les lettres pour choisir un mot.",
   "level.gridA11y.tap": "Grille de lettres. Touchez la première puis la dernière lettre d'un mot.",
   "pause.a11y": "Pause",
@@ -86,6 +91,8 @@
   "result.levelDone": "Niveau {n} réussi !",
   "result.dailyDone": "Carte postale du jour réussie !",
   "result.coinsA11y": "{n} pièces gagnées",
+  "result.bonus.hard": "Bonus niveau difficile +{n}",
+  "result.bonus.superHard": "Bonus niveau super difficile +{n}",
   "result.double": "Doubler les pièces (x2)",
   "result.nextLevel": "Niveau suivant",
   "result.worldDone": "{world} terminé !",
@@ -96,6 +103,7 @@
   "result.starsLine.3": "Parfait ! Sans aucun indice.",
   "result.starsLine.2": "Bravo, avec un seul indice !",
   "result.starsLine.1": "Bien joué, tous les mots trouvés !",
+  "result.starsLine.free": "Trois étoiles ! L’indice gratuit ne compte pas.",
   "result.funLine.1": "{world} vous applaudit !",
   "result.funLine.2": "Encore une belle étape : {world}.",
   "result.funLine.3": "Vous avez l’œil vif aujourd’hui !",
@@ -397,5 +405,6 @@
   "quiz.nextIn": "Prochain quiz dans {time}",
   "quiz.share": "Partager",
   "quiz.shareText": "WordEase Quiz du jour n° {n} : {score}/{total}\n{row}\n🔥 Série de {streak} jours",
-  "quiz.backToMap": "Retour à la carte"
+  "quiz.backToMap": "Retour à la carte",
+  "ads.notReady": "Aucune publicité n’est prête. Réessayez dans un instant."
 }

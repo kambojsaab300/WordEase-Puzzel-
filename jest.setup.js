@@ -43,3 +43,36 @@ jest.mock('sp-react-native-in-app-updates', () => {
     },
   };
 });
+
+// AdMob is native; ads never load in tests, so every show reports "unavailable"
+jest.mock('react-native-google-mobile-ads', () => {
+  const fakeAd = () => ({
+    addAdEventListener: jest.fn(() => jest.fn()),
+    load: jest.fn(),
+    show: jest.fn(() => Promise.resolve()),
+  });
+  return {
+    __esModule: true,
+    default: () => ({
+      initialize: jest.fn(() => Promise.resolve([])),
+      setRequestConfiguration: jest.fn(() => Promise.resolve()),
+    }),
+    AdsConsent: {
+      gatherConsent: jest.fn(() => Promise.resolve({ canRequestAds: true })),
+      showPrivacyOptionsForm: jest.fn(() => Promise.resolve()),
+    },
+    InterstitialAd: { createForAdRequest: jest.fn(fakeAd) },
+    RewardedAd: { createForAdRequest: jest.fn(fakeAd) },
+    AdEventType: { LOADED: 'loaded', ERROR: 'error', CLOSED: 'closed' },
+    RewardedAdEventType: { LOADED: 'rewarded_loaded', EARNED_REWARD: 'rewarded_earned_reward' },
+    MaxAdContentRating: { G: 'G' },
+    TestIds: { INTERSTITIAL: 'test-interstitial', REWARDED: 'test-rewarded', BANNER: 'test-banner' },
+  };
+});
+
+// Firebase is native; with no app configured the sink must stay silent
+jest.mock('@react-native-firebase/app', () => ({ getApps: jest.fn(() => []) }));
+jest.mock('@react-native-firebase/analytics', () => ({
+  getAnalytics: jest.fn(() => ({})),
+  logEvent: jest.fn(() => Promise.resolve()),
+}));

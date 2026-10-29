@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   card: {
     padding: 16,
     borderRadius: 16,
-    backgroundColor: colors.white,
+    backgroundColor: colors.paper,
     borderWidth: 2,
     borderColor: colors.primaryOcean,
     borderStyle: 'dashed',

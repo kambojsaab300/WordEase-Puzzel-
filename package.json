@@ -9,9 +9,14 @@
     "start": "react-native start",
     "test": "jest",
     "levels:generate": "tsx tools/generate-levels.ts",
-    "levels:validate": "tsx tools/validate-levels.ts"
+    "levels:validate": "tsx tools/validate-levels.ts",
+    "levels:difficulty": "tsx tools/difficulty-report.ts",
+    "levels:calibrate": "tsx tools/calibrate-pace.ts",
+    "levels:tune": "tsx tools/live-tune.ts"
   },
   "dependencies": {
+    "@react-native-firebase/analytics": "27.1.0",
+    "@react-native-firebase/app": "27.1.0",
     "@react-navigation/native": "^7.5.1",
     "@react-navigation/native-stack": "^7.21.0",
     "@shopify/flash-list": "^2.3.3",
@@ -20,6 +25,7 @@
     "react-native": "0.88.0",
     "react-native-device-info": "^15.0.2",
     "react-native-gesture-handler": "^2.33.1",
+    "react-native-google-mobile-ads": "17.4.0",
     "react-native-mmkv": "^4.3.2",
     "react-native-nitro-modules": "^0.37.1",
     "react-native-reanimated": "^4.7.1",

@@ -61,6 +61,22 @@ describe('Result screen congrats', () => {
     expect(tree.root.findAllByType(Confetti)).toHaveLength(0);
   });
 
+  test('a first win on a Hard level shows its bonus line', () => {
+    const { texts } = show({ levelId: 75, stars: 3, coins: 35, worldCompleted: null, tagBonus: 15 });
+    expect(texts).toEqual(expect.arrayContaining(['🔥 Hard level bonus +15', '+35']));
+  });
+
+  test('three stars with the free nudge do not claim "not a single hint"', () => {
+    const { texts } = show({ levelId: 63, stars: 3, coins: 20, worldCompleted: null, freeNudge: true });
+    expect(texts).toContain('Three stars! The free hint does not count.');
+    expect(texts).not.toContain('Perfect! Not a single hint.');
+  });
+
+  test('a replay of a Hard level has no bonus line (negative)', () => {
+    const { texts } = show({ levelId: 75, stars: 3, coins: 0, worldCompleted: null, tagBonus: 0 });
+    expect(texts.some(t => t.includes('bonus'))).toBe(false);
+  });
+
   test('in Hindi the cheer and lines are Hindi', () => {
     act(() => useSettings.setState({ lang: 'hi' }));
     const { texts } = show({ levelId: 365, stars: 3, coins: 20, worldCompleted: null });

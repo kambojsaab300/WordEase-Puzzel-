@@ -1,5 +1,6 @@
 import { useAdState } from '../../store/adState';
 import { useWallet } from '../../store/wallet';
+import { RewardedResult, showInterstitialAd, showRewardedAd, startAds } from './admob';
 
 export type AdsConfig = {
   firstInterstitialLevel: number;
@@ -38,6 +39,18 @@ class AdsManagerService {
     return Boolean(useWallet.getState().adFree);
   }
 
+  /** App start: consent, SDK and first loads. Remove Ads buyers still get rewarded ads they ask for. */
+  public start(): Promise<void> {
+    return startAds();
+  }
+
+  /** Shows an interstitial if one is loaded and records it for the frequency rules. */
+  public showInterstitial(currentTimeMs = Date.now()): boolean {
+    if (this.isAdFree() || !showInterstitialAd()) return false;
+    this.recordInterstitialShown(currentTimeMs);
+    return true;
+  }
+
   /**
    * Evaluates whether an interstitial ad should be displayed upon finishing a level.
    * AdMob compliance rules:
@@ -73,12 +86,13 @@ class AdsManagerService {
   }
 
   /**
-   * Simulates/triggers rewarded ad for double coins or free hints.
-   * Invokes onRewarded callback when ad completes.
+   * Rewarded ad for double coins or free coins. `onRewarded` runs only when the player
+   * watched to the reward. 'unavailable' means no ad was loaded yet: tell the player.
    */
-  public async showRewardedAd(onRewarded: () => void): Promise<boolean> {
-    onRewarded();
-    return true;
+  public async showRewardedAd(onRewarded: () => void): Promise<RewardedResult> {
+    const result = await showRewardedAd();
+    if (result === 'earned') onRewarded();
+    return result;
   }
 
   public canClaimFreeCoins(todayKey: string): boolean {

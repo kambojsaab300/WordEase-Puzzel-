@@ -26,9 +26,10 @@ export function useLevelGame(levelId: number, textSize: TextSizeIndex = 0) {
   // The Daily puzzle is fixed to the day it was opened, even across midnight
   const dayKey = useMemo(() => getTodayKey(), []);
   // Huge text never shows more than a 10x10 grid
-  const level = useMemo(() => {
+  const { level, resized } = useMemo(() => {
     const full = getLevel(levelId);
-    return textSize === 2 ? fitGridSize(full, HUGE_MAX_GRID) : full;
+    const shown = textSize === 2 ? fitGridSize(full, HUGE_MAX_GRID) : full;
+    return { level: shown, resized: shown !== full };
   }, [levelId, textSize]);
 
   // Resume where the player left off, keeping only what fits this exact puzzle
@@ -110,6 +111,15 @@ export function useLevelGame(levelId: number, textSize: TextSizeIndex = 0) {
     [level.words, foundSet, hints, addFound],
   );
 
+  // One free Spotlight per attempt for a stuck player (engine/nudge.ts); no coins, no star
+  const takeFreeNudge = useCallback((): boolean => {
+    if (hints.some(h => h.free)) return false;
+    const target = pickHintWord(level.words, foundSet, hints);
+    if (!target) return false;
+    setHints(prev => [...prev, { word: target.w, kind: 'spotlight', free: true }]);
+    return true;
+  }, [level.words, foundSet, hints]);
+
   // Pause menu "Restart": clear found words and hints. Coins already spent stay spent,
   // and bonus words already paid are not paid again.
   const restart = useCallback(() => {
@@ -123,16 +133,22 @@ export function useLevelGame(levelId: number, textSize: TextSizeIndex = 0) {
 
   return {
     level,
+    /** Shown on a smaller re-made grid than the shipped level (Huge text) */
+    resized,
     isDaily,
     dayKey,
     found,
     foundWords,
     bonusFound,
     hints,
+    /** Hints that count against stars (the free nudge does not) */
+    paidHints: hints.filter(h => !h.free).length,
+    freeNudgeUsed: hints.some(h => h.free),
     allFound,
     hintTarget: pickHintWord(level.words, foundSet, hints),
     select,
     buyHint,
+    takeFreeNudge,
     restart,
     markCompleted,
   };

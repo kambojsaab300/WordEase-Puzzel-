@@ -34,6 +34,7 @@ import {
   HIGH_CONTRAST,
   TextSizeIndex,
 } from '../../ui/a11y';
+import { MinusIcon, PlusIcon } from '../../ui/GameIcons';
 import { IconButton } from '../../ui/IconButton';
 import { colors, fonts, fontSizes } from '../../ui/theme';
 import { NO_ZOOM, pinchZoom, toContent, Zoom, zoomAroundCenter } from './zoom';
@@ -385,6 +386,8 @@ export const GridCanvas = memo(function GridCanvasView({
       <GestureDetector gesture={allGestures}>
         <Canvas
           style={{ width, height }}
+          // The level postcard is tilted in 3D; a SurfaceView would ignore that transform
+          android={{ surfaceType: 'TextureView' }}
           accessibilityLabel={t(
             inputMode === 'tap' ? 'level.gridA11y.tap' : 'level.gridA11y.drag',
           )}
@@ -481,13 +484,13 @@ export const GridCanvas = memo(function GridCanvasView({
       {maxZoom > 1 && (
         <View style={styles.zoomRow}>
           <IconButton
-            icon="➖"
+            icon={<MinusIcon />}
             label={t('zoom.out')}
             onPress={() => zoomBy(1 / 1.5)}
           />
           <RNText style={styles.zoomHint}>{t('zoom.hint')}</RNText>
           <IconButton
-            icon="➕"
+            icon={<PlusIcon />}
             label={t('zoom.in')}
             onPress={() => zoomBy(1.5)}
           />

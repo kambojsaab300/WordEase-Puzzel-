@@ -1,5 +1,6 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { ScreenProps } from '../app/navigation';
+import { paperCard, PostcardFrame } from '../ui/PostcardFrame';
 import { PrimaryButton } from '../ui/PrimaryButton';
 import { Screen } from '../ui/Screen';
 import { colors, fonts } from '../ui/theme';
@@ -10,12 +11,19 @@ export function AboutScreen({ navigation }: ScreenProps<'About'>) {
   return (
     <Screen title={t('about.title')} onBack={() => navigation.goBack()}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
-        <View style={styles.card}>
+        <PostcardFrame style={styles.card} paperStyle={styles.cardPaper}>
           <Text style={styles.appTitle}>WordEase: Word Search Puzzle</Text>
-          <Text style={styles.version}>{t('about.version', { v: '1.0.0' })}</Text>
+          {/* Long-press opens the developer's Play data screen; nothing shows it is there */}
+          <Text
+            style={styles.version}
+            onLongPress={() => navigation.navigate('PlayStats')}
+            suppressHighlighting
+          >
+            {t('about.version', { v: '1.0.0' })}
+          </Text>
           <Text style={styles.description}>{t('about.intro')}</Text>
           <Text style={styles.version}>{t('about.legalNote')}</Text>
-        </View>
+        </PostcardFrame>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('about.fonts')}</Text>
@@ -84,10 +92,10 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   card: {
-    backgroundColor: '#FFF0D9',
-    borderRadius: 20,
-    padding: 20,
     marginBottom: 20,
+  },
+  cardPaper: {
+    padding: 18,
     alignItems: 'center',
   },
   appTitle: {
@@ -111,7 +119,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   section: {
-    backgroundColor: colors.white,
+    ...paperCard,
     borderRadius: 16,
     padding: 18,
     marginBottom: 16,

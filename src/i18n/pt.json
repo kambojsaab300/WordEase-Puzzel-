@@ -40,6 +40,8 @@
   "map.node.current": "Nível {n}, jogar agora",
   "map.node.done": "Nível {n}, {stars} estrelas",
   "map.node.landmark": "{label}, ponto turístico: {name}",
+  "tag.hard": "Nível difícil",
+  "tag.superHard": "Nível superdifícil",
   "level.dailyTitle": "Cartão-Postal Diário",
   "level.praise.1": "Ótimo!",
   "level.praise.2": "Muito bem!",
@@ -58,6 +60,9 @@
   "level.newDir.N": "⬆️ Novo! Algumas palavras agora vão de baixo para cima",
   "level.newDir.NE": "↗️ Novo! Agora as palavras podem subir na diagonal",
   "level.newDir.NW": "✨ Novo! Agora as palavras se escondem nas 8 direções",
+  "level.tagBonus": "{tag} · +{n} moedas extras na primeira vitória",
+  "level.nudge": "Travou? Toque para uma dica grátis",
+  "level.nudgeTaken": "Uma dica grátis, sem perder estrelas",
   "level.gridA11y.drag": "Grade de letras. Arraste sobre as letras para escolher uma palavra.",
   "level.gridA11y.tap": "Grade de letras. Toque na primeira e depois na última letra de uma palavra.",
   "pause.a11y": "Pausar",
@@ -86,6 +91,8 @@
   "result.levelDone": "Nível {n} concluído!",
   "result.dailyDone": "Cartão-Postal Diário concluído!",
   "result.coinsA11y": "{n} moedas ganhas",
+  "result.bonus.hard": "Bônus de nível difícil +{n}",
+  "result.bonus.superHard": "Bônus de nível superdifícil +{n}",
   "result.double": "Dobrar moedas (x2)",
   "result.nextLevel": "Próximo nível",
   "result.worldDone": "{world} concluído!",
@@ -96,6 +103,7 @@
   "result.starsLine.3": "Perfeito! Nenhuma dica.",
   "result.starsLine.2": "Ótimo trabalho com só uma dica!",
   "result.starsLine.1": "Muito bem, achou todas!",
+  "result.starsLine.free": "Três estrelas! A dica grátis não conta.",
   "result.funLine.1": "{world} torce por você!",
   "result.funLine.2": "Mais uma parada feliz em {world}.",
   "result.funLine.3": "Seus olhos estão afiados hoje!",
@@ -397,5 +405,6 @@
   "quiz.nextIn": "Próximo quiz em {time}",
   "quiz.share": "Compartilhar",
   "quiz.shareText": "WordEase Quiz diário nº {n}: {score}/{total}\n{row}\n🔥 Sequência de {streak} dias",
-  "quiz.backToMap": "Voltar ao mapa"
+  "quiz.backToMap": "Voltar ao mapa",
+  "ads.notReady": "Nenhum anúncio está pronto ainda. Tente de novo em instantes."
 }

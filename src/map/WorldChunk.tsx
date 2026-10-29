@@ -13,7 +13,7 @@ import {
 } from '@shopify/react-native-skia';
 import { POSTCARD_ASSETS, type WorldId } from '../assets/postcards';
 import { mulberry32 } from '../game/generator/prng';
-import { isLandmark, LEVELS_PER_WORLD } from '../game/levels/levelSpec';
+import { isLandmark, levelTag, LEVELS_PER_WORLD } from '../game/levels/levelSpec';
 import { WORLDS, type WorldPalette } from '../game/levels/worlds';
 import { colors, fonts } from '../ui/theme';
 import { Balloon } from './Balloon';
@@ -358,6 +358,7 @@ export const WorldChunk = memo(function WorldChunkView({
             landmark={isLandmark(l.id)}
             worldEnd={l.id % LEVELS_PER_WORLD === 0}
             landmarkName={landmarkName(l.id)}
+            tag={levelTag(l.id)}
             x={l.x}
             y={l.y}
             reduceMotion={reduceMotion}

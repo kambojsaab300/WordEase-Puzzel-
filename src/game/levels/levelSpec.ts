@@ -49,8 +49,17 @@ export const LEVELS_PER_WORLD = 60;
 export const LANDMARK_EVERY = 15;
 // A new direction opens on easier boards, a small dip before it gets mixed in
 const INTRO_LEVELS = 2;
+// Peaks get harder through placement, not more words: hard levels should stay short
+const PEAK_EXTRA_REVERSED = 0.15;
+const PEAK_DECOY = 0.15;
+const MIN_WORDS = 4;
+const MIN_SIZE = 6;
+// Bigger grids stop fitting a phone screen
+const MAX_SIZE = 12;
 
 export const isLandmark = (levelId: number) => levelId % LANDMARK_EVERY === 0;
+
+export const levelInWorld = (levelId: number) => ((levelId - 1) % LEVELS_PER_WORLD) + 1;
 
 function bandFor(levelId: number): { index: number; from: number; t: number } {
   let from = 1;
@@ -68,6 +77,12 @@ function bandFor(levelId: number): { index: number; from: number; t: number } {
 const addedDirs = (index: number): Dir[] =>
   index === 0 ? [] : BANDS[index].dirs.filter(d => !BANDS[index - 1].dirs.includes(d));
 
+/** First levels of a stage that adds a direction; they open easier on purpose. */
+export function isIntroLevel(levelId: number): boolean {
+  const { index, from } = bandFor(levelId);
+  return addedDirs(index).length > 0 && levelId - from < INTRO_LEVELS;
+}
+
 /** Directions that appear for the first time on this level (for the "New!" tip). */
 export function newDirectionsAt(levelId: number): Dir[] {
   const { index, from } = bandFor(levelId);
@@ -78,13 +93,48 @@ export function newDirectionsAt(levelId: number): Dir[] {
  * Sawtooth rhythm inside a world: warm-up, slow climb, landmark peaks,
  * a breather after the first landmark, and the hardest stretch before the finale.
  */
-export function rhythmDelta(levelInWorld: number): -1 | 0 | 1 {
-  if (levelInWorld <= 5) return -1;
-  if (levelInWorld === 16 || levelInWorld === 17) return -1;
-  if (levelInWorld % LANDMARK_EVERY === 0) return 1;
-  if (levelInWorld >= 46) return 1;
+export function rhythmDelta(inWorld: number): -1 | 0 | 1 {
+  if (inWorld <= 5) return -1;
+  if (inWorld === 16 || inWorld === 17) return -1;
+  if (inWorld % LANDMARK_EVERY === 0) return 1;
+  if (inWorld >= 46) return 1;
   return 0;
 }
+
+/** What the level is meant to be in its world's sawtooth. */
+export type Role = 'warm-up' | 'intro' | 'normal' | 'breather' | 'peak' | 'hard' | 'finale';
+
+export const DIP_ROLES: Role[] = ['warm-up', 'intro', 'breather'];
+export const PEAK_ROLES: Role[] = ['peak', 'finale'];
+
+export function levelRole(levelId: number): Role {
+  const inWorld = levelInWorld(levelId);
+  if (isIntroLevel(levelId)) return 'intro';
+  if (inWorld === LEVELS_PER_WORLD) return 'finale';
+  if (inWorld % LANDMARK_EVERY === 0) return 'peak';
+  const delta = rhythmDelta(inWorld);
+  if (delta < 0) return inWorld <= 5 ? 'warm-up' : 'breather';
+  return delta > 0 ? 'hard' : 'normal';
+}
+
+/**
+ * Badge for the hardest levels, as Candy Crush warns before a hard one. The level tool keeps
+ * each landmark the hardest of its stretch and the finale the hardest of its world, so the
+ * badge is always true.
+ */
+export type LevelTag = 'hard' | 'super-hard';
+
+export function levelTag(levelId: number): LevelTag | null {
+  const role = levelRole(levelId);
+  if (role === 'finale') return 'super-hard';
+  return role === 'peak' ? 'hard' : null;
+}
+
+/**
+ * Nudges the level tool may try so a level lands on its target time (difficulty/target.ts).
+ * Both are added after the band's own size and word count are worked out.
+ */
+export type SpecTweak = { words?: number; size?: number };
 
 const clamp = (x: number, [lo, hi]: [number, number]) => Math.min(hi, Math.max(lo, x));
 const lerp = ([lo, hi]: [number, number], t: number) => Math.round(lo + (hi - lo) * t);
@@ -112,25 +162,34 @@ function pickWords(shuffled: string[], count: number, letterBudget: number): str
 }
 
 /** `salt` lets the level tool ask for a different puzzle when a check fails. */
-export function levelSpec(levelId: number, salt = 0): LevelSpec {
-  const { index, from, t } = bandFor(levelId);
+export function levelSpec(levelId: number, salt = 0, tweak: SpecTweak = {}): LevelSpec {
+  const { index, t } = bandFor(levelId);
   const band = BANDS[index];
   const world = Math.ceil(levelId / LEVELS_PER_WORLD);
-  const levelInWorld = levelId - (world - 1) * LEVELS_PER_WORLD;
+  const inWorld = levelInWorld(levelId);
   const featuredDirs = addedDirs(index);
-  const intro = featuredDirs.length > 0 && levelId - from < INTRO_LEVELS;
-  const delta = intro ? -1 : rhythmDelta(levelInWorld);
+  const role = levelRole(levelId);
+  const peak = PEAK_ROLES.includes(role);
+  const delta = role === 'intro' ? -1 : rhythmDelta(inWorld);
 
-  const size = clamp(lerp(band.size, t) + (delta > 0 ? 1 : 0), band.size);
+  const bandSize = clamp(lerp(band.size, t) + (delta > 0 ? 1 : 0), band.size);
+  const size = clamp(bandSize + (tweak.size ?? 0), [
+    Math.max(MIN_SIZE, band.size[0] - 1),
+    Math.min(MAX_SIZE, band.size[1] + 1),
+  ]);
   const seed = levelId * 1000003 + salt * 104729;
   const rng = mulberry32(seed);
 
   const worldThemes = THEMES_BY_WORLD[(world - 1) % THEMES_BY_WORLD.length];
-  const theme = worldThemes[(levelInWorld - 1) % worldThemes.length];
+  const theme = worldThemes[(inWorld - 1) % worldThemes.length];
   const pool = theme.words.filter(w => w.length <= size);
-  const target = clamp(lerp(band.words, t) + delta + randInt(rng, 2), band.words);
+  const bandWords = clamp(lerp(band.words, t) + (peak ? 0 : delta) + randInt(rng, 2), band.words);
+  const target = clamp(bandWords + (tweak.words ?? 0), [Math.max(MIN_WORDS, band.words[0] - 2), band.words[1] + 1]);
   const budget = size * size * (band.overlap ? OVERLAP_FILL_BUDGET : FILL_BUDGET);
   const words = pickWords(shuffle(rng, pool), target, budget);
+
+  const reversedShare = band.reversed && peak ? band.reversed + PEAK_EXTRA_REVERSED : band.reversed;
+  const decoyShare = peak ? (band.decoy ?? 0) + PEAK_DECOY : band.decoy;
 
   return {
     id: levelId,
@@ -141,11 +200,12 @@ export function levelSpec(levelId: number, salt = 0): LevelSpec {
     cols: size,
     dirs: band.dirs,
     seed,
-    difficulty: size + words.length + band.dirs.length + (band.decoy ? 2 : 0) + (band.overlap ? 2 : 0),
+    // Phone-made puzzles keep this rough score; the level tool overwrites it with the bot's seconds
+    difficulty: size + words.length + band.dirs.length + (decoyShare ? 2 : 0) + (band.overlap ? 2 : 0),
     allowOverlap: band.overlap,
-    reversedShare: band.reversed,
+    reversedShare,
     featuredDirs,
-    decoyShare: band.decoy,
+    decoyShare,
     falseStarts: band.falseStarts,
   };
 }

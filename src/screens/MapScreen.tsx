@@ -16,7 +16,9 @@ import { useSettings } from '../store/settings';
 import { useWallet } from '../store/wallet';
 import { CoinPill } from '../ui/CoinPill';
 import { DailyCalendarModal } from '../ui/DailyCalendarModal';
+import { CalendarIcon, GlobeIcon, PassportIcon, PinIcon, SettingsIcon } from '../ui/GameIcons';
 import { IconButton } from '../ui/IconButton';
+import { AirmailStripes } from '../ui/PostcardFrame';
 import { PrimaryButton } from '../ui/PrimaryButton';
 import { QuizButton } from '../ui/QuizButton';
 import { ShopModal } from '../ui/ShopModal';
@@ -132,9 +134,12 @@ export function MapScreen({ navigation, route }: ScreenProps<'Map'>) {
           </View>
         </View>
         <View style={styles.row}>
-          <IconButton icon="📅" label={t('map.daily')} onPress={() => setDailyOpen(true)} />
+          <IconButton icon={<CalendarIcon />} label={t('map.daily')} onPress={() => setDailyOpen(true)} />
           <View style={styles.gap} />
-          <IconButton icon="⚙" label={t('map.settings')} onPress={() => navigation.navigate('Settings')} />
+          <IconButton icon={<SettingsIcon />} label={t('map.settings')} onPress={() => navigation.navigate('Settings')} />
+        </View>
+        <View style={styles.airmail} pointerEvents="none">
+          <AirmailStripes />
         </View>
       </View>
 
@@ -145,7 +150,7 @@ export function MapScreen({ navigation, route }: ScreenProps<'Map'>) {
       {awayFromCurrent && (
         <View style={[styles.jump, { bottom: insets.bottom + 96 }]}>
           <IconButton
-            icon="📍"
+            icon={<PinIcon />}
             label={t('map.jumpCurrent')}
             onPress={() => setFocus(f => ({ level: mapLevel, seq: f.seq + 1 }))}
           />
@@ -153,13 +158,13 @@ export function MapScreen({ navigation, route }: ScreenProps<'Map'>) {
       )}
 
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 12 }]}>
-        <IconButton icon="🗺️" label={t('map.globe')} onPress={() => navigation.navigate('Globe')} />
+        <IconButton icon={<GlobeIcon />} label={t('map.globe')} onPress={() => navigation.navigate('Globe')} />
         <PrimaryButton
           label={t(classicPlay ? 'map.classic' : 'map.play', { n: currentLevel })}
           variant="coral"
           onPress={() => navigation.navigate('Level', { levelId: currentLevel })}
         />
-        <IconButton icon="📘" label={t('map.album')} onPress={() => navigation.navigate('Album')} />
+        <IconButton icon={<PassportIcon />} label={t('map.album')} onPress={() => navigation.navigate('Album')} />
       </View>
 
       <DailyCalendarModal
@@ -188,10 +193,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 12,
-    paddingBottom: 10,
-    backgroundColor: 'rgba(255,253,247,0.92)',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(31,42,55,0.1)',
+    // room for the airmail band along the bottom edge
+    paddingBottom: 14,
+    backgroundColor: 'rgba(255,253,247,0.94)',
+  },
+  airmail: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 5,
   },
   worldChip: {
     flex: 1,
@@ -202,9 +213,9 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     paddingRight: 12,
     borderRadius: 22,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: 'rgba(31,42,55,0.12)',
+    backgroundColor: colors.paper,
+    borderWidth: 1.5,
+    borderColor: colors.tagBorder,
   },
   worldNo: {
     width: 34,

@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { ModalScroll } from './ModalScroll';
 import { Modal, StyleSheet, Text, View } from 'react-native';
+import { PostcardFrame } from './PostcardFrame';
 import { PrimaryButton } from './PrimaryButton';
 import { colors, fonts, sizes } from './theme';
 
@@ -17,12 +18,12 @@ export function PostcardModal({ visible, title, children, buttonLabel = 'OK', on
   return (
     <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
       <ModalScroll style={styles.backdrop}>
-        <View style={styles.card}>
+        <PostcardFrame style={styles.card} paperStyle={styles.paper}>
           <View style={styles.stampLine} />
           <Text style={styles.title}>{title}</Text>
           <View style={styles.body}>{children}</View>
           <PrimaryButton label={buttonLabel} variant="coral" onPress={onClose} />
-        </View>
+        </PostcardFrame>
       </ModalScroll>
     </Modal>
   );
@@ -39,12 +40,9 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     maxWidth: 420,
-    padding: 24,
-    borderRadius: 20,
-    backgroundColor: colors.bgCream,
-    borderWidth: 3,
-    borderColor: colors.primaryOcean,
-    borderStyle: 'dashed',
+  },
+  paper: {
+    padding: 22,
     alignItems: 'center',
   },
   stampLine: {

@@ -1,5 +1,11 @@
 import { HINT_COST, pickHintWord, strongestMark } from '../src/game/engine/hints';
-import { levelReward, STARTING_COINS, WORLD_COMPLETE_COINS, worldUnlockCost } from '../src/game/engine/rewards';
+import {
+  levelReward,
+  STARTING_COINS,
+  TAG_BONUS_COINS,
+  WORLD_COMPLETE_COINS,
+  worldUnlockCost,
+} from '../src/game/engine/rewards';
 import { isLevelOpen } from '../src/map/worldProgress';
 import { PlacedWord } from '../src/game/types';
 import { useProgress } from '../src/store/progress';
@@ -17,7 +23,11 @@ describe('levelReward', () => {
   });
 
   test('world finale adds the world bonus once', () => {
-    expect(levelReward(60, 3)).toMatchObject({ coins: 20 + WORLD_COMPLETE_COINS, worldCompleted: 1 });
+    // The finale is also Super hard, so its first win carries that bonus too
+    expect(levelReward(60, 3)).toMatchObject({
+      coins: 20 + WORLD_COMPLETE_COINS + TAG_BONUS_COINS['super-hard'],
+      worldCompleted: 1,
+    });
     expect(levelReward(60, 3, 3).worldCompleted).toBeNull();
   });
 });

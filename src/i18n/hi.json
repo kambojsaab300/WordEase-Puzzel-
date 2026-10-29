@@ -40,6 +40,8 @@
   "map.node.current": "लेवल {n}, अभी खेलें",
   "map.node.done": "लेवल {n}, {stars} सितारे",
   "map.node.landmark": "{label}, प्रसिद्ध स्थल: {name}",
+  "tag.hard": "कठिन लेवल",
+  "tag.superHard": "बहुत कठिन लेवल",
   "level.dailyTitle": "आज का पोस्टकार्ड",
   "level.praise.1": "बहुत बढ़िया!",
   "level.praise.2": "शाबाश!",
@@ -58,6 +60,9 @@
   "level.newDir.N": "⬆️ नया! अब कुछ शब्द नीचे से ऊपर चलते हैं",
   "level.newDir.NE": "↗️ नया! अब शब्द तिरछे ऊपर की ओर भी हो सकते हैं",
   "level.newDir.NW": "✨ नया! अब शब्द आठों दिशाओं में छिपे हैं",
+  "level.tagBonus": "{tag} · पहली जीत पर +{n} बोनस सिक्के",
+  "level.nudge": "अटक गए? मुफ़्त संकेत के लिए टैप करें",
+  "level.nudgeTaken": "मुफ़्त संकेत, कोई सितारा नहीं कटा",
   "level.gridA11y.drag": "अक्षरों का ग्रिड। शब्द चुनने के लिए अक्षरों पर उंगली खींचें।",
   "level.gridA11y.tap": "अक्षरों का ग्रिड। शब्द का पहला, फिर आख़िरी अक्षर टैप करें।",
   "pause.a11y": "रोकें",
@@ -86,6 +91,8 @@
   "result.levelDone": "लेवल {n} पूरा!",
   "result.dailyDone": "आज का पोस्टकार्ड पूरा!",
   "result.coinsA11y": "{n} सिक्के मिले",
+  "result.bonus.hard": "कठिन लेवल बोनस +{n}",
+  "result.bonus.superHard": "बहुत कठिन लेवल बोनस +{n}",
   "result.double": "सिक्के दोगुने करें (x2)",
   "result.nextLevel": "अगला लेवल",
   "result.worldDone": "{world} पूरा!",
@@ -96,6 +103,7 @@
   "result.starsLine.3": "परफ़ेक्ट! एक भी संकेत नहीं।",
   "result.starsLine.2": "सिर्फ़ एक संकेत के साथ बढ़िया काम!",
   "result.starsLine.1": "शाबाश, सारे शब्द मिल गए!",
+  "result.starsLine.free": "तीन सितारे! मुफ़्त संकेत गिना नहीं जाता।",
   "result.funLine.1": "{world} आपके लिए तालियाँ बजा रहा है!",
   "result.funLine.2": "{world} में एक और ख़ुशनुमा पड़ाव।",
   "result.funLine.3": "आज आपकी नज़र बहुत तेज़ है!",
@@ -397,5 +405,6 @@
   "quiz.nextIn": "अगला क्विज़ {time} में",
   "quiz.share": "शेयर करें",
   "quiz.shareText": "WordEase डेली क्विज़ #{n}: {score}/{total}\n{row}\n🔥 {streak} दिन की लय",
-  "quiz.backToMap": "मैप पर वापस"
+  "quiz.backToMap": "मैप पर वापस",
+  "ads.notReady": "अभी कोई विज्ञापन तैयार नहीं है। थोड़ी देर में फिर कोशिश करें।"
 }

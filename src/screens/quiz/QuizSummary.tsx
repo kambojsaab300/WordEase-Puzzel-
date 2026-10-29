@@ -14,6 +14,7 @@ import { AudioManager } from '../../services/audio/AudioManager';
 import { HapticsManager } from '../../services/haptics/HapticsManager';
 import type { QuizDay } from '../../store/quiz';
 import { Confetti } from '../../ui/Confetti';
+import { paperCard } from '../../ui/PostcardFrame';
 import { PrimaryButton } from '../../ui/PrimaryButton';
 import { colors, fonts, sizes } from '../../ui/theme';
 import { TKey, useT } from '../../i18n';
@@ -205,11 +206,9 @@ const styles = StyleSheet.create({
     letterSpacing: 4,
   },
   card: {
+    ...paperCard,
     padding: 16,
     borderRadius: sizes.radius,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: 'rgba(31,42,55,0.12)',
     gap: 6,
   },
   line: {

@@ -40,6 +40,8 @@
   "map.node.current": "Level {n}, jetzt spielen",
   "map.node.done": "Level {n}, {stars} Sterne",
   "map.node.landmark": "{label}, Sehenswürdigkeit: {name}",
+  "tag.hard": "Schweres Level",
+  "tag.superHard": "Superschweres Level",
   "level.dailyTitle": "Tägliche Postkarte",
   "level.praise.1": "Super!",
   "level.praise.2": "Gut gemacht!",
@@ -58,6 +60,9 @@
   "level.newDir.N": "⬆️ Neu! Manche Wörter verlaufen jetzt von unten nach oben",
   "level.newDir.NE": "↗️ Neu! Wörter können jetzt diagonal nach oben verlaufen",
   "level.newDir.NW": "✨ Neu! Wörter verstecken sich jetzt in allen 8 Richtungen",
+  "level.tagBonus": "{tag} · +{n} Bonusmünzen beim ersten Sieg",
+  "level.nudge": "Hängst du fest? Tippe für einen Gratis-Tipp",
+  "level.nudgeTaken": "Ein Gratis-Tipp, kein Stern weniger",
   "level.gridA11y.drag": "Buchstabenfeld. Über Buchstaben ziehen, um ein Wort zu wählen.",
   "level.gridA11y.tap": "Buchstabenfeld. Ersten und dann letzten Buchstaben eines Wortes antippen.",
   "pause.a11y": "Pause",
@@ -86,6 +91,8 @@
   "result.levelDone": "Level {n} geschafft!",
   "result.dailyDone": "Tägliche Postkarte geschafft!",
   "result.coinsA11y": "{n} Münzen verdient",
+  "result.bonus.hard": "Bonus für schweres Level +{n}",
+  "result.bonus.superHard": "Bonus für superschweres Level +{n}",
   "result.double": "Münzen verdoppeln (x2)",
   "result.nextLevel": "Nächstes Level",
   "result.worldDone": "{world} geschafft!",
@@ -96,6 +103,7 @@
   "result.starsLine.3": "Perfekt! Ganz ohne Tipp.",
   "result.starsLine.2": "Super, mit nur einem Tipp!",
   "result.starsLine.1": "Gut gemacht, alle Wörter gefunden!",
+  "result.starsLine.free": "Drei Sterne! Der Gratis-Tipp zählt nicht.",
   "result.funLine.1": "{world} jubelt dir zu!",
   "result.funLine.2": "Noch ein schöner Halt in {world}.",
   "result.funLine.3": "Heute hast du Adleraugen!",
@@ -397,5 +405,6 @@
   "quiz.nextIn": "Nächstes Quiz in {time}",
   "quiz.share": "Teilen",
   "quiz.shareText": "WordEase Tägliches Quiz Nr. {n}: {score}/{total}\n{row}\n🔥 {streak} Tage in Folge",
-  "quiz.backToMap": "Zurück zur Karte"
+  "quiz.backToMap": "Zurück zur Karte",
+  "ads.notReady": "Noch keine Werbung bereit. Bitte versuche es gleich noch einmal."
 }

@@ -5,6 +5,7 @@ import { localeOf, useT } from '../i18n';
 import { getTodayKey, useDaily } from '../store/daily';
 import { useSettings } from '../store/settings';
 import { IconButton } from './IconButton';
+import { PostcardFrame } from './PostcardFrame';
 import { PrimaryButton } from './PrimaryButton';
 import { colors, fonts } from './theme';
 import { usePopupSound } from './usePopupSound';
@@ -60,7 +61,7 @@ export function DailyCalendarModal({ visible, onClose, onPlayDaily }: Props) {
   return (
     <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
       <ModalScroll style={styles.overlay}>
-        <View style={styles.card}>
+        <PostcardFrame style={styles.card} paperStyle={styles.paper}>
           <View style={styles.header}>
             <Text style={styles.title}>{t('daily.title')}</Text>
             <IconButton icon="✕" label={t('common.close')} onPress={onClose} />
@@ -144,7 +145,7 @@ export function DailyCalendarModal({ visible, onClose, onPlayDaily }: Props) {
               />
             )}
           </View>
-        </View>
+        </PostcardFrame>
       </ModalScroll>
     </Modal>
   );
@@ -161,14 +162,10 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     maxWidth: 380,
-    backgroundColor: colors.bgCream,
-    borderRadius: 24,
-    padding: 20,
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.15,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 6 },
+  },
+  // with the airmail edge this keeps the 7 × 40 weekday row as wide as before on a 360 dp phone
+  paper: {
+    padding: 15,
   },
   header: {
     flexDirection: 'row',

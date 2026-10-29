@@ -6,6 +6,7 @@ import { getTodayKey } from '../store/daily';
 import { useWallet } from '../store/wallet';
 import { CoinPill } from './CoinPill';
 import { IconButton } from './IconButton';
+import { PostcardFrame } from './PostcardFrame';
 import { PrimaryButton } from './PrimaryButton';
 import { colors, fonts } from './theme';
 import { useT } from '../i18n';
@@ -46,19 +47,20 @@ export function ShopModal({ visible, onClose }: Props) {
       return;
     }
 
-    await AdsManager.showRewardedAd(() => {
+    const result = await AdsManager.showRewardedAd(() => {
       addCoins(50);
       AudioManager.playCoinGain();
       AdsManager.recordFreeCoinsClaimed(todayKey);
       setCanClaimFree(AdsManager.canClaimFreeCoins(todayKey));
       Alert.alert(t('shop.reward'), t('shop.rewardMsg'));
     });
+    if (result === 'unavailable') Alert.alert(t('ads.notReady'));
   };
 
   return (
     <Modal visible={visible} transparent animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={onClose}>
       <ModalScroll style={styles.overlay}>
-        <View style={styles.card}>
+        <PostcardFrame style={styles.card} paperStyle={styles.paper}>
           <View style={styles.header}>
             <Text style={styles.title}>{t('shop.title')}</Text>
             <IconButton icon="✕" label={t('shop.close')} onPress={onClose} />
@@ -126,7 +128,7 @@ export function ShopModal({ visible, onClose }: Props) {
           <View style={styles.footer}>
             <PrimaryButton label={t('common.done')} variant="ocean" onPress={onClose} />
           </View>
-        </View>
+        </PostcardFrame>
       </ModalScroll>
     </Modal>
   );
@@ -150,10 +152,9 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     maxWidth: 380,
-    backgroundColor: colors.bgCream,
-    borderRadius: 24,
-    padding: 20,
-    elevation: 8,
+  },
+  paper: {
+    padding: 18,
   },
   header: {
     flexDirection: 'row',
@@ -171,6 +172,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.white,
+    // white on postcard paper needs an edge to read as a row
+    borderWidth: 1.5,
+    borderColor: colors.tagBorder,
     padding: 12,
     borderRadius: 16,
     marginBottom: 16,
@@ -185,6 +189,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.white,
+    borderWidth: 1.5,
+    borderColor: colors.tagBorder,
     borderRadius: 16,
     padding: 14,
     marginBottom: 10,

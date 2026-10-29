@@ -8,6 +8,8 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
+import type { LevelTag } from '../game/levels/levelSpec';
+import { TAG_COLOR, TAG_LABEL } from '../ui/levelTag';
 import { colors, fonts } from '../ui/theme';
 import { useT } from '../i18n';
 
@@ -22,6 +24,8 @@ type Props = {
   worldEnd: boolean;
   /** Name of the sight at a landmark level, read out with the node */
   landmarkName?: string;
+  /** Hard / Super hard badge on the node's corner */
+  tag: LevelTag | null;
   x: number;
   y: number;
   reduceMotion: boolean;
@@ -46,6 +50,7 @@ const TEXT: Record<NodeState, string> = {
 const RIM = '#FFFDF7';
 const DROP = 'rgba(31,42,55,0.28)';
 const DEPTH = 5;
+const BADGE = 26;
 
 export const LevelNode = memo(function LevelNodeView({
   levelId,
@@ -54,6 +59,7 @@ export const LevelNode = memo(function LevelNodeView({
   landmark,
   worldEnd,
   landmarkName,
+  tag,
   x,
   y,
   reduceMotion,
@@ -85,7 +91,8 @@ export const LevelNode = memo(function LevelNodeView({
       : current
         ? t('map.node.current', { n: levelId })
         : t('map.node.done', { n: levelId, stars });
-  const label = landmarkName ? t('map.node.landmark', { label: stateLabel, name: landmarkName }) : stateLabel;
+  const named = landmarkName ? t('map.node.landmark', { label: stateLabel, name: landmarkName }) : stateLabel;
+  const label = tag ? `${named}, ${t(TAG_LABEL[tag])}` : named;
   const round = { width: size, height: size, borderRadius: size / 2 };
 
   return (
@@ -106,6 +113,11 @@ export const LevelNode = memo(function LevelNodeView({
             <View style={[styles.shine, { width: size * 0.42, height: size * 0.2, borderRadius: size }]} />
             <Text style={[styles.number, { color: TEXT[state] }, current && styles.currentNumber]}>{levelId}</Text>
           </View>
+          {tag && (
+            <View style={[styles.badge, { backgroundColor: TAG_COLOR[tag] }]} accessible={false}>
+              <Text style={styles.badgeIcon}>🔥</Text>
+            </View>
+          )}
         </View>
       </Pressable>
       {state === 'done' && stars > 0 && (
@@ -156,6 +168,23 @@ const styles = StyleSheet.create({
   number: {
     fontSize: 20,
     fontFamily: fonts.uiBold,
+  },
+  // Sits on the rim at the top-right, clear of the stars below and the landmark art beside
+  badge: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    width: BADGE,
+    height: BADGE,
+    borderRadius: BADGE / 2,
+    borderWidth: 2,
+    borderColor: RIM,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeIcon: {
+    fontSize: 13,
+    includeFontPadding: false,
   },
   currentNumber: {
     fontSize: 26,

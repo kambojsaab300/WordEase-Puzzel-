@@ -35,6 +35,7 @@ export type LevelDef = {
   words: PlacedWord[];
   bonus: string[];
   seed: number;
+  /** Shipped levels: the search bot's typical solve seconds. Phone-made puzzles: a rough size score. */
   difficulty: number;
 };
 
